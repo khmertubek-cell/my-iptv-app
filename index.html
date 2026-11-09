@@ -1,323 +1,971 @@
 <!DOCTYPE html>
-<html lang="km">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PLC Cambodia TV</title>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My IPTV Player</title>
+
 <style>
-:root{--bg:#071326;--panel:#10213d;--light:#172f52;--red:#e31b23;--blue:#1685ff;--text:#fff;--muted:#9eb0cc;--border:#294566}
-*{box-sizing:border-box}body{margin:0;font-family:"Khmer OS Battambang","Noto Sans Khmer",Arial,sans-serif;background:var(--bg);color:var(--text)}
-button,input,select,textarea{font:inherit}button{border:0;border-radius:8px;padding:10px 13px;background:var(--blue);color:#fff;font-weight:bold;cursor:pointer;margin:3px}button:hover{filter:brightness(1.12)}
-input,select,textarea{width:100%;padding:11px;margin:7px 0 14px;background:#08172c;color:white;border:1px solid var(--border);border-radius:8px}
-label{display:block;font-size:14px}.hidden{display:none!important}.danger{background:var(--red)}.muted{color:var(--muted)}.error{color:#ff7777}.status{color:#54e39a}
-#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#071326,#17345c)}
-.login-card{width:100%;max-width:420px;padding:30px;background:var(--panel);border:1px solid var(--border);border-radius:18px}
-.logo{text-align:center;margin-bottom:25px}.logo h1{font-size:27px}.logo span,.brand span{color:var(--red)}
-#app{min-height:100vh}.header{min-height:65px;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--panel);border-bottom:1px solid var(--border)}
-.brand{font-size:21px;font-weight:bold}.header-right{display:flex;align-items:center;gap:8px}.layout{display:flex;min-height:calc(100vh - 65px)}
-.sidebar{width:220px;flex-shrink:0;background:#09182d;padding:15px 10px}.nav-btn{display:block;width:100%;text-align:left;background:transparent;color:#c3d3e9;margin:4px 0}
-.nav-btn.active,.nav-btn:hover{background:var(--light);border-left:3px solid var(--red)}.content{flex:1;min-width:0;padding:20px}
-.page{display:none}.page.active{display:block}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-.stat-card,.panel,.form-box,.channel-box,.media-card{background:var(--panel);border:1px solid var(--border);border-radius:12px}
-.stat-card{padding:18px}.stat-card strong{display:block;font-size:29px;color:var(--blue)}.stat-card p{color:var(--muted);margin-bottom:0}
-.panel,.form-box{padding:18px;margin-top:18px}.form-box{max-width:900px}.live-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:15px}
-.channel-box{overflow:hidden}.channel-search{padding:10px}.channel-list{max-height:540px;overflow-y:auto}
-.channel{display:flex;gap:10px;align-items:center;padding:11px;border-bottom:1px solid var(--border);cursor:pointer}.channel:hover,.channel.selected{background:var(--light)}
-.channel img{width:45px;height:45px;object-fit:contain;background:white;border-radius:7px}.channel-name{font-size:14px;font-weight:bold}.channel-group{font-size:12px;color:var(--muted)}
-.video-area{min-width:0}.video-box{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden}
-video{width:100%;height:100%;object-fit:contain}.now-playing{padding:12px 0;font-size:18px}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:15px}.media-card{overflow:hidden;min-width:0}
-.media-card img{width:100%;height:205px;object-fit:cover;background:var(--light)}.media-info{padding:10px}
-.media-info h3{font-size:14px;margin:5px 0;overflow-wrap:anywhere}.media-info p{font-size:12px;color:var(--muted)}
-.media-info button{width:100%;margin:3px 0}.toolbar{display:grid;grid-template-columns:minmax(180px,1fr) minmax(180px,260px);gap:10px;max-width:850px}
-.language-btn{background:#253f62}.group-heading{margin:18px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border);color:#cfe2ff}
-.player-panel{margin:15px 0}.episode-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border-bottom:1px solid var(--border)}
-.episode-row span{overflow-wrap:anywhere}.small-btn{width:auto!important}.form-box button{margin-top:4px}
-@media(max-width:850px){.live-layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.channel-list{max-height:300px}}
-@media(max-width:600px){.layout{display:block}.sidebar{width:100%;display:flex;overflow-x:auto;padding:7px}.nav-btn{white-space:nowrap;width:auto}.content{padding:12px}.header{padding:8px}.brand{font-size:16px}.header-right{gap:2px}.header-right button{padding:8px;font-size:12px}.stats{grid-template-columns:repeat(2,1fr)}.toolbar{grid-template-columns:1fr}.episode-row{align-items:flex-start;flex-direction:column}}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #101114;
+    color: white;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* APP */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #18191d;
+    padding: 20px;
+    border-right: 1px solid #292a30;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 25px;
+}
+
+.logo span {
+    color: #00b894;
+}
+
+.menu-title {
+    color: #888;
+    font-size: 12px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.category {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: #ddd;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
+
+.category:hover,
+.category.active {
+    background: #00a884;
+    color: white;
+}
+
+/* MAIN */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* TOP BAR */
+.topbar {
+    min-height: 70px;
+    background: #18191d;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid #292a30;
+}
+
+.search-box {
+    flex: 1;
+}
+
+.search-box input {
+    width: 100%;
+    background: #25262b;
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    outline: none;
+}
+
+.topbar button,
+.upload-label {
+    background: #00a884;
+    color: white;
+    border: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.topbar button:hover,
+.upload-label:hover {
+    background: #008f71;
+}
+
+#importFile {
+    display: none;
+}
+
+/* CONTENT */
+.content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* PLAYER AREA */
+.player-area {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.video-container {
+    width: 100%;
+    background: black;
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    background: black;
+}
+
+.empty-player {
+    text-align: center;
+    color: #888;
+}
+
+.channel-info {
+    margin-top: 15px;
+}
+
+.channel-info h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.channel-info p {
+    color: #999;
+}
+
+/* CHANNEL LIST */
+.channels-panel {
+    width: 350px;
+    background: #18191d;
+    border-left: 1px solid #292a30;
+    overflow-y: auto;
+}
+
+.channels-header {
+    padding: 18px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 1px solid #292a30;
+}
+
+.channel {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #24252a;
+}
+
+.channel:hover,
+.channel.selected {
+    background: #25262b;
+}
+
+.channel-logo {
+    width: 50px;
+    height: 50px;
+    background: #303136;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.channel-name {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.channel-group {
+    font-size: 12px;
+    color: #999;
+    margin-top: 5px;
+}
+
+/* EMPTY MESSAGE */
+.message {
+    padding: 30px 20px;
+    text-align: center;
+    color: #888;
+}
+
+/* MOBILE */
+@media (max-width: 800px) {
+
+    body {
+        overflow: auto;
+    }
+
+    .app {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+
+    .logo,
+    .menu-title {
+        display: none;
+    }
+
+    .category {
+        width: auto;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .topbar {
+        flex-wrap: wrap;
+    }
+
+    .content {
+        flex-direction: column;
+        overflow: visible;
+    }
+
+    .player-area {
+        flex: none;
+        padding: 12px;
+    }
+
+    .channels-panel {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid #292a30;
+        max-height: 500px;
+    }
+}
 </style>
 </head>
+
 <body>
-<div id="loginPage">
-  <div class="login-card">
-    <div class="logo"><h1>PLC <span>CAMBODIA TV</span></h1><p>ទូរទស្សន៍ និងកម្សាន្តរបស់អ្នក</p></div>
-    <label>ឈ្មោះអ្នកប្រើ</label><input id="username" placeholder="Username" autocomplete="username">
-    <label>ពាក្យសម្ងាត់</label><input id="password" type="password" placeholder="Password" autocomplete="current-password">
-    <button style="width:100%" onclick="login()">ចូលប្រើប្រាស់</button>
-    <p id="loginError" class="error"></p>
-    <p class="muted" style="text-align:center">Demo login: admin / admin123</p>
-  </div>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            My<span>IPTV</span>
+        </div>
+
+        <div class="menu-title">Categories</div>
+
+        <button class="category active" onclick="filterCategory('All', this)">
+            All Channels
+        </button>
+
+        <div id="categoryList"></div>
+
+    </aside>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search channels..."
+                    oninput="searchChannels()"
+                >
+            </div>
+
+            <label class="upload-label" for="importFile">
+                Upload M3U
+            </label>
+
+            <input
+                type="file"
+                id="importFile"
+                accept=".m3u,.m3u8,.txt"
+            >
+
+            <button onclick="loadM3UUrl()">
+                M3U URL
+            </button>
+
+        </div>
+
+
+        <!-- CONTENT -->
+        <div class="content">
+
+            <!-- VIDEO PLAYER -->
+            <section class="player-area">
+
+                <div class="video-container">
+
+                    <video
+                        id="videoPlayer"
+                        controls
+                        autoplay
+                    ></video>
+
+                    <div
+                        class="empty-player"
+                        id="emptyPlayer"
+                    >
+                        <h2>Welcome to My IPTV Player</h2>
+                        <p>Upload your authorized M3U playlist to begin.</p>
+                    </div>
+
+                </div>
+
+                <div class="channel-info">
+                    <h2 id="currentChannel">
+                        No Channel Selected
+                    </h2>
+
+                    <p id="currentGroup">
+                        Select a channel from the list
+                    </p>
+                </div>
+
+            </section>
+
+
+            <!-- CHANNEL LIST -->
+            <aside class="channels-panel">
+
+                <div class="channels-header">
+                    Channels
+                    (<span id="channelCount">0</span>)
+                </div>
+
+                <div id="channelList">
+                    <div class="message">
+                        No playlist loaded.<br><br>
+                        Upload an authorized M3U file.
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+
+    </main>
+
 </div>
 
-<div id="app" class="hidden">
-<header class="header">
-  <div class="brand">PLC <span>CAMBODIA TV</span></div>
-  <div class="header-right"><button class="language-btn" onclick="toggleLanguage()" id="languageButton">English</button><span id="userLabel"></span><button class="danger" onclick="logout()">ចាកចេញ</button></div>
-</header>
-<div class="layout">
-<aside class="sidebar">
-  <button class="nav-btn active" onclick="go('dashboard',0)">🏠 ផ្ទាំងគ្រប់គ្រង</button>
-  <button class="nav-btn" onclick="go('live',1)">📺 TV Player</button>
-  <button class="nav-btn" onclick="go('movies',2)">🎬 Movie Player</button>
-  <button class="nav-btn" onclick="go('series',3)">📂 Series Player</button>
-  <button class="nav-btn" onclick="go('favorites',4)">⭐ ចំណូលចិត្ត</button>
-  <button class="nav-btn" onclick="go('playlist',5)">📋 Playlist / Manage</button>
-</aside>
-<main class="content">
-<section id="dashboard" class="page active">
-  <h2>ផ្ទាំងគ្រប់គ្រង</h2>
-  <div class="stats">
-    <div class="stat-card"><strong id="tvCount">0</strong><p>TV Channels</p></div>
-    <div class="stat-card"><strong id="movieCount">0</strong><p>Movies</p></div>
-    <div class="stat-card"><strong id="seriesCount">0</strong><p>Series Episodes</p></div>
-    <div class="stat-card"><strong id="favoriteCount">0</strong><p>Favorites</p></div>
-  </div>
-  <div class="panel"><h2>SR CAMBODIA TV</h2><p>សូមស្វាគមន៍មកកាន់ SR Cambodia TV</p>
-    <button onclick="go('live',1)">មើលទូរទស្សន៍</button><button onclick="go('playlist',5)">នាំចូល Playlist</button>
-  </div>
-</section>
-
-<section id="live" class="page">
-  <h2>📺 Separate TV Channel Player</h2>
-  <div class="live-layout">
-    <div class="channel-box">
-      <div class="channel-search"><input id="channelSearch" placeholder="ស្វែងរកប៉ុស្តិ៍..." oninput="renderChannels()"><select id="tvGroupFilter" onchange="renderChannels()"><option value="">គ្រប់ក្រុម TV</option></select></div>
-      <div id="channelList" class="channel-list"></div>
-    </div>
-    <div class="video-area">
-      <div class="video-box"><video id="tvPlayer" controls playsinline></video></div>
-      <div class="now-playing"><strong id="tvPlayingName">ជ្រើសរើសប៉ុស្តិ៍</strong></div>
-      <button onclick="changeChannel(-1)">◀ មុន</button><button onclick="changeChannel(1)">បន្ទាប់ ▶</button>
-      <button onclick="openCurrentVLC('tv')">▶ Open in VLC</button><button onclick="toggleFavorite()">⭐ Favorite</button>
-    </div>
-  </div>
-</section>
-
-<section id="movies" class="page">
-  <h2>🎬 Separate Movie Player</h2>
-  <div class="toolbar"><input id="movieSearch" placeholder="ស្វែងរកភាពយន្ត..." oninput="renderMovies()"><select id="movieGroupFilter" onchange="renderMovies()"><option value="">គ្រប់ក្រុមភាពយន្ត</option></select></div>
-  <div class="panel player-panel"><div class="video-box"><video id="moviePlayer" controls playsinline></video></div><div class="now-playing"><strong id="moviePlayingName">ជ្រើសរើសភាពយន្ត</strong></div><button onclick="openCurrentVLC('movie')">▶ Open in VLC</button></div>
-  <div id="movieList"></div>
-</section>
-
-<section id="series" class="page">
-  <h2>📂 Separate Series Player</h2>
-  <div class="toolbar"><input id="seriesSearch" placeholder="ស្វែងរកភាពយន្តភាគ..." oninput="renderSeries()"><select id="seriesGroupFilter" onchange="renderSeries()"><option value="">គ្រប់ក្រុម Series</option></select></div>
-  <div class="panel player-panel"><div class="video-box"><video id="seriesPlayer" controls playsinline></video></div><div class="now-playing"><strong id="seriesPlayingName">ជ្រើសរើស Episode</strong></div><button onclick="openCurrentVLC('series')">▶ Open in VLC</button></div>
-  <div id="seriesList"></div>
-  <div id="episodePanel" class="panel hidden"><h3 id="episodeTitle">Episodes</h3><div id="episodeList"></div></div>
-</section>
-
-<section id="favorites" class="page"><h2>⭐ បញ្ជីចំណូលចិត្ត</h2><div id="favoriteList" class="media-grid"></div></section>
-
-<section id="playlist" class="page">
-  <h2>📋 Playlist & Item Management</h2>
-  <div class="form-box">
-    <h3>🔗 Import M3U URL</h3><label>M3U Playlist URL</label><input id="m3uURL" placeholder="https://example.com/playlist.m3u">
-    <label>ប្រភេទមាតិកា</label><select id="importCategory"><option value="tv">TV Channels</option><option value="movie">Movies</option><option value="series">Series Episodes</option></select>
-    <button onclick="importM3UUrl()">នាំចូល M3U URL</button><p id="m3uStatus"></p>
-  </div>
-  <div class="form-box">
-    <h3>📋 Import M3U Text / File</h3><textarea id="playlistText" rows="7" placeholder="#EXTM3U"></textarea>
-    <label>ប្រភេទមាតិកា</label><select id="textCategory"><option value="tv">TV Channels</option><option value="movie">Movies</option><option value="series">Series Episodes</option></select>
-    <button onclick="importM3UText()">Import Playlist Text</button>
-    <label>Or choose .m3u file</label><input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain" onchange="readM3UFile(event)">
-  </div>
-  <div class="form-box">
-    <h3>➕ Add TV / Movie / Series Episode Manually</h3>
-    <label>Name / Episode Name</label><input id="streamName" placeholder="Name">
-    <label>Stream URL</label><input id="streamURL" placeholder="https://example.com/video.m3u8">
-    <label>Logo / Poster URL</label><input id="streamLogo" placeholder="https://example.com/poster.jpg">
-    <label>Category</label><select id="streamCategory"><option value="tv">TV Channels</option><option value="movie">Movies</option><option value="series">Series Episode</option></select>
-    <label>Group / Series Name</label><input id="streamGroup" placeholder="Khmer TV / Action / My Series">
-    <button onclick="addStream()">Add Item</button>
-  </div>
-  <div class="form-box">
-    <h3>🛠 Manage Individual Items</h3><p class="muted">Each item has its own Edit and Delete buttons. Changes are saved in this browser.</p>
-    <label>Filter items</label><select id="manageFilter" onchange="renderManageList()"><option value="all">All items</option><option value="tv">TV Channels</option><option value="movie">Movies</option><option value="series">Series Episodes</option></select>
-    <div id="manageList"></div>
-  </div>
-  <div class="form-box"><h3>Data Tools</h3><button onclick="exportData()">Export Backup JSON</button><button class="danger" onclick="clearPlaylist()">លុបទិន្នន័យទាំងអស់</button></div>
-</section>
-</main>
-</div>
-</div>
 
 <script>
-const $=id=>document.getElementById(id);
-const STORE_KEY="plc_media_items_v2";
-let lang=localStorage.getItem("plc_language")||"km";
-let items=JSON.parse(localStorage.getItem(STORE_KEY)||"[]");
-let favorites=JSON.parse(localStorage.getItem("plc_favorites")||"[]");
-let currentTVIndex=-1;
-let currentMedia={tv:null,movie:null,series:null};
-let hlsPlayers={tv:null,movie:null,series:null};
 
-function makeId(){return "item_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,9)}
-function saveData(){localStorage.setItem(STORE_KEY,JSON.stringify(items));localStorage.setItem("plc_favorites",JSON.stringify(favorites))}
-function login(){if($("username").value.trim()==="admin"&&$("password").value==="admin123"){sessionStorage.setItem("plc_login","yes");openApp()}else $("loginError").textContent="Incorrect username or password"}
-function openApp(){$("loginPage").classList.add("hidden");$("app").classList.remove("hidden");$("userLabel").textContent="admin";refreshApp()}
-function logout(){sessionStorage.removeItem("plc_login");stopAllPlayers();$("app").classList.add("hidden");$("loginPage").classList.remove("hidden")}
-function go(id,index){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".nav-btn").forEach((b,i)=>b.classList.toggle("active",i===index))}
-function toggleLanguage(){lang=lang==="km"?"en":"km";localStorage.setItem("plc_language",lang);$("languageButton").textContent=lang==="km"?"English":"ភាសាខ្មែរ"}
-function validURL(value){try{const u=new URL(value);return u.protocol==="http:"||u.protocol==="https:"}catch(e){return false}}
-function addStream(){
-  const name=$("streamName").value.trim(),url=$("streamURL").value.trim(),logo=$("streamLogo").value.trim(),category=$("streamCategory").value,group=$("streamGroup").value.trim();
-  if(!name||!validURL(url)){alert("Please enter a name and valid HTTP/HTTPS stream URL.");return}
-  items.push({id:makeId(),name,url,logo,category,group:group||"General",createdAt:Date.now()});
-  saveData();refreshApp();$("streamName").value=$("streamURL").value=$("streamLogo").value=$("streamGroup").value="";
+/*
+    MY IPTV PLAYER
+    For personal and authorized playlists only.
+*/
+
+let channels = [];
+let currentCategory = "All";
+
+
+/* FILE UPLOAD */
+
+document
+    .getElementById("importFile")
+    .addEventListener("change", function(event) {
+
+        const file = event.target.files[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            parseM3U(e.target.result);
+        };
+
+        reader.readAsText(file);
+
+    });
+
+
+/* LOAD M3U FROM URL */
+
+function loadM3UUrl() {
+
+    const url = prompt(
+        "Enter an authorized M3U playlist URL:"
+    );
+
+    if (!url) return;
+
+    fetch(url)
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error(
+                    "Unable to load playlist"
+                );
+            }
+
+            return response.text();
+
+        })
+        .then(data => {
+
+            parseM3U(data);
+
+        })
+        .catch(error => {
+
+            alert(
+                "Could not load this playlist URL. " +
+                "The server may block browser access (CORS), " +
+                "or the URL may be unavailable."
+            );
+
+            console.error(error);
+
+        });
+
 }
-function parseM3U(content,category){
-  const lines=content.split(/\r?\n/);let info=null,count=0;
-  for(const raw of lines){
-    const line=raw.trim();
-    if(line.startsWith("#EXTINF:")){
-      const nameMatch=line.match(/,(.*)$/),logoMatch=line.match(/tvg-logo="([^"]*)"/i),groupMatch=line.match(/group-title="([^"]*)"/i);
-      info={name:nameMatch?nameMatch[1].trim():"Untitled",logo:logoMatch?logoMatch[1]:"",group:groupMatch?groupMatch[1]:"General"};
-    }else if(line&&!line.startsWith("#")&&info){
-      if(validURL(line)){items.push({id:makeId(),name:info.name,url:line,logo:info.logo,group:info.group||"General",category,createdAt:Date.now()});count++}
-      info=null;
+
+
+/* PARSE M3U */
+
+function parseM3U(text) {
+
+    channels = [];
+
+    const lines =
+        text.split(/\r?\n/);
+
+    let currentChannel = null;
+
+    for (let i = 0; i < lines.length; i++) {
+
+        const line =
+            lines[i].trim();
+
+        if (!line) continue;
+
+
+        /* CHANNEL INFORMATION */
+
+        if (
+            line.startsWith("#EXTINF")
+        ) {
+
+            const nameMatch =
+                line.match(/,(.*)$/);
+
+            const logoMatch =
+                line.match(
+                    /tvg-logo="([^"]*)"/
+                );
+
+            const groupMatch =
+                line.match(
+                    /group-title="([^"]*)"/
+                );
+
+            currentChannel = {
+
+                name:
+                    nameMatch
+                        ? nameMatch[1].trim()
+                        : "Unknown Channel",
+
+                logo:
+                    logoMatch
+                        ? logoMatch[1]
+                        : "",
+
+                group:
+                    groupMatch
+                        ? groupMatch[1]
+                        : "Other",
+
+                url: ""
+
+            };
+
+        }
+
+        /* STREAM URL */
+
+        else if (
+            currentChannel &&
+            !line.startsWith("#")
+        ) {
+
+            currentChannel.url = line;
+
+            channels.push(
+                currentChannel
+            );
+
+            currentChannel = null;
+
+        }
+
     }
-  }
-  return count;
-}
-function importM3UText(){const content=$("playlistText").value.trim();if(!content.startsWith("#EXTM3U")){alert("Invalid M3U playlist");return}const count=parseM3U(content,$("textCategory").value);saveData();refreshApp();$("playlistText").value="";alert(count+" items imported")}
-async function importM3UUrl(){
-  const url=$("m3uURL").value.trim(),status=$("m3uStatus");
-  if(!validURL(url)){status.textContent="Invalid URL";status.className="error";return}
-  status.textContent="Importing...";
-  try{const response=await fetch(url);if(!response.ok)throw Error("HTTP "+response.status);const content=await response.text();if(!content.trim().startsWith("#EXTM3U"))throw Error("Not a valid M3U playlist");const count=parseM3U(content,$("importCategory").value);saveData();refreshApp();status.textContent=count+" items imported";status.className="status";$("m3uURL").value=""}
-  catch(e){status.textContent="Import failed: "+e.message+". The playlist server may block browser CORS; try importing the M3U file or text.";status.className="error"}
-}
-function readM3UFile(event){const file=event.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const content=String(reader.result||"");if(!content.trim().startsWith("#EXTM3U")){alert("Invalid M3U file");return}const count=parseM3U(content,$("textCategory").value);saveData();refreshApp();alert(count+" items imported")};reader.readAsText(file);event.target.value=""}
 
-function getPlayer(type){return $(type==="tv"?"tvPlayer":type==="movie"?"moviePlayer":"seriesPlayer")}
-function stopPlayer(type){
-  const video=getPlayer(type);if(video){video.pause();video.removeAttribute("src");video.load()}
-  if(hlsPlayers[type]){hlsPlayers[type].destroy();hlsPlayers[type]=null}
-  currentMedia[type]=null;
+
+    currentCategory = "All";
+
+    buildCategories();
+
+    displayChannels(channels);
+
 }
-function stopAllPlayers(){["tv","movie","series"].forEach(stopPlayer)}
-function playOnPlayer(type,item){
-  if(!item||!item.url)return;
-  stopPlayer(type);const video=getPlayer(type);currentMedia[type]=item;
-  const titleId=type==="tv"?"tvPlayingName":type==="movie"?"moviePlayingName":"seriesPlayingName";
-  $(titleId).textContent=item.name;
-  if(window.Hls&&Hls.isSupported()){
-    hlsPlayers[type]=new Hls();hlsPlayers[type].loadSource(item.url);hlsPlayers[type].attachMedia(video);
-    hlsPlayers[type].on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
-    hlsPlayers[type].on(Hls.Events.ERROR,(event,data)=>{if(data.fatal){$(titleId).textContent=item.name+" - Playback error";}});
-  }else{video.src=item.url;video.play().catch(()=>{$(titleId).textContent=item.name+" - Browser cannot play this format. Try VLC.";})}
+
+
+/* BUILD CATEGORY MENU */
+
+function buildCategories() {
+
+    const categoryList =
+        document.getElementById(
+            "categoryList"
+        );
+
+    categoryList.innerHTML = "";
+
+    const groups = [
+        ...new Set(
+            channels.map(
+                channel => channel.group
+            )
+        )
+    ];
+
+    groups
+        .sort()
+        .forEach(group => {
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "category";
+
+            button.textContent =
+                group;
+
+            button.onclick =
+                function() {
+
+                    filterCategory(
+                        group,
+                        button
+                    );
+
+                };
+
+            categoryList.appendChild(
+                button
+            );
+
+        });
+
 }
-function playItem(id){
-  const item=items.find(x=>x.id===id);if(!item)return;
-  if(item.category==="tv"){currentTVIndex=items.findIndex(x=>x.id===id);playOnPlayer("tv",item);renderChannels()}
-  else if(item.category==="movie")playOnPlayer("movie",item);
-  else playOnPlayer("series",item);
+
+
+/* FILTER CATEGORY */
+
+function filterCategory(
+    category,
+    button
+) {
+
+    currentCategory = category;
+
+
+    document
+        .querySelectorAll(
+            ".category"
+        )
+        .forEach(item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    if (button) {
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+
+    const search =
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .value
+            .toLowerCase();
+
+
+    let filtered =
+        category === "All"
+            ? channels
+            : channels.filter(
+                channel =>
+                    channel.group === category
+            );
+
+
+    if (search) {
+
+        filtered =
+            filtered.filter(
+                channel =>
+                    channel.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+    }
+
+
+    displayChannels(filtered);
+
 }
-function openVLC(url){
-  if(!url||!validURL(url)){alert("Valid stream URL is not available.");return}
-  const isAndroid=/Android/i.test(navigator.userAgent);
-  if(isAndroid){const u=new URL(url);window.location.href="intent://"+u.host+u.pathname+u.search+"#Intent;scheme="+u.protocol.replace(":","")+";package=org.videolan.vlc;type=video/*;end"}
-  else{window.location.href="vlc://"+url}
+
+
+/* SEARCH */
+
+function searchChannels() {
+
+    const search =
+        document
+            .getElementById(
+                "searchInput"
+            )
+            .value
+            .toLowerCase();
+
+
+    let filtered =
+        currentCategory === "All"
+            ? channels
+            : channels.filter(
+                channel =>
+                    channel.group ===
+                    currentCategory
+            );
+
+
+    if (search) {
+
+        filtered =
+            filtered.filter(
+                channel =>
+                    channel.name
+                        .toLowerCase()
+                        .includes(search)
+            );
+
+    }
+
+
+    displayChannels(filtered);
+
 }
-function openCurrentVLC(type){const item=currentMedia[type];if(!item){alert("Select a video first.");return}openVLC(item.url)}
-function changeChannel(direction){const list=items.filter(x=>x.category==="tv");if(!list.length)return;const current=currentMedia.tv?list.findIndex(x=>x.id===currentMedia.tv.id):-1;const next=current<0?0:(current+direction+list.length)%list.length;playItem(list[next].id)}
-function toggleFavorite(){if(!currentMedia.tv)return;const id=currentMedia.tv.id;favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id];saveData();refreshApp()}
-function placeholderImage(){return "https://placehold.co/300x450?text=PLC+TV"}
-function makeCard(item){
-  const card=document.createElement("div");card.className="media-card";
-  const img=document.createElement("img");img.src=item.logo||placeholderImage();img.alt=item.name;img.onerror=()=>{img.src=placeholderImage()};
-  const info=document.createElement("div");info.className="media-info";
-  const title=document.createElement("h3");title.textContent=item.name;
-  const group=document.createElement("p");group.textContent=item.group||"General";
-  const play=document.createElement("button");play.textContent="▶ Play";play.onclick=()=>playItem(item.id);
-  const vlc=document.createElement("button");vlc.textContent="▶ Open in VLC";vlc.onclick=()=>openVLC(item.url);
-  const edit=document.createElement("button");edit.textContent="✏ Edit";edit.onclick=()=>editItem(item.id);
-  const del=document.createElement("button");del.textContent="🗑 Delete";del.className="danger";del.onclick=()=>deleteItem(item.id);
-  info.append(title,group,play,vlc,edit,del);card.append(img,info);return card;
+
+
+/* DISPLAY CHANNELS */
+
+function displayChannels(list) {
+
+    const channelList =
+        document.getElementById(
+            "channelList"
+        );
+
+    const channelCount =
+        document.getElementById(
+            "channelCount"
+        );
+
+
+    channelCount.textContent =
+        list.length;
+
+
+    channelList.innerHTML = "";
+
+
+    if (list.length === 0) {
+
+        channelList.innerHTML = `
+            <div class="message">
+                No channels found.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.forEach(channel => {
+
+        const item =
+            document.createElement(
+                "div"
+            );
+
+        item.className =
+            "channel";
+
+
+        const logo =
+            channel.logo
+                ? channel.logo
+                : createLogo(
+                    channel.name
+                );
+
+
+        item.innerHTML = `
+
+            <img
+                class="channel-logo"
+                src="${logo}"
+                alt=""
+                onerror="
+                    this.style.display='none'
+                "
+            >
+
+            <div>
+
+                <div class="channel-name">
+                    ${escapeHTML(
+                        channel.name
+                    )}
+                </div>
+
+                <div class="channel-group">
+                    ${escapeHTML(
+                        channel.group
+                    )}
+                </div>
+
+            </div>
+
+        `;
+
+
+        item.onclick =
+            function() {
+
+                playChannel(
+                    channel,
+                    item
+                );
+
+            };
+
+
+        channelList.appendChild(
+            item
+        );
+
+    });
+
 }
-function fillGroupSelect(selectId,category){
-  const select=$(selectId),previous=select.value;const groups=[...new Set(items.filter(x=>x.category===category).map(x=>x.group||"General"))].sort();
-  select.innerHTML="";const all=document.createElement("option");all.value="";all.textContent="All groups";select.append(all);
-  groups.forEach(g=>{const o=document.createElement("option");o.value=g;o.textContent=g;select.append(o)});select.value=groups.includes(previous)?previous:"";
+
+
+/* PLAY CHANNEL */
+
+function playChannel(
+    channel,
+    element
+) {
+
+    const player =
+        document.getElementById(
+            "videoPlayer"
+        );
+
+    const empty =
+        document.getElementById(
+            "emptyPlayer"
+        );
+
+
+    empty.style.display =
+        "none";
+
+
+    player.style.display =
+        "block";
+
+
+    player.src =
+        channel.url;
+
+
+    player.play()
+        .catch(error => {
+
+            console.log(
+                "Autoplay was blocked or the stream needs a supported format.",
+                error
+            );
+
+        });
+
+
+    document
+        .getElementById(
+            "currentChannel"
+        )
+        .textContent =
+            channel.name;
+
+
+    document
+        .getElementById(
+            "currentGroup"
+        )
+        .textContent =
+            channel.group;
+
+
+    document
+        .querySelectorAll(
+            ".channel"
+        )
+        .forEach(item => {
+
+            item.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    element.classList.add(
+        "selected"
+    );
+
 }
-function renderChannels(){
-  const target=$("channelList");if(!target)return;fillGroupSelect("tvGroupFilter","tv");
-  const search=$("channelSearch").value.toLowerCase(),group=$("tvGroupFilter").value;target.innerHTML="";
-  items.forEach(item=>{if(item.category!=="tv"||!item.name.toLowerCase().includes(search)||(group&&item.group!==group))return;
-    const row=document.createElement("div");row.className="channel"+(currentMedia.tv?.id===item.id?" selected":"");
-    const img=document.createElement("img");img.src=item.logo||"https://placehold.co/100x100?text=TV";img.onerror=()=>img.src="https://placehold.co/100x100?text=TV";
-    const details=document.createElement("div"),name=document.createElement("div"),groupName=document.createElement("div");
-    name.className="channel-name";name.textContent=item.name;groupName.className="channel-group";groupName.textContent=item.group||"General";
-    details.append(name,groupName);row.append(img,details);row.onclick=()=>playItem(item.id);target.append(row);
-  });
-  if(!target.children.length)target.textContent="No channels available";
+
+
+/* CREATE SIMPLE LOGO */
+
+function createLogo(name) {
+
+    const letter =
+        name.charAt(0)
+            .toUpperCase();
+
+    const svg = `
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100"
+            height="100"
+        >
+            <rect
+                width="100%"
+                height="100%"
+                fill="#303136"
+            />
+            <text
+                x="50%"
+                y="55%"
+                text-anchor="middle"
+                font-size="45"
+                fill="white"
+                font-family="Arial"
+            >
+                ${letter}
+            </text>
+        </svg>
+    `;
+
+    return
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg);
+
 }
-function renderCategory(targetId,category,searchId,filterId){
-  const target=$(targetId);fillGroupSelect(filterId,category);const search=$(searchId).value.toLowerCase(),group=$(filterId).value;
-  const list=items.filter(x=>x.category===category&&x.name.toLowerCase().includes(search)&&(!group||x.group===group));target.innerHTML="";
-  if(!list.length){target.textContent=category==="movie"?"No movies available":"No series episodes available";return}
-  const groups=[...new Set(list.map(x=>x.group||"General"))].sort();
-  groups.forEach(g=>{const heading=document.createElement("h3");heading.className="group-heading";heading.textContent=g;target.append(heading);
-    const grid=document.createElement("div");grid.className="media-grid";list.filter(x=>(x.group||"General")===g).forEach(item=>grid.append(makeCard(item)));target.append(grid)});
+
+
+/* ESCAPE HTML */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+    div.textContent = text;
+
+    return div.innerHTML;
+
 }
-function renderMovies(){renderCategory("movieList","movie","movieSearch","movieGroupFilter")}
-function renderSeries(){
-  const target=$("seriesList");fillGroupSelect("seriesGroupFilter","series");const search=$("seriesSearch").value.toLowerCase(),group=$("seriesGroupFilter").value;
-  const list=items.filter(x=>x.category==="series"&&((x.group||"General").toLowerCase().includes(search)||x.name.toLowerCase().includes(search))&&(!group||x.group===group));
-  target.innerHTML="";if(!list.length){target.textContent="No series available";return}
-  const groups=[...new Set(list.map(x=>x.group||"General"))].sort();
-  groups.forEach(g=>{const heading=document.createElement("h3");heading.className="group-heading";heading.textContent=g;target.append(heading);
-    const grid=document.createElement("div");grid.className="media-grid";list.filter(x=>(x.group||"General")===g).forEach(item=>grid.append(makeCard(item)));target.append(grid)});
-}
-function renderFavorites(){const target=$("favoriteList");target.innerHTML="";favorites.forEach(id=>{const item=items.find(x=>x.id===id);if(item)target.append(makeCard(item))});if(!target.children.length)target.textContent="No favorites yet"}
-function editItem(id){
-  const item=items.find(x=>x.id===id);if(!item)return;
-  const name=prompt("Edit name:",item.name);if(name===null)return;
-  const url=prompt("Edit stream URL:",item.url);if(url===null)return;
-  const logo=prompt("Edit logo / poster URL:",item.logo||"");if(logo===null)return;
-  const group=prompt("Edit group / series name:",item.group||"General");if(group===null)return;
-  if(!name.trim()||!validURL(url.trim())){alert("Name and valid HTTP/HTTPS URL are required.");return}
-  if(logo.trim()&&!validURL(logo.trim())){alert("Logo URL must be HTTP/HTTPS or empty.");return}
-  item.name=name.trim();item.url=url.trim();item.logo=logo.trim();item.group=group.trim()||"General";
-  saveData();refreshApp();alert("Item updated.");
-}
-function deleteItem(id){
-  const item=items.find(x=>x.id===id);if(!item)return;if(!confirm("Delete only this item: "+item.name+"?"))return;
-  ["tv","movie","series"].forEach(type=>{if(currentMedia[type]?.id===id)stopPlayer(type)});
-  if(currentTVIndex>=0&&items[currentTVIndex]?.id===id)currentTVIndex=-1;
-  items=items.filter(x=>x.id!==id);favorites=favorites.filter(x=>x!==id);saveData();refreshApp();
-}
-function renderManageList(){
-  const target=$("manageList");target.innerHTML="";const filter=$("manageFilter").value;
-  const list=items.filter(x=>filter==="all"||x.category===filter);
-  if(!list.length){target.textContent="No items.";return}
-  list.forEach(item=>{
-    const row=document.createElement("div");row.className="episode-row";
-    const label=document.createElement("span");label.textContent="["+(item.category||"item").toUpperCase()+"] "+item.name+" — "+(item.group||"General");
-    const actions=document.createElement("div");
-    const edit=document.createElement("button");edit.className="small-btn";edit.textContent="✏ Edit";edit.onclick=()=>editItem(item.id);
-    const del=document.createElement("button");del.className="small-btn danger";del.textContent="🗑 Delete";del.onclick=()=>deleteItem(item.id);
-    actions.append(edit,del);row.append(label,actions);target.append(row);
-  });
-}
-function refreshApp(){
-  $("tvCount").textContent=items.filter(x=>x.category==="tv").length;
-  $("movieCount").textContent=items.filter(x=>x.category==="movie").length;
-  $("seriesCount").textContent=items.filter(x=>x.category==="series").length;
-  $("favoriteCount").textContent=favorites.length;renderAll();
-}
-function renderAll(){renderChannels();renderMovies();renderSeries();renderFavorites();renderManageList()}
-function clearPlaylist(){if(!confirm("Delete ALL playlist items and favorites?"))return;stopAllPlayers();items=[];favorites=[];currentTVIndex=-1;saveData();refreshApp()}
-function exportData(){const blob=new Blob([JSON.stringify({items,favorites},null,2)],{type:"application/json"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="plc-cambodia-tv-backup.json";a.click();URL.revokeObjectURL(url)}
-$("languageButton").textContent=lang==="km"?"English":"ភាសាខ្មែរ";
-if(sessionStorage.getItem("plc_login")==="yes")openApp();else renderAll();
+
 </script>
+
 </body>
 </html>
-'''
-path = Path("/mnt/data/index.html")
-path.write_text(html, encoding="utf-8")
-print(f"Created {path} ({path.stat().st_size:,} bytes)")
