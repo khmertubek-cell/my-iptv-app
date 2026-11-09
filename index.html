@@ -3,128 +3,965 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>My IPTV</title>
+<title>MY IPTV PLAYER</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15"></script>
+
 <style>
+:root {
+  --bg: #101522;
+  --panel: #1b2638;
+  --accent: #1685ff;
+  --text: #ffffff;
+}
+* { box-sizing: border-box; }
 body {
   margin: 0;
-  background: #101522;
-  color: white;
+  background: var(--bg);
+  color: var(--text);
   font-family: Arial, sans-serif;
 }
-header {
-  background: #202b40;
-  padding: 18px;
-  font-size: 24px;
-  font-weight: bold;
-}
-main { padding: 15px; }
-textarea {
-  width: 100%;
-  height: 110px;
-  box-sizing: border-box;
-  padding: 12px;
-  margin: 10px 0;
+button, input, select, textarea {
+  font: inherit;
 }
 button {
-  padding: 12px;
-  background: #1685ff;
-  color: white;
+  cursor: pointer;
   border: 0;
-  border-radius: 5px;
-  cursor: pointer;
+  border-radius: 6px;
+  padding: 11px 15px;
+  background: var(--accent);
+  color: white;
 }
-video {
+input, select, textarea {
   width: 100%;
-  background: black;
-  margin-top: 15px;
+  padding: 11px;
+  margin: 7px 0 13px;
+  border: 1px solid #44516a;
+  background: #101522;
+  color: white;
+  border-radius: 6px;
 }
-.channel {
-  background: #202b40;
-  padding: 14px;
-  margin: 8px 0;
+header {
+  padding: 17px;
+  background: var(--panel);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.logo { font-size: 22px; font-weight: bold; }
+.layout { display: flex; min-height: 90vh; }
+.sidebar {
+  width: 210px;
+  padding: 15px;
+  background: var(--panel);
+  flex-shrink: 0;
+}
+.sidebar button {
+  width: 100%;
+  margin-bottom: 9px;
+  text-align: left;
+  background: transparent;
+}
+.sidebar button:hover, .sidebar button.active {
+  background: var(--accent);
+}
+main { flex: 1; padding: 20px; min-width: 0; }
+.page { display: none; }
+.page.active { display: block; }
+h2 { margin-top: 0; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(155px,1fr));
+  gap: 13px;
+}
+.card {
+  background: var(--panel);
+  border-radius: 9px;
+  padding: 15px;
   cursor: pointer;
-  border-radius: 5px;
+}
+.card:hover { outline: 2px solid var(--accent); }
+.card h3 { font-size: 15px; }
+.muted { color: #aab7ca; font-size: 12px; }
+.player {
+  background: black;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+video { width: 100%; max-height: 480px; display: block; }
+.formbox {
+  background: var(--panel);
+  padding: 18px;
+  border-radius: 10px;
+  margin-bottom: 17px;
+  max-width: 700px;
+}
+.formbox button { margin: 4px 3px 4px 0; }
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.row > * { flex: 1; min-width: 130px; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  background: var(--panel);
+}
+td, th {
+  padding: 11px;
+  border-bottom: 1px solid #39465c;
+  text-align: left;
+  font-size: 13px;
+}
+.tablewrap { overflow-x: auto; }
+.danger { background: #cf3c48; }
+.success { color: #44d68b; }
+.expired { color: #ff6262; }
+#login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#login .formbox { width: 100%; }
+.hidden { display: none !important; }
+footer {
+  padding: 18px;
+  text-align: center;
+  color: #8491a6;
+}
+@media(max-width:650px) {
+  .layout { display: block; }
+  .sidebar {
+    width: 100%;
+    display: flex;
+    overflow-x: auto;
+    gap: 5px;
+  }
+  .sidebar button {
+    width: auto;
+    white-space: nowrap;
+  }
+  main { padding: 13px; }
 }
 </style>
 </head>
+
 <body>
 
-<header>MY IPTV</header>
+<!-- LOGIN -->
+<section id="login">
+  <div class="formbox">
+    <h2>📺 MY IPTV PLAYER</h2>
+    <p class="muted">Please login to continue</p>
+
+    <label>Username</label>
+    <input id="loginUser" placeholder="Username">
+
+    <label>Password</label>
+    <input id="loginPass" type="password" placeholder="Password">
+
+    <button onclick="login()" style="width:100%">LOGIN</button>
+    <p id="loginError" class="expired"></p>
+    <p class="muted">Initial demo login: admin / admin123</p>
+  </div>
+</section>
+
+<!-- APPLICATION -->
+<div id="app" class="hidden">
+
+<header>
+  <div class="logo">📺 MY IPTV PLAYER</div>
+  <div>
+    <span id="welcome"></span>
+    <button onclick="logout()" class="danger">Logout</button>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <button class="active" onclick="showPage('home',this)">🏠 Dashboard</button>
+  <button onclick="showPage('tv',this)">📡 TV Category</button>
+  <button onclick="showPage('movies',this)">🎬 Movie Category</button>
+  <button onclick="showPage('series',this)">📺 Series Category</button>
+  <button onclick="showPage('groups',this)">📂 Groups</button>
+  <button onclick="showPage('playlist',this)">🔗 Playlist Manager</button>
+  <button onclick="showPage('settings',this)">⚙️ Settings</button>
+</nav>
 
 <main>
-<h3>My Playlist</h3>
 
-<textarea id="playlist"
-placeholder="Paste your authorized M3U playlist here">
-</textarea>
+<!-- DASHBOARD -->
+<section id="home" class="page active">
+  <h2>Dashboard</h2>
 
-<button onclick="loadPlaylist()">Load Channels</button>
+  <div class="grid">
+    <div class="card">
+      <h2 id="tvCount">0</h2>
+      <p>TV Channels</p>
+    </div>
+    <div class="card">
+      <h2 id="movieCount">0</h2>
+      <p>Movies</p>
+    </div>
+    <div class="card">
+      <h2 id="seriesCount">0</h2>
+      <p>Series</p>
+    </div>
+    <div class="card">
+      <h2 id="groupCount">0</h2>
+      <p>Total Groups</p>
+    </div>
+  </div>
 
-<h3>Live TV Player</h3>
-<video id="video" controls playsinline></video>
+  <h2 style="margin-top:30px">Video Player</h2>
+  <div class="player">
+    <video id="video" controls playsinline></video>
+  </div>
+  <p id="nowPlaying">Select a channel to play.</p>
+  <label>Video Resolution</label>
+  <select id="resolution" onchange="changeResolution()">
+    <option value="-1">Auto</option>
+  </select>
 
-<h3>Channel List</h3>
-<div id="channels"></div>
+  <h2 style="margin-top:30px">Recently added channels</h2>
+  <div id="recent" class="grid"></div>
+</section>
+
+<!-- TV -->
+<section id="tv" class="page">
+  <h2>📡 TV Category</h2>
+  <input id="tvSearch" placeholder="Search TV channels..."
+         oninput="renderCategory('tv')">
+  <select id="tvGroup" onchange="renderCategory('tv')">
+    <option value="">All TV Groups</option>
+  </select>
+  <div id="tvList" class="grid"></div>
+</section>
+
+<!-- MOVIES -->
+<section id="movies" class="page">
+  <h2>🎬 Movie Category</h2>
+  <input id="movieSearch" placeholder="Search movies..."
+         oninput="renderCategory('movie')">
+  <select id="movieGroup" onchange="renderCategory('movie')">
+    <option value="">All Movie Groups</option>
+  </select>
+  <div id="movieList" class="grid"></div>
+</section>
+
+<!-- SERIES -->
+<section id="series" class="page">
+  <h2>📺 Series Category</h2>
+  <input id="seriesSearch" placeholder="Search series..."
+         oninput="renderCategory('series')">
+  <select id="seriesGroup" onchange="renderCategory('series')">
+    <option value="">All Series Groups</option>
+  </select>
+  <div id="seriesList" class="grid"></div>
+</section>
+
+<!-- GROUPS -->
+<section id="groups" class="page">
+  <h2>📂 Group Management</h2>
+
+  <div class="formbox">
+    <label>Group Name</label>
+    <input id="groupName" placeholder="Example: Sports">
+
+    <label>Group Category</label>
+    <select id="groupCategory">
+      <option value="tv">TV Group</option>
+      <option value="movie">Movie Group</option>
+      <option value="series">Series Group</option>
+    </select>
+
+    <button onclick="addGroup()">+ Add Group</button>
+  </div>
+
+  <div id="groupList"></div>
+</section>
+
+<!-- PLAYLIST MANAGER -->
+<section id="playlist" class="page">
+  <h2>🔗 Playlist Manager</h2>
+
+  <div class="formbox">
+    <h3>Add Channel or Link</h3>
+
+    <label>Channel / Movie / Series Name</label>
+    <input id="itemName" placeholder="Enter name">
+
+    <label>Stream URL (.m3u8 or supported media URL)</label>
+    <input id="itemURL" placeholder="https://example.com/stream.m3u8">
+
+    <label>Category</label>
+    <select id="itemCategory" onchange="updateGroupOptions()">
+      <option value="tv">TV</option>
+      <option value="movie">Movie</option>
+      <option value="series">Series</option>
+    </select>
+
+    <label>Group</label>
+    <select id="itemGroup"></select>
+
+    <label>Link Expiration Date</label>
+    <input id="itemExpiry" type="date">
+
+    <button onclick="addItem()">+ Add Link</button>
+  </div>
+
+  <div class="formbox">
+    <h3>Import M3U Playlist</h3>
+    <p class="muted">Paste an authorized M3U playlist below.</p>
+    <textarea id="m3uText" rows="7"
+      placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;Sports&quot;,Sports Channel&#10;https://example.com/live.m3u8"></textarea>
+
+    <label>Default Category for Imported Links</label>
+    <select id="importCategory">
+      <option value="tv">TV</option>
+      <option value="movie">Movie</option>
+      <option value="series">Series</option>
+    </select>
+
+    <button onclick="importM3U()">Import Playlist</button>
+  </div>
+
+  <h3>All Links and Expiration Dates</h3>
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Group</th>
+          <th>Expires</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="linkTable"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SETTINGS -->
+<section id="settings" class="page">
+  <h2>⚙️ Settings</h2>
+
+  <div class="formbox">
+    <h3>🎥 Video Resolution</h3>
+    <select id="defaultResolution" onchange="setDefaultResolution()">
+      <option value="-1">Auto</option>
+      <option value="0">Lowest available quality</option>
+    </select>
+    <p class="muted">Available resolutions depend on the video stream.</p>
+  </div>
+
+  <div class="formbox">
+    <h3>🌐 Language</h3>
+    <select id="language" onchange="changeLanguage()">
+      <option value="en">English</option>
+      <option value="km">ភាសាខ្មែរ (Khmer)</option>
+    </select>
+    <p class="muted">Changes the main navigation labels.</p>
+  </div>
+
+  <div class="formbox">
+    <h3>🎨 Background Color</h3>
+    <label>Choose background</label>
+    <input id="bgColor" type="color" value="#101522"
+           onchange="changeBackground()">
+    <button onclick="resetBackground()">Reset Background</button>
+  </div>
+
+  <div class="formbox">
+    <h3>🔐 Security</h3>
+    <p class="muted">Change your local demo login credentials.</p>
+
+    <label>Current Username</label>
+    <input id="newUsername" placeholder="New username">
+
+    <label>New Password</label>
+    <input id="newPassword" type="password"
+           placeholder="New password">
+
+    <label>Confirm Password</label>
+    <input id="confirmPassword" type="password"
+           placeholder="Confirm password">
+
+    <button onclick="changeCredentials()">Save Credentials</button>
+    <p id="securityMessage"></p>
+  </div>
+</section>
+
 </main>
+</div>
+
+<footer>MY IPTV PLAYER · Personal IPTV Dashboard</footer>
 
 <script>
-let hls;
+// --------------------------------
+// STORAGE
+// --------------------------------
+const getData = (key, fallback) => {
+  try {
+    const value = JSON.parse(localStorage.getItem(key));
+    return value ?? fallback;
+  } catch {
+    return fallback;
+  }
+};
 
-function loadPlaylist() {
-  const text = document.getElementById("playlist").value;
+let channels = getData("iptv_channels", []);
+let groups = getData("iptv_groups", [
+  {name:"General",category:"tv"},
+  {name:"Action",category:"movie"},
+  {name:"Drama",category:"series"}
+]);
+
+let credentials = getData("iptv_credentials", {
+  username:"admin",
+  password:"admin123"
+});
+
+let hls = null;
+let activeChannel = null;
+
+function save() {
+  localStorage.setItem("iptv_channels", JSON.stringify(channels));
+  localStorage.setItem("iptv_groups", JSON.stringify(groups));
+}
+
+function validExpiry(item) {
+  if (!item.expiry) return true;
+  return item.expiry >= new Date().toLocaleDateString("en-CA");
+}
+
+// --------------------------------
+// LOGIN
+// --------------------------------
+function login() {
+  const u = document.getElementById("loginUser").value;
+  const p = document.getElementById("loginPass").value;
+
+  if (u === credentials.username && p === credentials.password) {
+    sessionStorage.setItem("iptv_logged_in", "yes");
+    showApp();
+  } else {
+    document.getElementById("loginError").textContent =
+      "Incorrect username or password.";
+  }
+}
+
+function showApp() {
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  document.getElementById("welcome").textContent =
+    "Welcome, " + credentials.username;
+  refresh();
+}
+
+function logout() {
+  sessionStorage.removeItem("iptv_logged_in");
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+  stopVideo();
+}
+
+// --------------------------------
+// NAVIGATION
+// --------------------------------
+function showPage(id, btn) {
+  document.querySelectorAll(".page").forEach(p =>
+    p.classList.remove("active"));
+
+  document.getElementById(id).classList.add("active");
+
+  document.querySelectorAll(".sidebar button").forEach(b =>
+    b.classList.remove("active"));
+
+  if (btn) btn.classList.add("active");
+}
+
+// --------------------------------
+// GROUP MANAGEMENT
+// --------------------------------
+function addGroup() {
+  const name = document.getElementById("groupName").value.trim();
+  const category = document.getElementById("groupCategory").value;
+
+  if (!name) return alert("Enter group name.");
+
+  if (groups.some(g =>
+    g.category === category &&
+    g.name.toLowerCase() === name.toLowerCase()
+  )) return alert("Group already exists.");
+
+  groups.push({name, category});
+  document.getElementById("groupName").value = "";
+  save();
+  refresh();
+}
+
+function deleteGroup(index) {
+  const g = groups[index];
+
+  if (channels.some(c =>
+    c.category === g.category && c.group === g.name
+  )) return alert("Move or delete its channels before deleting this group.");
+
+  if (!confirm("Delete this group?")) return;
+
+  groups.splice(index, 1);
+  save();
+  refresh();
+}
+
+function renderGroups() {
+  document.getElementById("groupList").innerHTML =
+    ["tv","movie","series"].map(category => {
+      const title = category.toUpperCase() + " GROUPS";
+      const list = groups.map((g,i) =>
+        g.category === category
+          ? `<tr>
+               <td>${escapeHTML(g.name)}</td>
+               <td><button class="danger" onclick="deleteGroup(${i})">Delete</button></td>
+             </tr>`
+          : ""
+      ).join("");
+
+      return `<h3>${title}</h3>
+        <div class="tablewrap"><table>
+        <tr><th>Group Name</th><th>Action</th></tr>
+        ${list || "<tr><td colspan='2'>No groups</td></tr>"}
+        </table></div>`;
+    }).join("");
+}
+
+function updateGroupOptions() {
+  const category = document.getElementById("itemCategory").value;
+  const select = document.getElementById("itemGroup");
+
+  select.innerHTML = groups
+    .filter(g => g.category === category)
+    .map(g => `<option value="${escapeHTML(g.name)}">${escapeHTML(g.name)}</option>`)
+    .join("");
+}
+
+// --------------------------------
+// ADD CHANNEL
+// --------------------------------
+function addItem() {
+  const name = document.getElementById("itemName").value.trim();
+  const url = document.getElementById("itemURL").value.trim();
+  const category = document.getElementById("itemCategory").value;
+  const group = document.getElementById("itemGroup").value;
+  const expiry = document.getElementById("itemExpiry").value;
+
+  if (!name || !url) return alert("Enter channel name and URL.");
+
+  if (!validURL(url)) return alert("Enter a valid HTTP or HTTPS URL.");
+
+  if (!group) return alert("Create a group first.");
+
+  if (expiry && expiry < new Date().toLocaleDateString("en-CA")) {
+    return alert("Expiration date cannot be in the past.");
+  }
+
+  channels.push({name,url,category,group,expiry});
+  save();
+
+  document.getElementById("itemName").value = "";
+  document.getElementById("itemURL").value = "";
+  document.getElementById("itemExpiry").value = "";
+
+  refresh();
+  alert("Link added successfully.");
+}
+
+// --------------------------------
+// IMPORT M3U
+// --------------------------------
+function importM3U() {
+  const text = document.getElementById("m3uText").value;
+  const defaultCategory = document.getElementById("importCategory").value;
+
+  if (!text.trim()) return alert("Paste an M3U playlist first.");
+
   const lines = text.split(/\r?\n/);
-  const channels = [];
-  let name = "Unknown Channel";
+  let info = null;
+  let count = 0;
 
   lines.forEach(line => {
     line = line.trim();
 
     if (line.startsWith("#EXTINF:")) {
-      name = line.split(",").pop().trim();
-    } else if (line && !line.startsWith("#")) {
-      channels.push({ name, url: line });
-      name = "Unknown Channel";
+      const name = line.substring(line.lastIndexOf(",") + 1).trim();
+      const groupMatch = line.match(/group-title="([^"]*)"/i);
+
+      info = {
+        name: name || "Unknown Channel",
+        group: groupMatch ? groupMatch[1] : "General"
+      };
+
+      if (groupMatch && !groups.some(g =>
+        g.category === defaultCategory &&
+        g.name.toLowerCase() === info.group.toLowerCase()
+      )) {
+        groups.push({
+          name: info.group,
+          category: defaultCategory
+        });
+      }
+
+    } else if (line && !line.startsWith("#") && info) {
+      if (validURL(line)) {
+        channels.push({
+          name: info.name,
+          url: line,
+          category: defaultCategory,
+          group: info.group,
+          expiry: ""
+        });
+        count++;
+      }
+      info = null;
     }
   });
 
-  const container = document.getElementById("channels");
-  container.innerHTML = "";
-
-  channels.forEach(channel => {
-    const item = document.createElement("div");
-    item.className = "channel";
-    item.textContent = channel.name;
-    item.onclick = () => playChannel(channel.url);
-    container.appendChild(item);
-  });
+  save();
+  refresh();
+  alert(count + " links imported.");
 }
 
-function playChannel(url) {
-  const video = document.getElementById("video");
+// --------------------------------
+// CATEGORY DISPLAY
+// --------------------------------
+function renderCategory(category) {
+  const search = document.getElementById(
+    category + "Search"
+  ).value.toLowerCase();
 
+  const selectedGroup = document.getElementById(
+    category + "Group"
+  ).value;
+
+  const result = channels.filter(c =>
+    c.category === category &&
+    c.name.toLowerCase().includes(search) &&
+    (!selectedGroup || c.group === selectedGroup)
+  );
+
+  const target = document.getElementById(
+    category === "tv" ? "tvList" :
+    category === "movie" ? "movieList" : "seriesList"
+  );
+
+  target.innerHTML = result.map(c => {
+    const index = channels.indexOf(c);
+    const expired = !validExpiry(c);
+
+    return `<div class="card" onclick="playChannel(${index})">
+      <h3>${escapeHTML(c.name)}</h3>
+      <p class="muted">${escapeHTML(c.group)}</p>
+      <p class="${expired ? "expired" : "success"}">
+        ${expired ? "Expired" : "Available"}
+      </p>
+      <p class="muted">${c.expiry || "No expiration date"}</p>
+      <button onclick="event.stopPropagation();favorite(${index})">
+        ☆ Favorite
+      </button>
+    </div>`;
+  }).join("") || "<p>No channels found.</p>";
+}
+
+// --------------------------------
+// PLAY VIDEO
+// --------------------------------
+function playChannel(index) {
+  const channel = channels[index];
+
+  if (!channel) return;
+
+  if (!validExpiry(channel)) {
+    alert("This playlist link has expired.");
+    return;
+  }
+
+  const video = document.getElementById("video");
+  stopVideo();
+
+  activeChannel = channel;
+  document.getElementById("nowPlaying").textContent =
+    "Now Playing: " + channel.name;
+
+  if (window.Hls && Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(channel.url);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      updateResolutions();
+      video.play().catch(() => {});
+    });
+
+    hls.on(Hls.Events.ERROR, (event, data) => {
+      if (data.fatal) {
+        console.error("HLS playback error:", data);
+      }
+    });
+
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = channel.url;
+    video.play().catch(() => {});
+  } else {
+    alert("This browser does not support this stream format.");
+  }
+}
+
+function stopVideo() {
   if (hls) {
     hls.destroy();
     hls = null;
   }
 
+  const video = document.getElementById("video");
   video.pause();
   video.removeAttribute("src");
   video.load();
+  activeChannel = null;
+}
 
-  if (Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(url);
-    hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play().catch(console.error);
-    });
-  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = url;
-    video.play().catch(console.error);
-  } else {
-    alert("This browser does not support HLS playback.");
+function updateResolutions() {
+  const select = document.getElementById("resolution");
+  select.innerHTML = '<option value="-1">Auto</option>';
+
+  if (!hls) return;
+
+  const heights = [...new Set(
+    hls.levels.map(level => level.height).filter(Boolean)
+  )].sort((a,b) => b-a);
+
+  heights.forEach(height => {
+    const index = hls.levels.findIndex(l => l.height === height);
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = height + "p";
+    select.appendChild(option);
+  });
+}
+
+function changeResolution() {
+  if (hls) {
+    hls.currentLevel =
+      Number(document.getElementById("resolution").value);
   }
+}
+
+function setDefaultResolution() {
+  const value = document.getElementById("defaultResolution").value;
+  localStorage.setItem("iptv_resolution", value);
+  if (hls) hls.currentLevel = Number(value);
+}
+
+// --------------------------------
+// FAVORITES
+// --------------------------------
+function favorite(index) {
+  let favorites = getData("iptv_favorites", []);
+
+  if (favorites.includes(index)) {
+    favorites = favorites.filter(i => i !== index);
+  } else {
+    favorites.push(index);
+  }
+
+  localStorage.setItem("iptv_favorites", JSON.stringify(favorites));
+  alert("Favorites updated.");
+}
+
+// --------------------------------
+// LINKS TABLE
+// --------------------------------
+function renderLinks() {
+  document.getElementById("linkTable").innerHTML =
+    channels.map((c,i) => {
+      const expired = !validExpiry(c);
+
+      return `<tr>
+        <td>${escapeHTML(c.name)}</td>
+        <td>${escapeHTML(c.category)}</td>
+        <td>${escapeHTML(c.group)}</td>
+        <td>${c.expiry || "Never"}</td>
+        <td class="${expired ? "expired" : "success"}">
+          ${expired ? "Expired" : "Active"}
+        </td>
+        <td>
+          <button class="danger" onclick="deleteItem(${i})">
+            Delete
+          </button>
+        </td>
+      </tr>`;
+    }).join("");
+}
+
+function deleteItem(index) {
+  if (!confirm("Delete this link?")) return;
+
+  if (activeChannel === channels[index]) stopVideo();
+
+  channels.splice(index,1);
+  save();
+  refresh();
+}
+
+// --------------------------------
+// SETTINGS
+// --------------------------------
+function changeBackground() {
+  const color = document.getElementById("bgColor").value;
+  document.documentElement.style.setProperty("--bg", color);
+  localStorage.setItem("iptv_bg", color);
+}
+
+function resetBackground() {
+  localStorage.removeItem("iptv_bg");
+  document.documentElement.style.setProperty("--bg","#101522");
+  document.getElementById("bgColor").value = "#101522";
+}
+
+function changeCredentials() {
+  const username = document.getElementById("newUsername").value.trim();
+  const password = document.getElementById("newPassword").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+
+  if (!username || !password) {
+    return alert("Enter username and password.");
+  }
+
+  if (password.length < 8) {
+    return alert("Password must be at least 8 characters.");
+  }
+
+  if (password !== confirmPassword) {
+    return alert("Passwords do not match.");
+  }
+
+  credentials = {username,password};
+  localStorage.setItem("iptv_credentials",JSON.stringify(credentials));
+
+  document.getElementById("securityMessage").textContent =
+    "Credentials updated. Please log in again.";
+
+  logout();
+}
+
+function changeLanguage() {
+  const lang = document.getElementById("language").value;
+  localStorage.setItem("iptv_language",lang);
+
+  const labels = lang === "km"
+    ? ["ផ្ទាំងគ្រប់គ្រង","ទូរទស្សន៍","ភាពយន្ត","ស៊េរី","ក្រុម","បញ្ជីកម្មវិធី","ការកំណត់"]
+    : ["🏠 Dashboard","📡 TV Category","🎬 Movie Category",
+       "📺 Series Category","📂 Groups","🔗 Playlist Manager","⚙️ Settings"];
+
+  document.querySelectorAll(".sidebar button").forEach((b,i) => {
+    b.textContent = labels[i];
+  });
+}
+
+// --------------------------------
+// DASHBOARD / REFRESH
+// --------------------------------
+function refresh() {
+  document.getElementById("tvCount").textContent =
+    channels.filter(c => c.category === "tv").length;
+
+  document.getElementById("movieCount").textContent =
+    channels.filter(c => c.category === "movie").length;
+
+  document.getElementById("seriesCount").textContent =
+    channels.filter(c => c.category === "series").length;
+
+  document.getElementById("groupCount").textContent = groups.length;
+
+  ["tv","movie","series"].forEach(category => {
+    const select = document.getElementById(category + "Group");
+    const current = select.value;
+
+    select.innerHTML =
+      `<option value="">All ${category} Groups</option>` +
+      groups.filter(g => g.category === category).map(g =>
+        `<option value="${escapeHTML(g.name)}">${escapeHTML(g.name)}</option>`
+      ).join("");
+
+    select.value = current;
+    renderCategory(category);
+  });
+
+  renderGroups();
+  renderLinks();
+  updateGroupOptions();
+
+  document.getElementById("recent").innerHTML =
+    channels.slice(-6).reverse().map(c => `
+      <div class="card">
+        <h3>${escapeHTML(c.name)}</h3>
+        <p class="muted">${escapeHTML(c.category)}</p>
+      </div>
+    `).join("") || "<p>No channels yet.</p>";
+}
+
+// --------------------------------
+// SECURITY HELPERS
+// --------------------------------
+function validURL(url) {
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "https:" || parsed.protocol === "http:";
+  } catch {
+    return false;
+  }
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+}
+
+// --------------------------------
+// INITIALIZATION
+// --------------------------------
+const savedBg = localStorage.getItem("iptv_bg");
+
+if (savedBg) {
+  document.documentElement.style.setProperty("--bg",savedBg);
+  document.getElementById("bgColor").value = savedBg;
+}
+
+document.getElementById("defaultResolution").value =
+  localStorage.getItem("iptv_resolution") || "-1";
+
+document.getElementById("language").value =
+  localStorage.getItem("iptv_language") || "en";
+
+changeLanguage();
+updateGroupOptions();
+
+if (sessionStorage.getItem("iptv_logged_in") === "yes") {
+  showApp();
 }
 </script>
 
