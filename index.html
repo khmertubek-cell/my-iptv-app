@@ -1,619 +1,4017 @@
+\<!DOCTYPE html>
 
-<!DOCTYPE html>
-<html lang="km">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PLC Cambodia TV</title>
+\<html lang="en">
+\<head>
+\<meta charset="UTF-8">
+\<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+\<title>PLC Cambodia IPTV Player\</title>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;500;700&display=swap');
+\<script src="[https://cdn.jsdelivr.net/npm/hls.js@1.6.15](https://cdn.jsdelivr.net/npm/hls.js@1.6.15)">\</script>
 
-:root {
-  --red:#e51e35;
-  --bg:#080b12;
-  --panel:#141b29;
-  --text:#ffffff;
-  --muted:#aab2c0;
+\<style>
+\:root {
+&#x20; \--bg: #080e1b;
+&#x20; \--panel: #101b30;
+&#x20; \--panel2: #172641;
+&#x20; \--blue: #1685ff;
+&#x20; \--text: #f4f7ff;
+&#x20; \--muted: #9cacc5;
+&#x20; \--danger: #bc3549;
+&#x20; \--success: #3bda9a;
 }
-*{box-sizing:border-box}
+
+\* {
+&#x20; box-sizing: border-box;
+}
+
 body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'Battambang','Kantumruy Pro',Arial,sans-serif;
+&#x20; margin: 0;
+&#x20; background: var(--bg);
+&#x20; color: var(--text);
+&#x20; font-family: Arial, sans-serif;
 }
-header {
-  height:70px;
-  background:#101725;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 5%;
-  position:sticky;
-  top:0;
-  z-index:20;
-  box-shadow:0 2px 15px #0008;
+
+button,
+input,
+select,
+textarea {
+&#x20; font: inherit;
 }
-.logo {
-  color:var(--red);
-  font-size:25px;
-  font-weight:bold;
+
+button {
+&#x20; cursor: pointer;
+&#x20; border: 0;
+&#x20; border-radius: 7px;
+&#x20; padding: 11px 15px;
+&#x20; background: var(--blue);
+&#x20; color: white;
 }
-.logo span{color:white}
-nav{display:flex;gap:23px}
-nav a {
-  color:#ddd;
-  text-decoration:none;
-  font-size:14px;
-  cursor:pointer;
+
+button\:hover {
+&#x20; filter: brightness(1.15);
 }
-nav a:hover{color:var(--red)}
-.header-right{display:flex;gap:10px;align-items:center}
-.lang-btn {
-  background:#252f40;
-  color:white;
-  border:1px solid #445064;
-  padding:9px 12px;
-  border-radius:6px;
-  cursor:pointer;
-  font-family:inherit;
+
+input,
+select,
+textarea {
+&#x20; background: #0a1426;
+&#x20; color: white;
+&#x20; border: 1px solid #344461;
+&#x20; border-radius: 7px;
+&#x20; padding: 12px;
+&#x20; width: 100%;
+&#x20; margin: 7px 0 13px;
 }
-.hero {
-  min-height:320px;
-  padding:55px 7%;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:
-   linear-gradient(90deg,#080b12 15%,#101b2aee 60%,#5b101d88),
-   url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1500')
-   center/cover;
+
+.hidden {
+&#x20; display: none !important;
 }
-.hero h1{font-size:39px;margin:0 0 12px}
-.hero h1 span{color:var(--red)}
-.hero p{color:#ddd;line-height:1.9}
-.hero button {
-  background:var(--red);
-  border:0;
-  padding:13px 25px;
-  color:white;
-  border-radius:6px;
-  font-size:15px;
-  cursor:pointer;
-  font-family:inherit;
+
+/\* ================= LOGIN ================= \*/
+
+\#loginPage {
+&#x20; min-height: 100vh;
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; justify-content: center;
+&#x20; padding: 20px;
 }
-.hero-icon{font-size:95px}
-.container{max-width:1400px;margin:auto;padding:20px 5%}
-.section-title {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin:28px 0 15px;
+
+.login-box {
+&#x20; width: 100%;
+&#x20; max-width: 400px;
+&#x20; padding: 28px;
+&#x20; background: var(--panel);
+&#x20; border: 1px solid #344461;
+&#x20; border-radius: 12px;
 }
-.section-title h2{font-size:20px;margin:0}
-.section-title button {
-  background:transparent;
-  border:0;
-  color:var(--red);
-  cursor:pointer;
-  font-family:inherit;
+
+.login-box h1 {
+&#x20; text-align: center;
+&#x20; margin-bottom: 5px;
 }
-.categories {
-  display:flex;
-  gap:12px;
-  overflow-x:auto;
-  padding:8px 0 15px;
+
+.login-box h1 span {
+&#x20; color: var(--blue);
 }
-.category {
-  min-width:120px;
-  padding:15px 10px;
-  background:var(--panel);
-  text-align:center;
-  border-radius:8px;
-  cursor:pointer;
-  border:1px solid #242d3b;
+
+.login-help {
+&#x20; text-align: center;
+&#x20; color: var(--muted);
+&#x20; font-size: 13px;
 }
-.category:hover,.category.active {
-  background:#651b2a;
-  border-color:var(--red);
+
+/\* ================= APP ================= \*/
+
+.app {
+&#x20; min-height: 100vh;
 }
-.category .emoji{font-size:30px}
-.category p{margin:5px 0 0;font-size:13px}
-.search {
-  width:100%;
-  max-width:400px;
-  padding:12px;
-  background:#192232;
-  border:1px solid #303a4c;
-  color:white;
-  border-radius:7px;
-  outline:none;
-  font-family:inherit;
+
+.topbar {
+&#x20; height: 65px;
+&#x20; background: var(--panel);
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; justify-content: space-between;
+&#x20; padding: 0 22px;
+&#x20; border-bottom: 1px solid #263550;
 }
-.grid {
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:15px;
+
+.brand {
+&#x20; font-size: 22px;
+&#x20; font-weight: bold;
 }
-.card {
-  background:var(--panel);
-  border-radius:9px;
-  overflow:hidden;
-  border:1px solid #252d3c;
-  cursor:pointer;
-  transition:.2s;
+
+.brand span {
+&#x20; color: var(--blue);
 }
-.card:hover{transform:translateY(-4px);border-color:var(--red)}
-.card img {
-  width:100%;
-  height:125px;
-  object-fit:cover;
-  background:#252d3c;
+
+.top-right {
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; gap: 12px;
 }
-.card-info{padding:12px}
-.card h3{font-size:14px;margin:0 0 7px}
-.card p{font-size:12px;color:var(--muted);margin:0}
-.play-btn {
-  width:100%;
-  background:var(--red);
-  color:white;
-  border:0;
-  padding:9px;
-  margin-top:10px;
-  border-radius:5px;
-  cursor:pointer;
-  font-family:inherit;
+
+.layout {
+&#x20; display: flex;
+&#x20; min-height: calc(100vh - 65px);
 }
-.player-box {
-  display:none;
-  background:#111a28;
-  border:1px solid #303a4c;
-  padding:15px;
-  border-radius:10px;
-  margin:25px 0;
+
+.sidebar {
+&#x20; width: 210px;
+&#x20; flex-shrink: 0;
+&#x20; background: #0d1729;
+&#x20; padding: 17px 10px;
+&#x20; border-right: 1px solid #263550;
 }
-.player-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
+
+.nav-title {
+&#x20; color: #7085a5;
+&#x20; font-size: 11px;
+&#x20; padding: 13px 12px 7px;
+&#x20; letter-spacing: 1px;
 }
-.player-top h2{font-size:18px}
-.close-btn {
-  background:var(--red);
-  color:white;
-  border:0;
-  border-radius:5px;
-  padding:8px 14px;
-  cursor:pointer;
+
+.nav {
+&#x20; display: block;
+&#x20; width: 100%;
+&#x20; background: transparent;
+&#x20; text-align: left;
+&#x20; margin: 3px 0;
+&#x20; color: #bac8df;
 }
+
+.nav.active {
+&#x20; background: #153b70;
+&#x20; color: white;
+&#x20; border-left: 3px solid #2196ff;
+}
+
+.content {
+&#x20; flex: 1;
+&#x20; min-width: 0;
+&#x20; padding: 20px;
+}
+
+.page {
+&#x20; display: none;
+}
+
+.page.active {
+&#x20; display: block;
+}
+
+h2 {
+&#x20; margin: 0 0 18px;
+}
+
+h3 {
+&#x20; font-size: 16px;
+}
+
+.muted {
+&#x20; color: var(--muted);
+&#x20; font-size: 13px;
+}
+
+.expired {
+&#x20; color: #ff6262;
+}
+
+.active-status {
+&#x20; color: var(--success);
+}
+
+.danger {
+&#x20; background: var(--danger);
+}
+
+.panel,
+.formbox {
+&#x20; background: var(--panel);
+&#x20; border: 1px solid #263550;
+&#x20; border-radius: 10px;
+&#x20; padding: 16px;
+&#x20; margin-bottom: 15px;
+}
+
+.formbox {
+&#x20; max-width: 750px;
+}
+
+.stats {
+&#x20; display: grid;
+&#x20; grid-template-columns: repeat(4, 1fr);
+&#x20; gap: 12px;
+&#x20; margin-bottom: 20px;
+}
+
+.stat {
+&#x20; background: var(--panel);
+&#x20; padding: 17px;
+&#x20; border-radius: 10px;
+&#x20; border: 1px solid #263550;
+}
+
+.stat strong {
+&#x20; font-size: 25px;
+&#x20; color: #55a8ff;
+}
+
+.stat p {
+&#x20; color: var(--muted);
+&#x20; font-size: 13px;
+&#x20; margin-bottom: 0;
+}
+
+/\* ================= LIVE PLAYER ================= \*/
+
+.live-layout {
+&#x20; display: grid;
+&#x20; grid-template-columns: 290px minmax(0, 1fr);
+&#x20; gap: 15px;
+}
+
+.channel-panel {
+&#x20; background: var(--panel);
+&#x20; border: 1px solid #263550;
+&#x20; border-radius: 10px;
+&#x20; overflow: hidden;
+}
+
+.channel-heading {
+&#x20; padding: 14px;
+&#x20; border-bottom: 1px solid #263550;
+}
+
+.channel-list {
+&#x20; max-height: 510px;
+&#x20; overflow-y: auto;
+}
+
+.channel {
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; gap: 10px;
+&#x20; padding: 11px;
+&#x20; border-bottom: 1px solid #263550;
+&#x20; cursor: pointer;
+}
+
+.channel\:hover {
+&#x20; background: #1b3152;
+}
+
+.channel.selected {
+&#x20; background: #153b70;
+&#x20; border-left: 3px solid #2196ff;
+}
+
+.channel img {
+&#x20; width: 42px;
+&#x20; height: 42px;
+&#x20; object-fit: contain;
+&#x20; background: white;
+&#x20; border-radius: 6px;
+&#x20; padding: 3px;
+}
+
+.channel-name {
+&#x20; font-size: 13px;
+&#x20; font-weight: bold;
+}
+
+.channel-group {
+&#x20; font-size: 11px;
+&#x20; color: var(--muted);
+&#x20; margin-top: 4px;
+}
+
+.channel-number {
+&#x20; color: #7792b6;
+&#x20; min-width: 22px;
+}
+
+.video-box {
+&#x20; background: black;
+&#x20; border-radius: 10px;
+&#x20; overflow: hidden;
+&#x20; aspect-ratio: 16 / 9;
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; justify-content: center;
+}
+
 video {
-  width:100%;
-  max-height:500px;
-  background:black;
-  border-radius:6px;
+&#x20; width: 100%;
+&#x20; height: 100%;
+&#x20; object-fit: contain;
 }
-.message{color:#ffb7c0;font-size:13px}
-.tabs{display:flex;gap:10px;flex-wrap:wrap}
-.tab {
-  padding:9px 17px;
-  background:#192232;
-  color:white;
-  border:1px solid #303a4c;
-  border-radius:5px;
-  cursor:pointer;
-  font-family:inherit;
+
+.player-placeholder {
+&#x20; text-align: center;
+&#x20; color: #8ea5c8;
 }
-.tab.active{background:var(--red);border-color:var(--red)}
-.empty {
-  grid-column:1/-1;
-  padding:30px;
-  background:var(--panel);
-  text-align:center;
-  border-radius:8px;
-  color:var(--muted);
+
+.playing-info {
+&#x20; display: flex;
+&#x20; align-items: center;
+&#x20; gap: 12px;
+&#x20; padding: 13px 0;
 }
+
+.playing-info img {
+&#x20; width: 50px;
+&#x20; height: 50px;
+&#x20; background: white;
+&#x20; object-fit: contain;
+&#x20; border-radius: 7px;
+}
+
+.controls {
+&#x20; display: flex;
+&#x20; gap: 8px;
+&#x20; flex-wrap: wrap;
+}
+
+.controls button {
+&#x20; flex: 1;
+}
+
+/\* ================= MEDIA ================= \*/
+
+.media-grid {
+&#x20; display: grid;
+&#x20; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+&#x20; gap: 15px;
+}
+
+.media-card {
+&#x20; background: var(--panel);
+&#x20; border: 1px solid #263550;
+&#x20; border-radius: 9px;
+&#x20; overflow: hidden;
+}
+
+.media-card\:hover {
+&#x20; border-color: var(--blue);
+&#x20; transform: translateY(-2px);
+}
+
+.media-card img {
+&#x20; width: 100%;
+&#x20; height: 190px;
+&#x20; object-fit: cover;
+&#x20; background: var(--panel2);
+}
+
+.media-info {
+&#x20; padding: 10px;
+}
+
+.media-info h3 {
+&#x20; margin: 4px 0;
+&#x20; font-size: 14px;
+}
+
+.media-info button {
+&#x20; width: 100%;
+&#x20; margin-top: 8px;
+}
+
+/\* ================= TABLE ================= \*/
+
+.table-wrap {
+&#x20; overflow-x: auto;
+}
+
+table {
+&#x20; width: 100%;
+&#x20; border-collapse: collapse;
+&#x20; background: var(--panel);
+}
+
+td,
+th {
+&#x20; padding: 12px;
+&#x20; text-align: left;
+&#x20; border-bottom: 1px solid #344461;
+&#x20; font-size: 13px;
+}
+
 footer {
-  background:#101725;
-  text-align:center;
-  padding:35px 15px;
-  margin-top:50px;
-  color:#aaa;
-}
-footer h2{color:var(--red)}
-@media(max-width:1000px){
- .grid{grid-template-columns:repeat(3,1fr)}
- nav{gap:12px}
-}
-@media(max-width:650px){
- header{padding:0 12px;height:auto;min-height:65px;flex-wrap:wrap}
- nav{order:3;width:100%;overflow-x:auto;padding:12px 0}
- .hero{min-height:250px;padding:30px 20px}
- .hero h1{font-size:26px}
- .hero-icon{font-size:50px}
- .grid{grid-template-columns:repeat(2,1fr);gap:10px}
- .container{padding:15px}
- .card img{height:105px}
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="logo">PLC <span>CAMBODIA TV</span></div>
-
-  <nav>
-    <a href="#home" data-t="home">ទំព័រដើម</a>
-    <a href="#live" data-t="live">ទូរទស្សន៍ផ្ទាល់</a>
-    <a href="#movies" data-t="movies">ភាពយន្ត</a>
-    <a href="#series" data-t="series">រឿងភាគ</a>
-  </nav>
-
-  <div class="header-right">
-    <button class="lang-btn" onclick="toggleLanguage()" id="language">
-      🇬🇧 English
-    </button>
-  </div>
-</header>
-
-<section class="hero" id="home">
-  <div>
-    <h1>PLC <span>CAMBODIA TV</span></h1>
-    <p data-t="heroText">
-      ទស្សនាទូរទស្សន៍ ភាពយន្ត និងរឿងភាគគ្រប់ពេលវេលា
-    </p>
-    <button onclick="document.getElementById('live').scrollIntoView()"
-      data-t="watch">
-      ▶ ទស្សនាឥឡូវនេះ
-    </button>
-  </div>
-  <div class="hero-icon">📺</div>
-</section>
-
-<main class="container">
-
-  <section class="player-box" id="playerBox">
-    <div class="player-top">
-      <h2 id="playerTitle">Now Playing</h2>
-      <button class="close-btn" onclick="closePlayer()">✕</button>
-    </div>
-    <video id="video" controls autoplay playsinline></video>
-    <p class="message" id="playerMessage"></p>
-  </section>
-
-  <div class="section-title">
-    <h2 data-t="categories">📂 ប្រភេទមាតិកា</h2>
-  </div>
-
-  <div class="categories">
-    <div class="category active" onclick="filterType('all',this)">
-      <div class="emoji">🌐</div>
-      <p data-t="all">ទាំងអស់</p>
-    </div>
-    <div class="category" onclick="filterType('live',this)">
-      <div class="emoji">📺</div>
-      <p data-t="live">ទូរទស្សន៍ផ្ទាល់</p>
-    </div>
-    <div class="category" onclick="filterType('khmer',this)">
-      <div class="emoji">🇰🇭</div>
-      <p data-t="khmer">ទូរទស្សន៍ខ្មែរ</p>
-    </div>
-    <div class="category" onclick="filterType('movies',this)">
-      <div class="emoji">🎬</div>
-      <p data-t="movies">ភាពយន្ត</p>
-    </div>
-    <div class="category" onclick="filterType('series',this)">
-      <div class="emoji">📽️</div>
-      <p data-t="series">រឿងភាគ</p>
-    </div>
-    <div class="category" onclick="filterType('sports',this)">
-      <div class="emoji">⚽</div>
-      <p data-t="sports">កីឡា</p>
-    </div>
-  </div>
-
-  <div class="section-title" id="live">
-    <h2 data-t="liveTitle">🔴 ទូរទស្សន៍កំពុងផ្សាយ</h2>
-    <input class="search" id="search"
-      placeholder="ស្វែងរកប៉ុស្តិ៍..."
-      oninput="searchItems()">
-  </div>
-
-  <div class="grid" id="contentGrid"></div>
-
-  <section id="movies">
-    <div class="section-title">
-      <h2 data-t="movieTitle">🎬 ភាពយន្ត</h2>
-      <button onclick="filterType('movies')"
-        data-t="viewAll">មើលទាំងអស់ →</button>
-    </div>
-    <div class="grid" id="movieGrid"></div>
-  </section>
-
-  <section id="series">
-    <div class="section-title">
-      <h2 data-t="seriesTitle">📽️ រឿងភាគ</h2>
-      <button onclick="filterType('series')"
-        data-t="viewAll">មើលទាំងអស់ →</button>
-    </div>
-    <div class="grid" id="seriesGrid"></div>
-  </section>
-
-</main>
-
-<footer>
-  <h2>PLC CAMBODIA TV</h2>
-  <p data-t="footerText">
-    សូមស្វាគមន៍មកកាន់ PLC Cambodia TV
-  </p>
-  <p>© 2026 PLC Cambodia TV. All Rights Reserved.</p>
-</footer>
-
-<script>
-
-// --------------------------------
-// LANGUAGE SYSTEM
-// --------------------------------
-
-let lang = "km";
-
-const translations = {
- km:{
-  home:"ទំព័រដើម",
-  live:"ទូរទស្សន៍ផ្ទាល់",
-  movies:"ភាពយន្ត",
-  series:"រឿងភាគ",
-  heroText:"ទស្សនាទូរទស្សន៍ ភាពយន្ត និងរឿងភាគគ្រប់ពេលវេលា",
-  watch:"▶ ទស្សនាឥឡូវនេះ",
-  categories:"📂 ប្រភេទមាតិកា",
-  all:"ទាំងអស់",
-  khmer:"ទូរទស្សន៍ខ្មែរ",
-  sports:"កីឡា",
-  liveTitle:"🔴 ទូរទស្សន៍កំពុងផ្សាយ",
-  movieTitle:"🎬 ភាពយន្ត",
-  seriesTitle:"📽️ រឿងភាគ",
-  viewAll:"មើលទាំងអស់ →",
-  play:"▶ ទស្សនា",
-  search:"ស្វែងរកប៉ុស្តិ៍...",
-  footerText:"សូមស្វាគមន៍មកកាន់ PLC Cambodia TV"
- },
- en:{
-  home:"Home",
-  live:"Live TV",
-  movies:"Movies",
-  series:"Series",
-  heroText:"Watch Live TV, Movies and Series Anytime, Anywhere.",
-  watch:"▶ WATCH NOW",
-  categories:"📂 Categories",
-  all:"All",
-  khmer:"Khmer TV",
-  sports:"Sports",
-  liveTitle:"🔴 Live Television",
-  movieTitle:"🎬 Movies",
-  seriesTitle:"📽️ TV Series",
-  viewAll:"View All →",
-  play:"▶ WATCH",
-  search:"Search channels...",
-  footerText:"Welcome to PLC Cambodia TV"
- }
-};
-
-function toggleLanguage(){
- lang=lang==="km"?"en":"km";
- document.documentElement.lang=lang;
-
- document.querySelectorAll("[data-t]").forEach(el=>{
-  const key=el.dataset.t;
-  el.textContent=translations[lang][key]||key;
- });
-
- document.getElementById("language").textContent=
-  lang==="km"?"🇬🇧 English":"🇰🇭 ភាសាខ្មែរ";
-
- document.getElementById("search").placeholder=
-  translations[lang].search;
-
- renderAll();
+&#x20; text-align: center;
+&#x20; color: #687d9e;
+&#x20; padding: 20px;
 }
 
-// --------------------------------
-// CHANNEL DATABASE
-// Add your authorized stream URLs
-// --------------------------------
+@media(max-width:850px) {
+&#x20; .live-layout {
+&#x20;   grid-template-columns: 1fr;
+&#x20; }
 
-const items=[
-
- {name:"TVK",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=TVK",url:""},
-
- {name:"TV5 Cambodia",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=TV5",url:""},
-
- {name:"Bayon TV",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=BAYON",url:""},
-
- {name:"BTV",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=BTV",url:""},
-
- {name:"PNN TV",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=PNN",url:""},
-
- {name:"CNC TV",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=CNC",url:""},
-
- {name:"CTV8",type:"live",category:"Khmer TV",
-  image:"https://placehold.co/400x220/17263d/fff?text=CTV8",url:""},
-
- {name:"CCTV",type:"live",category:"International",
-  image:"https://placehold.co/400x220/17263d/fff?text=CCTV",url:""},
-
- {name:"Sports Channel",type:"live",category:"Sports",
-  image:"https://placehold.co/400x220/17263d/fff?text=SPORTS",url:""},
-
- {name:"Hollywood Movies",type:"movies",
-  category:"Movies",
-  image:"https://placehold.co/400x220/302033/fff?text=HOLLYWOOD",url:""},
-
- {name:"Khmer Movies",type:"movies",
-  category:"Movies",
-  image:"https://placehold.co/400x220/302033/fff?text=KHMER+MOVIES",url:""},
-
- {name:"Action Movies",type:"movies",
-  category:"Movies",
-  image:"https://placehold.co/400x220/302033/fff?text=ACTION",url:""},
-
- {name:"Khmer Drama",type:"series",
-  category:"Series",
-  image:"https://placehold.co/400x220/302033/fff?text=KHMER+DRAMA",url:""},
-
- {name:"Chinese Series",type:"series",
-  category:"Series",
-  image:"https://placehold.co/400x220/302033/fff?text=CHINESE",url:""},
-
- {name:"Korean Series",type:"series",
-  category:"Series",
-  image:"https://placehold.co/400x220/302033/fff?text=KOREAN",url:""}
-
-];
-
-// --------------------------------
-// RENDER CONTENT
-// --------------------------------
-
-function card(item){
- const index=items.indexOf(item);
- return `
- <div class="card">
-  <img src="${item.image}" alt="${item.name}">
-  <div class="card-info">
-   <h3>${item.name}</h3>
-   <p>${item.category}</p>
-   <button class="play-btn" onclick="playItem(${index})">
-    ${translations[lang].play}
-   </button>
-  </div>
- </div>`;
+&#x20; .channel-list {
+&#x20;   max-height: 300px;
+&#x20; }
 }
 
-function renderAll(){
- const live=items.filter(x=>x.type==="live");
- const movies=items.filter(x=>x.type==="movies");
- const series=items.filter(x=>x.type==="series");
+@media(max-width:600px) {
+&#x20; .sidebar {
+&#x20;   width: 100%;
+&#x20;   display: flex;
+&#x20;   overflow-x: auto;
+&#x20;   padding: 8px;
+&#x20;   border: 0;
+&#x20; }
 
- document.getElementById("contentGrid").innerHTML=
-  live.map(card).join("");
+&#x20; .layout {
+&#x20;   display: block;
+&#x20; }
 
- document.getElementById("movieGrid").innerHTML=
-  movies.map(card).join("");
+&#x20; .nav-title {
+&#x20;   display: none;
+&#x20; }
 
- document.getElementById("seriesGrid").innerHTML=
-  series.map(card).join("");
+&#x20; .nav {
+&#x20;   width: auto;
+&#x20;   white-space: nowrap;
+&#x20; }
+
+&#x20; .content {
+&#x20;   padding: 12px;
+&#x20; }
+
+&#x20; .stats {
+&#x20;   grid-template-columns: repeat(2, 1fr);
+&#x20; }
+
+&#x20; .media-grid {
+&#x20;   grid-template-columns: repeat(2, 1fr);
+&#x20; }
+}
+\</style>
+
+\</head>
+
+\<body>
+
+\<!-- ================= LOGIN ================= -->
+
+\<div id="loginPage">
+
+&#x20; \<div class="login-box">
+
+```
+<h1>PLC <span>IPTV</span></h1>
+
+<p class="login-help">
+  Cambodia Entertainment Player
+</p>
+
+<label>
+  Username, Email or Phone Number
+</label>
+
+<input
+  id="username"
+  placeholder="Username, email or phone number"
+  autocomplete="username"
+>
+
+<label>Password</label>
+
+<input
+  id="password"
+  type="password"
+  placeholder="Password"
+  autocomplete="current-password"
+>
+
+<button
+  style="width:100%"
+  onclick="login()"
+>
+  LOGIN
+</button>
+
+<p
+  id="loginError"
+  class="expired"
+></p>
+
+<p class="login-help">
+  Demo Admin:<br>
+  Username: admin<br>
+  Password: admin123
+</p>
+```
+
+&#x20; \</div>
+
+\</div>
+
+\<!-- ================= MAIN APP ================= -->
+
+\<div
+&#x20; id="app"
+&#x20; class="app hidden"
+\>
+
+\<header class="topbar">
+
+&#x20; \<div class="brand">
+&#x20;   PLC \<span>IPTV\</span>
+&#x20; \</div>
+
+&#x20; \<div class="top-right">
+
+```
+<span
+  id="userLabel"
+  class="muted"
+></span>
+
+<button
+  class="danger"
+  onclick="logout()"
+>
+  Logout
+</button>
+```
+
+&#x20; \</div>
+
+\</header>
+
+\<div class="layout">
+
+\<!-- ================= SIDEBAR ================= -->
+
+\<aside class="sidebar">
+
+&#x20; \<div class="nav-title">MAIN MENU\</div>
+
+\<button
+class="nav active"
+onclick="page('dashboard',this)"
+
+>
+
+```
+⌂ Dashboard
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('live',this)"
+
+>
+
+```
+◉ Live TV
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('movies',this)"
+
+>
+
+```
+▣ Movies
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('series',this)"
+
+>
+
+```
+▤ Series
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('favorites',this)"
+
+>
+
+```
+☆ Favorites
+```
+
+&#x20; \</button>
+
+&#x20; \<div class="nav-title">MANAGEMENT\</div>
+
+\<button
+class="nav"
+onclick="page('playlist',this)"
+
+>
+
+```
+▤ Playlist
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('groups',this)"
+
+>
+
+```
+▦ Groups
+```
+
+&#x20; \</button>
+
+\<button
+class="nav admin-only"
+onclick="page('users',this)"
+
+>
+
+```
+👤 Users
+```
+
+&#x20; \</button>
+
+\<button
+class="nav"
+onclick="page('settings',this)"
+
+>
+
+```
+⚙ Settings
+```
+
+&#x20; \</button>
+
+\</aside>
+
+\<main class="content">
+
+\<!-- ================= DASHBOARD ================= -->
+
+\<section
+&#x20; id="dashboard"
+&#x20; class="page active"
+\>
+
+\<h2>Dashboard\</h2>
+
+\<div class="stats">
+
+&#x20; \<div class="stat">
+&#x20;   \<strong id="countTV">0\</strong>
+&#x20;   \<p>Live TV\</p>
+&#x20; \</div>
+
+&#x20; \<div class="stat">
+&#x20;   \<strong id="countMovie">0\</strong>
+&#x20;   \<p>Movies\</p>
+&#x20; \</div>
+
+&#x20; \<div class="stat">
+&#x20;   \<strong id="countSeries">0\</strong>
+&#x20;   \<p>Series\</p>
+&#x20; \</div>
+
+&#x20; \<div class="stat">
+&#x20;   \<strong id="countUsers">0\</strong>
+&#x20;   \<p>User Accounts\</p>
+&#x20; \</div>
+
+\</div>
+
+\<div class="panel">
+
+&#x20; \<h3>Welcome to PLC Cambodia IPTV\</h3>
+
+&#x20; \<p class="muted">
+&#x20;   Manage your authorized playlists and watch your available content.
+&#x20; \</p>
+
+&#x20; \<button onclick="openLive()">
+&#x20;   Watch Live TV
+&#x20; \</button>
+
+&#x20; \<button onclick="openPlaylist()">
+&#x20;   Add Playlist
+&#x20; \</button>
+
+\</div>
+
+\<h3>Recently Added\</h3>
+
+\<div
+&#x20; id="recent"
+&#x20; class="media-grid"
+\>\</div>
+
+\</section>
+
+\<!-- ================= LIVE TV ================= -->
+
+\<section
+&#x20; id="live"
+&#x20; class="page"
+\>
+
+\<h2>◉ Live Television\</h2>
+
+\<div class="live-layout">
+
+\<div class="channel-panel">
+
+\<div class="channel-heading">
+
+\<input
+id="tvSearch"
+placeholder="Search channels..."
+oninput="renderTV()"
+
+>
+
+\<select
+id="tvGroup"
+onchange="renderTV()"
+
+>
+
+&#x20; \<option value="">All Groups\</option>
+\</select>
+
+\</div>
+
+\<div
+&#x20; id="channelList"
+&#x20; class="channel-list"
+\>\</div>
+
+\</div>
+
+\<div>
+
+\<div
+&#x20; class="video-box"
+&#x20; id="videoBox"
+\>
+
+\<div class="player-placeholder">
+
+\<div style="font-size:45px">▶\</div>
+
+\<h3>PLC IPTV\</h3>
+
+\<p>Select a channel to start watching\</p>
+
+\</div>
+
+\<video
+id="video"
+controls
+playsinline
+class="hidden"
+
+\</div>
+
+\<div class="playing-info">
+
+\<img
+id="playingLogo"
+src="[https://placehold.co/100x100?text=TV](https://placehold.co/100x100?text=TV)"
+alt="Channel logo"
+
+>
+
+\<div>
+
+\<strong id="playingName">
+&#x20; No channel selected
+\</strong>
+
+\<p
+&#x20; id="playingGroup"
+&#x20; class="muted"
+\>
+&#x20; Live TV
+\</p>
+
+\</div>
+
+\</div>
+
+\<div class="controls">
+
+\<button onclick="changeChannel(-1)">
+&#x20; ◀ Previous
+\</button>
+
+\<button onclick="changeChannel(1)">
+&#x20; Next ▶
+\</button>
+
+\<button onclick="toggleFavorite()">
+&#x20; ☆ Favorite
+\</button>
+
+\</div>
+
+\<label class="muted">Video Resolution\</label>
+
+\<select
+id="resolution"
+onchange="changeResolution()"
+
+>
+
+&#x20; \<option value="-1">Auto\</option>
+\</select>
+
+\</div>
+
+\</div>
+
+\</section>
+
+\<!-- ================= MOVIES ================= -->
+
+\<section
+&#x20; id="movies"
+&#x20; class="page"
+\>
+
+\<h2>▣ Movies\</h2>
+
+\<input
+id="movieSearch"
+placeholder="Search movies..."
+oninput="renderMovies()"
+
+>
+
+\<select
+id="movieGroup"
+onchange="renderMovies()"
+
+>
+
+&#x20; \<option value="">All Groups\</option>
+\</select>
+
+\<div
+&#x20; id="movieList"
+&#x20; class="media-grid"
+\>\</div>
+
+\</section>
+
+\<!-- ================= SERIES ================= -->
+
+\<section
+&#x20; id="series"
+&#x20; class="page"
+\>
+
+\<h2>▤ TV Series\</h2>
+
+\<input
+id="seriesSearch"
+placeholder="Search series..."
+oninput="renderSeries()"
+
+>
+
+\<select
+id="seriesGroup"
+onchange="renderSeries()"
+
+>
+
+&#x20; \<option value="">All Groups\</option>
+\</select>
+
+\<div
+&#x20; id="seriesList"
+&#x20; class="media-grid"
+\>\</div>
+
+\</section>
+
+\<!-- ================= FAVORITES ================= -->
+
+\<section
+&#x20; id="favorites"
+&#x20; class="page"
+\>
+
+\<h2>☆ My Favorites\</h2>
+
+\<div
+&#x20; id="favoriteList"
+&#x20; class="media-grid"
+\>\</div>
+
+\</section>
+
+\<!-- ================= PLAYLIST ================= -->
+
+\<section
+&#x20; id="playlist"
+&#x20; class="page"
+\>
+
+\<h2>Playlist Manager\</h2>
+
+\<div class="formbox">
+
+\<h3>Import M3U Playlist\</h3>
+
+\<textarea
+&#x20; id="m3u"
+&#x20; rows="9"
+&#x20; placeholder="#EXTM3U
+
+\#EXTINF:-1 tvg-logo=&quot;[https://example.com/logo.png&quot](https://example.com/logo.png\&quot); group-title=&quot;News&quot;,News Channel
+[https://example.com/stream.m3u8](https://example.com/stream.m3u8)"
+\>\</textarea>
+
+\<label>Import Category\</label>
+
+\<select id="importCategory">
+
+\<option value="tv">
+&#x20; Live TV
+\</option>
+
+\<option value="movie">
+&#x20; Movies
+\</option>
+
+\<option value="series">
+&#x20; Series
+\</option>
+
+\</select>
+
+\<label>
+&#x20; Playlist Expiration Date (Optional)
+\</label>
+
+\<input
+type="date"
+id="importExpiry"
+
+>
+
+\<button onclick="importPlaylist()">
+&#x20; Import Playlist
+\</button>
+
+\</div>
+
+\<div class="formbox">
+
+\<h3>Add Individual Stream\</h3>
+
+\<label>Name\</label>
+
+\<input
+id="newName"
+placeholder="Channel or movie name"
+
+>
+
+\<label>Stream URL\</label>
+
+\<input
+id="newURL"
+placeholder="[https://example.com/stream.m3u8](https://example.com/stream.m3u8)"
+
+>
+
+\<label>Logo or Poster URL\</label>
+
+\<input
+id="newLogo"
+placeholder="[https://example.com/logo.png](https://example.com/logo.png)"
+
+>
+
+\<label>Category\</label>
+
+\<select
+id="newCategory"
+onchange="updateGroups()"
+
+>
+
+\<option value="tv">Live TV\</option>
+\<option value="movie">Movies\</option>
+\<option value="series">Series\</option>
+
+\</select>
+
+\<label>Group\</label>
+
+\<select id="newGroup">\</select>
+
+\<label>Expiration Date\</label>
+
+\<input
+type="date"
+id="newExpiry"
+
+>
+
+\<button onclick="addStream()">
+&#x20; Add Stream
+\</button>
+
+\</div>
+
+\<h3>All Playlist Content\</h3>
+
+\<div class="table-wrap">
+
+\<table>
+
+\<thead>
+
+\<tr>
+\<th>Name\</th>
+\<th>Category\</th>
+\<th>Group\</th>
+\<th>Status\</th>
+\<th>Action\</th>
+\</tr>
+
+\</thead>
+
+\<tbody id="playlistTable">\</tbody>
+
+\</table>
+
+\</div>
+
+\</section>
+
+\<!-- ================= GROUPS ================= -->
+
+\<section
+&#x20; id="groups"
+&#x20; class="page"
+\>
+
+\<h2>Group Management\</h2>
+
+\<div class="formbox">
+
+\<label>Group Name\</label>
+
+\<input
+id="groupName"
+placeholder="Example: Sports"
+
+>
+
+\<label>Category\</label>
+
+\<select id="groupCategory">
+
+\<option value="tv">TV Group\</option>
+\<option value="movie">Movie Group\</option>
+\<option value="series">Series Group\</option>
+
+\</select>
+
+\<button onclick="addGroup()">
+&#x20; Add Group
+\</button>
+
+\</div>
+
+\<div id="groupTable">\</div>
+
+\</section>
+
+\<!-- ================= USER MANAGEMENT ================= -->
+
+\<section
+&#x20; id="users"
+&#x20; class="page"
+\>
+
+\<h2>👤 User Management\</h2>
+
+\<div class="formbox">
+
+\<h3>Create New Account\</h3>
+
+\<label>Username\</label>
+
+\<input
+id="newUsername"
+placeholder="Enter username"
+
+>
+
+\<label>Email or Phone Number\</label>
+
+\<input
+id="newContact"
+placeholder="[example@email.com](mailto\:example@email.com) or phone number"
+
+>
+
+\<label>Password\</label>
+
+\<input
+id="newPassword"
+type="password"
+placeholder="Minimum 8 characters"
+
+>
+
+\<label>Account Type\</label>
+
+\<select id="newUserType">
+
+\<option value="User">
+&#x20; User
+\</option>
+
+\<option value="Admin">
+&#x20; Admin
+\</option>
+
+\</select>
+
+\<button onclick="createUser()">
+&#x20; \+ Create Account
+\</button>
+
+\</div>
+
+\<div class="panel">
+
+\<h3>All User Accounts\</h3>
+
+\<div class="table-wrap">
+
+\<table>
+
+\<thead>
+
+\<tr>
+\<th>Username\</th>
+\<th>Email / Phone\</th>
+\<th>Type\</th>
+\<th>Status\</th>
+\<th>Action\</th>
+\</tr>
+
+\</thead>
+
+\<tbody id="userTable">\</tbody>
+
+\</table>
+
+\</div>
+
+\</div>
+
+\</section>
+
+\<!-- ================= SETTINGS ================= -->
+
+\<section
+&#x20; id="settings"
+&#x20; class="page"
+\>
+
+\<h2>⚙ Settings\</h2>
+
+\<div class="formbox">
+
+\<h3>Background Theme\</h3>
+
+\<input
+type="color"
+id="backgroundColor"
+value="#080e1b"
+onchange="saveBackground()"
+
+>
+
+\<button onclick="resetBackground()">
+&#x20; Reset Theme
+\</button>
+
+\</div>
+
+\<div class="formbox">
+
+\<h3>Change My Account\</h3>
+
+\<label>New Username\</label>
+
+\<input
+id="changeUsername"
+placeholder="New username"
+
+>
+
+\<label>New Contact\</label>
+
+\<input
+id="changeContact"
+placeholder="Email or phone number"
+
+>
+
+\<label>New Password\</label>
+
+\<input
+type="password"
+id="changePassword"
+placeholder="Leave empty to keep current password"
+
+>
+
+\<label>Confirm New Password\</label>
+
+\<input
+type="password"
+id="confirmPassword"
+placeholder="Confirm new password"
+
+>
+
+\<button onclick="saveMyAccount()">
+&#x20; Save Account Changes
+\</button>
+
+\</div>
+
+\</section>
+
+\</main>
+
+\</div>
+
+\</div>
+
+\<footer>
+&#x20; PLC CAMBODIA IPTV PLAYER
+\</footer>
+
+\<script>
+
+/\* =====================================
+&#x20;  DATABASE
+\===================================== \*/
+
+function read(key, fallback) {
+
+&#x20; try {
+&#x20;   return JSON.parse(
+&#x20;     localStorage.getItem(key)
+&#x20;   ) ?? fallback;
+
+&#x20; } catch {
+&#x20;   return fallback;
+&#x20; }
+
 }
 
-function filterType(type,element){
- document.querySelectorAll(".category")
-  .forEach(x=>x.classList.remove("active"));
 
- if(element) element.classList.add("active");
+/\* =====================================
+&#x20;  USER ACCOUNTS
+\===================================== \*/
 
- const result=type==="all"?items:
-  type==="khmer"?items.filter(x=>x.category==="Khmer TV"):
-  type==="sports"?items.filter(x=>x.category==="Sports"):
-  items.filter(x=>x.type===type);
+let accounts = read("plc_accounts", [
+&#x20; {
+&#x20;   id: 1,
+&#x20;   username: "admin",
+&#x20;   password: "admin123",
+&#x20;   contact: "admin\@example.com",
+&#x20;   type: "Admin",
+&#x20;   status: "Active"
+&#x20; }
+]);
 
- document.getElementById("contentGrid").innerHTML=
-  result.map(card).join("") ||
-  `<div class="empty">No content found</div>`;
+let currentUser = null;
 
- document.getElementById("live").scrollIntoView();
+function saveAccounts() {
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_accounts",
+&#x20;   JSON.stringify(accounts)
+&#x20; );
+
 }
 
-function searchItems(){
- const q=document.getElementById("search").value.toLowerCase();
 
- const result=items.filter(x=>
-  x.name.toLowerCase().includes(q)||
-  x.category.toLowerCase().includes(q)
- );
+/\* =====================================
+&#x20;  IPTV DATA
+\===================================== \*/
 
- document.getElementById("contentGrid").innerHTML=
-  result.map(card).join("") ||
-  `<div class="empty">No channels found</div>`;
+let channels = read(
+&#x20; "plc_channels",
+&#x20; []
+);
+
+let groups = read(
+&#x20; "plc_groups",
+&#x20; [
+&#x20;   {
+&#x20;     name: "General",
+&#x20;     category: "tv"
+&#x20;   },
+&#x20;   {
+&#x20;     name: "Action",
+&#x20;     category: "movie"
+&#x20;   },
+&#x20;   {
+&#x20;     name: "Drama",
+&#x20;     category: "series"
+&#x20;   }
+&#x20; ]
+);
+
+let favorites = read(
+&#x20; "plc_favorites",
+&#x20; []
+);
+
+let hls = null;
+
+let currentIndex = -1;
+
+
+function saveData() {
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_channels",
+&#x20;   JSON.stringify(channels)
+&#x20; );
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_groups",
+&#x20;   JSON.stringify(groups)
+&#x20; );
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_favorites",
+&#x20;   JSON.stringify(favorites)
+&#x20; );
+
 }
 
-// --------------------------------
-// VIDEO PLAYER
-// Supports native video and HLS
-// --------------------------------
 
-let hls=null;
+/\* =====================================
+&#x20;  SECURITY HELPERS
+\===================================== \*/
 
-function playItem(index){
- const item=items[index];
- const box=document.getElementById("playerBox");
- const video=document.getElementById("video");
- const message=document.getElementById("playerMessage");
+function escapeHTML(value) {
 
- box.style.display="block";
- document.getElementById("playerTitle").textContent=item.name;
- box.scrollIntoView({behavior:"smooth"});
+&#x20; return String(value).replace(
+&#x20;   /[&<>"']/g,
+&#x20;   function(character) {
 
- if(hls){
-  hls.destroy();
-  hls=null;
- }
+&#x20;     return {
+&#x20;       "&": "&amp;",
+&#x20;       "<": "&lt;",
+&#x20;       ">": "&gt;",
+&#x20;       '"': "&quot;",
+&#x20;       "'": "&#39;"
+&#x20;     }[character];
 
- video.pause();
- video.removeAttribute("src");
- video.load();
+&#x20;   }
+&#x20; );
 
- if(!item.url){
-  message.textContent=
-   "Please add an authorized stream URL for this channel.";
-  return;
- }
-
- message.textContent="";
-
- if(item.url.includes(".m3u8") && Hls.isSupported()){
-  hls=new Hls();
-  hls.loadSource(item.url);
-  hls.attachMedia(video);
-  hls.on(Hls.Events.MANIFEST_PARSED,()=>{
-   video.play().catch(()=>{});
-  });
- }else if(video.canPlayType("application/vnd.apple.mpegurl")){
-  video.src=item.url;
-  video.play().catch(()=>{});
- }else{
-  video.src=item.url;
-  video.play().catch(()=>{
-   message.textContent="Unable to play this video stream.";
-  });
- }
 }
 
-function closePlayer(){
- const video=document.getElementById("video");
- video.pause();
- video.removeAttribute("src");
- video.load();
 
- if(hls){
-  hls.destroy();
-  hls=null;
- }
+function validURL(value) {
 
- document.getElementById("playerBox").style.display="none";
+&#x20; try {
+
+&#x20;   const url = new URL(value);
+
+&#x20;   return (
+&#x20;     url.protocol === "http:" ||
+&#x20;     url.protocol === "https:"
+&#x20;   );
+
+&#x20; } catch {
+
+&#x20;   return false;
+
+&#x20; }
+
 }
 
-renderAll();
 
-</script>
+function isActive(channel) {
 
-</body>
-</html>
+&#x20; if (!channel.expiry) {
+&#x20;   return true;
+&#x20; }
+
+&#x20; const today =
+&#x20;   new Date()
+&#x20;   .toLocaleDateString("en-CA");
+
+&#x20; return channel.expiry >= today;
+
+}
+
+
+/\* =====================================
+&#x20;  LOGIN
+\===================================== \*/
+
+function login() {
+
+&#x20; const loginInput =
+&#x20;   document
+&#x20;   .getElementById("username")
+&#x20;   .value
+&#x20;   .trim()
+&#x20;   .toLowerCase();
+
+&#x20; const password =
+&#x20;   document
+&#x20;   .getElementById("password")
+&#x20;   .value;
+
+&#x20; const user =
+&#x20;   accounts.find(account => {
+
+&#x20;     const contact =
+&#x20;       String(
+&#x20;         account.contact || ""
+&#x20;       ).toLowerCase();
+
+&#x20;     return (
+&#x20;       (
+&#x20;         account.username
+&#x20;           .toLowerCase() === loginInput ||
+
+&#x20;         contact === loginInput
+&#x20;       ) &&
+
+&#x20;       account.password === password
+&#x20;     );
+
+&#x20;   });
+
+
+&#x20; if (!user) {
+
+&#x20;   document
+&#x20;     .getElementById("loginError")
+&#x20;     .textContent =
+&#x20;       "Incorrect username, email, phone number or password.";
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (user.status !== "Active") {
+
+&#x20;   document
+&#x20;     .getElementById("loginError")
+&#x20;     .textContent =
+&#x20;       "This account is disabled.";
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; currentUser = user;
+
+&#x20; sessionStorage.setItem(
+&#x20;   "plc_login",
+&#x20;   "yes"
+&#x20; );
+
+&#x20; sessionStorage.setItem(
+&#x20;   "plc_user_id",
+&#x20;   user.id
+&#x20; );
+
+&#x20; document
+&#x20;   .getElementById("loginError")
+&#x20;   .textContent = "";
+
+&#x20; openApp();
+
+}
+
+
+function openApp() {
+
+&#x20; const savedUserId =
+&#x20;   sessionStorage.getItem(
+&#x20;     "plc_user_id"
+&#x20;   );
+
+
+&#x20; if (
+&#x20;   !currentUser &&
+&#x20;   savedUserId
+&#x20; ) {
+
+&#x20;   currentUser =
+&#x20;     accounts.find(
+&#x20;       user =>
+&#x20;         String(user.id) ===
+&#x20;         String(savedUserId)
+&#x20;     );
+
+&#x20; }
+
+
+&#x20; if (!currentUser) {
+
+&#x20;   logout();
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; document
+&#x20;   .getElementById("loginPage")
+&#x20;   .classList.add("hidden");
+
+&#x20; document
+&#x20;   .getElementById("app")
+&#x20;   .classList.remove("hidden");
+
+
+&#x20; document
+&#x20;   .getElementById("userLabel")
+&#x20;   .textContent =
+&#x20;     currentUser.username +
+&#x20;     " (" +
+&#x20;     currentUser.type +
+&#x20;     ")";
+
+
+&#x20; updateAdminAccess();
+
+&#x20; refreshApp();
+
+}
+
+
+function logout() {
+
+&#x20; sessionStorage.removeItem(
+&#x20;   "plc_login"
+&#x20; );
+
+&#x20; sessionStorage.removeItem(
+&#x20;   "plc_user_id"
+&#x20; );
+
+&#x20; currentUser = null;
+
+&#x20; stopPlayer();
+
+
+&#x20; document
+&#x20;   .getElementById("app")
+&#x20;   .classList.add("hidden");
+
+&#x20; document
+&#x20;   .getElementById("loginPage")
+&#x20;   .classList.remove("hidden");
+
+
+&#x20; document
+&#x20;   .getElementById("password")
+&#x20;   .value = "";
+
+}
+
+
+function updateAdminAccess() {
+
+&#x20; const adminOnly =
+&#x20;   document.querySelectorAll(
+&#x20;     ".admin-only"
+&#x20;   );
+
+&#x20; adminOnly.forEach(element => {
+
+&#x20;   if (
+&#x20;     currentUser &&
+&#x20;     currentUser.type === "Admin"
+&#x20;   ) {
+
+&#x20;     element.style.display = "block";
+
+&#x20;   } else {
+
+&#x20;     element.style.display = "none";
+
+&#x20;   }
+
+&#x20; });
+
+}
+
+
+/\* =====================================
+&#x20;  NAVIGATION
+\===================================== \*/
+
+function page(id, button) {
+
+&#x20; if (
+&#x20;   id === "users" &&
+&#x20;   (
+&#x20;     !currentUser ||
+&#x20;     currentUser.type !== "Admin"
+&#x20;   )
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Only administrators can access user management."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; document
+&#x20;   .querySelectorAll(".page")
+&#x20;   .forEach(page => {
+
+&#x20;     page.classList.remove("active");
+
+&#x20;   });
+
+
+&#x20; document
+&#x20;   .getElementById(id)
+&#x20;   .classList.add("active");
+
+
+&#x20; document
+&#x20;   .querySelectorAll(".nav")
+&#x20;   .forEach(nav => {
+
+&#x20;     nav.classList.remove("active");
+
+&#x20;   });
+
+
+&#x20; if (button) {
+
+&#x20;   button.classList.add("active");
+
+&#x20; }
+
+}
+
+
+function openLive() {
+
+&#x20; page(
+&#x20;   "live",
+&#x20;   document.querySelectorAll(".nav")[1]
+&#x20; );
+
+}
+
+
+function openPlaylist() {
+
+&#x20; page(
+&#x20;   "playlist",
+&#x20;   document.querySelectorAll(".nav")[5]
+&#x20; );
+
+}
+
+
+/\* =====================================
+&#x20;  USER MANAGEMENT
+\===================================== \*/
+
+function createUser() {
+
+&#x20; if (
+&#x20;   !currentUser ||
+&#x20;   currentUser.type !== "Admin"
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Only administrators can create accounts."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; const username =
+&#x20;   document
+&#x20;   .getElementById("newUsername")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const contact =
+&#x20;   document
+&#x20;   .getElementById("newContact")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const password =
+&#x20;   document
+&#x20;   .getElementById("newPassword")
+&#x20;   .value;
+
+&#x20; const type =
+&#x20;   document
+&#x20;   .getElementById("newUserType")
+&#x20;   .value;
+
+
+&#x20; if (
+&#x20;   !username ||
+&#x20;   !contact ||
+&#x20;   !password
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Please complete all account fields."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   password.length < 8
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Password must have at least 8 characters."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; const exists =
+&#x20;   accounts.some(user =>
+&#x20;     user.username
+&#x20;       .toLowerCase() ===
+&#x20;         username.toLowerCase() ||
+
+&#x20;     String(user.contact || "")
+&#x20;       .toLowerCase() ===
+&#x20;         contact.toLowerCase()
+&#x20;   );
+
+
+&#x20; if (exists) {
+
+&#x20;   alert(
+&#x20;     "Username, email or phone number already exists."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; accounts.push({
+&#x20;   id: Date.now(),
+&#x20;   username: username,
+&#x20;   password: password,
+&#x20;   contact: contact,
+&#x20;   type: type,
+&#x20;   status: "Active"
+&#x20; });
+
+
+&#x20; saveAccounts();
+
+&#x20; document
+&#x20;   .getElementById("newUsername")
+&#x20;   .value = "";
+
+&#x20; document
+&#x20;   .getElementById("newContact")
+&#x20;   .value = "";
+
+&#x20; document
+&#x20;   .getElementById("newPassword")
+&#x20;   .value = "";
+
+
+&#x20; renderUsers();
+
+&#x20; refreshApp();
+
+&#x20; alert(
+&#x20;   "Account created successfully!"
+&#x20; );
+
+}
+
+
+function renderUsers() {
+
+&#x20; const table =
+&#x20;   document.getElementById(
+&#x20;     "userTable"
+&#x20;   );
+
+&#x20; if (!table) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; table.innerHTML = "";
+
+
+&#x20; accounts.forEach(user => {
+
+&#x20;   const row =
+&#x20;     document.createElement("tr");
+
+
+&#x20;   const actionText =
+&#x20;     user.status === "Active"
+&#x20;       ? "Disable"
+&#x20;       : "Enable";
+
+
+&#x20;   row\.innerHTML = \`
+
+&#x20;     \<td>
+&#x20;       ${escapeHTML(user.username)}
+&#x20;     \</td>
+
+&#x20;     \<td>
+&#x20;       ${escapeHTML(user.contact || "")}
+&#x20;     \</td>
+
+&#x20;     \<td>
+&#x20;       ${escapeHTML(user.type)}
+&#x20;     \</td>
+
+&#x20;     \<td class="${
+&#x20;       user.status === "Active"
+&#x20;         ? "active-status"
+&#x20;         : "expired"
+&#x20;     }">
+
+&#x20;       ${escapeHTML(user.status)}
+
+&#x20;     \</td>
+
+&#x20;     \<td>
+
+&#x20;       \<button
+&#x20;         onclick="toggleUserStatus(${user.id})"
+&#x20;       \>
+&#x20;         ${actionText}
+&#x20;       \</button>
+
+&#x20;       \<button
+&#x20;         class="danger"
+&#x20;         onclick="deleteUser(${user.id})"
+&#x20;       \>
+&#x20;         Delete
+&#x20;       \</button>
+
+&#x20;     \</td>
+
+&#x20;   \`;
+
+
+&#x20;   table.appendChild(row);
+
+&#x20; });
+
+}
+
+
+function toggleUserStatus(id) {
+
+&#x20; if (
+&#x20;   !currentUser ||
+&#x20;   currentUser.type !== "Admin"
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Only administrators can manage accounts."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; const user =
+&#x20;   accounts.find(
+&#x20;     user => user.id === id
+&#x20;   );
+
+
+&#x20; if (!user) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; if (
+&#x20;   user.id === currentUser.id
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "You cannot disable your own account."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; user.status =
+&#x20;   user.status === "Active"
+&#x20;     ? "Disabled"
+&#x20;     : "Active";
+
+
+&#x20; saveAccounts();
+
+&#x20; renderUsers();
+
+}
+
+
+function deleteUser(id) {
+
+&#x20; if (
+&#x20;   !currentUser ||
+&#x20;   currentUser.type !== "Admin"
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Only administrators can delete accounts."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   currentUser.id === id
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "You cannot delete your own account."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   !confirm(
+&#x20;     "Delete this user account?"
+&#x20;   )
+&#x20; ) {
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; accounts =
+&#x20;   accounts.filter(
+&#x20;     user => user.id !== id
+&#x20;   );
+
+
+&#x20; saveAccounts();
+
+&#x20; renderUsers();
+
+&#x20; refreshApp();
+
+}
+
+
+/\* =====================================
+&#x20;  CHANGE MY ACCOUNT
+\===================================== \*/
+
+function saveMyAccount() {
+
+&#x20; if (!currentUser) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; const username =
+&#x20;   document
+&#x20;   .getElementById("changeUsername")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const contact =
+&#x20;   document
+&#x20;   .getElementById("changeContact")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const password =
+&#x20;   document
+&#x20;   .getElementById("changePassword")
+&#x20;   .value;
+
+&#x20; const confirm =
+&#x20;   document
+&#x20;   .getElementById("confirmPassword")
+&#x20;   .value;
+
+
+&#x20; if (
+&#x20;   password &&
+&#x20;   password !== confirm
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Passwords do not match."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   password &&
+&#x20;   password.length < 8
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Password must have at least 8 characters."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; const user =
+&#x20;   accounts.find(
+&#x20;     account =>
+&#x20;       account.id === currentUser.id
+&#x20;   );
+
+
+&#x20; if (!user) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; if (username) {
+
+&#x20;   const usernameExists =
+&#x20;     accounts.some(account =>
+&#x20;       account.id !== user.id &&
+&#x20;       account.username
+&#x20;         .toLowerCase() ===
+&#x20;           username.toLowerCase()
+&#x20;     );
+
+
+&#x20;   if (usernameExists) {
+
+&#x20;     alert(
+&#x20;       "This username already exists."
+&#x20;     );
+
+&#x20;     return;
+
+&#x20;   }
+
+
+&#x20;   user.username = username;
+
+&#x20; }
+
+
+&#x20; if (contact) {
+
+&#x20;   const contactExists =
+&#x20;     accounts.some(account =>
+&#x20;       account.id !== user.id &&
+&#x20;       String(account.contact || "")
+&#x20;         .toLowerCase() ===
+&#x20;           contact.toLowerCase()
+&#x20;     );
+
+
+&#x20;   if (contactExists) {
+
+&#x20;     alert(
+&#x20;       "This email or phone number already exists."
+&#x20;     );
+
+&#x20;     return;
+
+&#x20;   }
+
+
+&#x20;   user.contact = contact;
+
+&#x20; }
+
+
+&#x20; if (password) {
+
+&#x20;   user.password = password;
+
+&#x20; }
+
+
+&#x20; currentUser = user;
+
+&#x20; saveAccounts();
+
+&#x20; document
+&#x20;   .getElementById("userLabel")
+&#x20;   .textContent =
+&#x20;     user.username +
+&#x20;     " (" +
+&#x20;     user.type +
+&#x20;     ")";
+
+
+&#x20; alert(
+&#x20;   "Account updated successfully."
+&#x20; );
+
+
+&#x20; document
+&#x20;   .getElementById("changeUsername")
+&#x20;   .value = "";
+
+&#x20; document
+&#x20;   .getElementById("changeContact")
+&#x20;   .value = "";
+
+&#x20; document
+&#x20;   .getElementById("changePassword")
+&#x20;   .value = "";
+
+&#x20; document
+&#x20;   .getElementById("confirmPassword")
+&#x20;   .value = "";
+
+}
+
+
+/\* =====================================
+&#x20;  GROUPS
+\===================================== \*/
+
+function addGroup() {
+
+&#x20; const name =
+&#x20;   document
+&#x20;   .getElementById("groupName")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const category =
+&#x20;   document
+&#x20;   .getElementById("groupCategory")
+&#x20;   .value;
+
+
+&#x20; if (!name) {
+
+&#x20;   alert(
+&#x20;     "Enter a group name."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   groups.some(group =>
+&#x20;     group.category === category &&
+&#x20;     group.name
+&#x20;       .toLowerCase() ===
+&#x20;         name.toLowerCase()
+&#x20;   )
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "This group already exists."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; groups.push({
+&#x20;   name: name,
+&#x20;   category: category
+&#x20; });
+
+
+&#x20; document
+&#x20;   .getElementById("groupName")
+&#x20;   .value = "";
+
+
+&#x20; saveData();
+
+&#x20; refreshApp();
+
+}
+
+
+function updateGroups() {
+
+&#x20; const category =
+&#x20;   document
+&#x20;   .getElementById("newCategory")
+&#x20;   .value;
+
+&#x20; const select =
+&#x20;   document
+&#x20;   .getElementById("newGroup");
+
+
+&#x20; select.innerHTML = "";
+
+
+&#x20; groups
+&#x20;   .filter(
+&#x20;     group =>
+&#x20;       group.category === category
+&#x20;   )
+&#x20;   .forEach(group => {
+
+&#x20;     const option =
+&#x20;       document.createElement("option");
+
+&#x20;     option.value = group.name;
+&#x20;     option.textContent = group.name;
+
+&#x20;     select.appendChild(option);
+
+&#x20;   });
+
+}
+
+
+function renderGroups() {
+
+&#x20; const target =
+&#x20;   document.getElementById(
+&#x20;     "groupTable"
+&#x20;   );
+
+
+&#x20; target.innerHTML =
+&#x20;   ["tv", "movie", "series"]
+&#x20;   .map(category => {
+
+&#x20;     const items =
+&#x20;       groups
+&#x20;       .map((group, index) => {
+
+&#x20;         if (
+&#x20;           group.category !== category
+&#x20;         ) {
+&#x20;           return "";
+&#x20;         }
+
+&#x20;         return \`
+&#x20;           \<tr>
+&#x20;             \<td>
+&#x20;               ${escapeHTML(group.name)}
+&#x20;             \</td>
+
+&#x20;             \<td>
+&#x20;               \<button
+&#x20;                 class="danger"
+&#x20;                 onclick="removeGroup(${index})"
+&#x20;               \>
+&#x20;                 Delete
+&#x20;               \</button>
+&#x20;             \</td>
+&#x20;           \</tr>
+&#x20;         \`;
+
+&#x20;       })
+&#x20;       .join("");
+
+
+&#x20;     return \`
+&#x20;       \<div class="panel">
+
+&#x20;         \<h3>
+&#x20;           ${category.toUpperCase()} GROUPS
+&#x20;         \</h3>
+
+&#x20;         \<table>
+
+&#x20;           \<tr>
+&#x20;             \<th>Group\</th>
+&#x20;             \<th>Action\</th>
+&#x20;           \</tr>
+
+&#x20;           ${
+&#x20;             items ||
+&#x20;             "\<tr>\<td>No groups\</td>\<td>\</td>\</tr>"
+&#x20;           }
+
+&#x20;         \</table>
+
+&#x20;       \</div>
+&#x20;     \`;
+
+&#x20;   })
+&#x20;   .join("");
+
+}
+
+
+function removeGroup(index) {
+
+&#x20; const group =
+&#x20;   groups[index];
+
+
+&#x20; if (!group) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; if (
+&#x20;   channels.some(channel =>
+&#x20;     channel.category === group.category &&
+&#x20;     channel.group === group.name
+&#x20;   )
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Delete or move the streams in this group first."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   !confirm("Delete group?")
+&#x20; ) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; groups.splice(
+&#x20;   index,
+&#x20;   1
+&#x20; );
+
+&#x20; saveData();
+
+&#x20; refreshApp();
+
+}
+
+
+/\* =====================================
+&#x20;  ADD STREAM
+\===================================== \*/
+
+function addStream() {
+
+&#x20; const name =
+&#x20;   document
+&#x20;   .getElementById("newName")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const url =
+&#x20;   document
+&#x20;   .getElementById("newURL")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const logo =
+&#x20;   document
+&#x20;   .getElementById("newLogo")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const category =
+&#x20;   document
+&#x20;   .getElementById("newCategory")
+&#x20;   .value;
+
+&#x20; const group =
+&#x20;   document
+&#x20;   .getElementById("newGroup")
+&#x20;   .value;
+
+&#x20; const expiry =
+&#x20;   document
+&#x20;   .getElementById("newExpiry")
+&#x20;   .value;
+
+
+&#x20; if (
+&#x20;   !name ||
+&#x20;   !url
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Enter a name and stream URL."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   !validURL(url)
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Please enter a valid HTTP or HTTPS URL."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (!group) {
+
+&#x20;   alert(
+&#x20;     "Create a group first."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; channels.push({
+&#x20;   name: name,
+&#x20;   url: url,
+&#x20;   logo: logo,
+&#x20;   category: category,
+&#x20;   group: group,
+&#x20;   expiry: expiry
+&#x20; });
+
+
+&#x20; saveData();
+
+
+&#x20; [
+&#x20;   "newName",
+&#x20;   "newURL",
+&#x20;   "newLogo",
+&#x20;   "newExpiry"
+&#x20; ].forEach(id => {
+
+&#x20;   document
+&#x20;     .getElementById(id)
+&#x20;     .value = "";
+
+&#x20; });
+
+
+&#x20; refreshApp();
+
+&#x20; alert(
+&#x20;   "Stream added successfully!"
+&#x20; );
+
+}
+
+
+/\* =====================================
+&#x20;  M3U IMPORT
+\===================================== \*/
+
+function importPlaylist() {
+
+&#x20; const text =
+&#x20;   document
+&#x20;   .getElementById("m3u")
+&#x20;   .value
+&#x20;   .trim();
+
+&#x20; const category =
+&#x20;   document
+&#x20;   .getElementById("importCategory")
+&#x20;   .value;
+
+&#x20; const expiry =
+&#x20;   document
+&#x20;   .getElementById("importExpiry")
+&#x20;   .value;
+
+
+&#x20; if (!text) {
+
+&#x20;   alert(
+&#x20;     "Paste your M3U playlist first."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; const lines =
+&#x20;   text.split(/\r?\n/);
+
+&#x20; let info = null;
+
+&#x20; let count = 0;
+
+
+&#x20; lines.forEach(line => {
+
+&#x20;   line = line.trim();
+
+
+&#x20;   if (
+&#x20;     line.startsWith("#EXTINF:")
+&#x20;   ) {
+
+&#x20;     const commaIndex =
+&#x20;       line.lastIndexOf(",");
+
+&#x20;     const name =
+&#x20;       commaIndex >= 0
+&#x20;         ? line
+&#x20;           .substring(
+&#x20;             commaIndex + 1
+&#x20;           )
+&#x20;           .trim()
+&#x20;         : "Unknown";
+
+
+&#x20;     const groupMatch =
+&#x20;       line.match(
+&#x20;         /group-title="([^"]\*)"/i
+&#x20;       );
+
+&#x20;     const logoMatch =
+&#x20;       line.match(
+&#x20;         /tvg-logo="([^"]\*)"/i
+&#x20;       );
+
+
+&#x20;     info = {
+
+&#x20;       name:
+&#x20;         name || "Unknown",
+
+&#x20;       group:
+&#x20;         groupMatch
+&#x20;           ? groupMatch[1]
+&#x20;           : "General",
+
+&#x20;       logo:
+&#x20;         logoMatch
+&#x20;           ? logoMatch[1]
+&#x20;           : ""
+
+&#x20;     };
+
+
+&#x20;     if (
+&#x20;       !groups.some(group =>
+&#x20;         group.category === category &&
+&#x20;         group.name === info.group
+&#x20;       )
+&#x20;     ) {
+
+&#x20;       groups.push({
+&#x20;         name: info.group,
+&#x20;         category: category
+&#x20;       });
+
+&#x20;     }
+
+&#x20;   }
+
+
+&#x20;   else if (
+&#x20;     line &&
+&#x20;     !line.startsWith("#") &&
+&#x20;     info
+&#x20;   ) {
+
+&#x20;     if (
+&#x20;       validURL(line)
+&#x20;     ) {
+
+&#x20;       channels.push({
+
+&#x20;         name: info.name,
+&#x20;         url: line,
+&#x20;         logo: info.logo,
+&#x20;         category: category,
+&#x20;         group: info.group,
+&#x20;         expiry: expiry
+
+&#x20;       });
+
+&#x20;       count++;
+
+&#x20;     }
+
+
+&#x20;     info = null;
+
+&#x20;   }
+
+&#x20; });
+
+
+&#x20; saveData();
+
+&#x20; refreshApp();
+
+
+&#x20; alert(
+&#x20;   count +
+&#x20;   " streams imported successfully."
+&#x20; );
+
+}
+
+
+/\* =====================================
+&#x20;  LIVE TV
+\===================================== \*/
+
+function renderTV() {
+
+&#x20; const search =
+&#x20;   document
+&#x20;   .getElementById("tvSearch")
+&#x20;   .value
+&#x20;   .toLowerCase();
+
+&#x20; const selectedGroup =
+&#x20;   document
+&#x20;   .getElementById("tvGroup")
+&#x20;   .value;
+
+
+&#x20; const list =
+&#x20;   channels
+&#x20;   .map(
+&#x20;     (channel, index) => ({
+&#x20;       ...channel,
+&#x20;       index: index
+&#x20;     })
+&#x20;   )
+&#x20;   .filter(channel =>
+&#x20;     channel.category === "tv" &&
+&#x20;     channel.name
+&#x20;       .toLowerCase()
+&#x20;       .includes(search) &&
+&#x20;     (
+&#x20;       !selectedGroup ||
+&#x20;       channel.group === selectedGroup
+&#x20;     ) &&
+&#x20;     isActive(channel)
+&#x20;   );
+
+
+&#x20; const target =
+&#x20;   document.getElementById(
+&#x20;     "channelList"
+&#x20;   );
+
+&#x20; target.innerHTML = "";
+
+
+&#x20; list.forEach(channel => {
+
+&#x20;   const item =
+&#x20;     document.createElement("div");
+
+&#x20;   item.className =
+&#x20;     "channel" +
+&#x20;     (
+&#x20;       currentIndex === channel.index
+&#x20;         ? " selected"
+&#x20;         : ""
+&#x20;     );
+
+
+&#x20;   const number =
+&#x20;     document.createElement("span");
+
+&#x20;   number.className =
+&#x20;     "channel-number";
+
+&#x20;   number.textContent =
+&#x20;     channel.index + 1;
+
+
+&#x20;   const image =
+&#x20;     document.createElement("img");
+
+&#x20;   image.src =
+&#x20;     channel.logo ||
+&#x20;     "[https://placehold.co/100x100?text=TV](https://placehold.co/100x100?text=TV)";
+
+&#x20;   image.onerror = function() {
+
+&#x20;     image.src =
+&#x20;       "[https://placehold.co/100x100?text=TV](https://placehold.co/100x100?text=TV)";
+
+&#x20;   };
+
+
+&#x20;   const information =
+&#x20;     document.createElement("div");
+
+
+&#x20;   const name =
+&#x20;     document.createElement("div");
+
+&#x20;   name.className =
+&#x20;     "channel-name";
+
+&#x20;   name.textContent =
+&#x20;     channel.name;
+
+
+&#x20;   const group =
+&#x20;     document.createElement("div");
+
+&#x20;   group.className =
+&#x20;     "channel-group";
+
+&#x20;   group.textContent =
+&#x20;     channel.group;
+
+
+&#x20;   information.append(
+&#x20;     name,
+&#x20;     group
+&#x20;   );
+
+
+&#x20;   item.append(
+&#x20;     number,
+&#x20;     image,
+&#x20;     information
+&#x20;   );
+
+
+&#x20;   item.onclick = function() {
+
+&#x20;     playStream(
+&#x20;       channel.index
+&#x20;     );
+
+&#x20;   };
+
+
+&#x20;   target.appendChild(item);
+
+&#x20; });
+
+
+&#x20; if (!list.length) {
+
+&#x20;   target.textContent =
+&#x20;     "No available TV channels.";
+
+&#x20; }
+
+}
+
+
+/\* =====================================
+&#x20;  MOVIES AND SERIES
+\===================================== \*/
+
+function renderMedia(
+&#x20; category,
+&#x20; searchId,
+&#x20; groupId,
+&#x20; targetId
+) {
+
+&#x20; const search =
+&#x20;   document
+&#x20;   .getElementById(searchId)
+&#x20;   .value
+&#x20;   .toLowerCase();
+
+&#x20; const selectedGroup =
+&#x20;   document
+&#x20;   .getElementById(groupId)
+&#x20;   .value;
+
+
+&#x20; const list =
+&#x20;   channels
+&#x20;   .map(
+&#x20;     (channel, index) => ({
+&#x20;       ...channel,
+&#x20;       index: index
+&#x20;     })
+&#x20;   )
+&#x20;   .filter(channel =>
+&#x20;     channel.category === category &&
+&#x20;     channel.name
+&#x20;       .toLowerCase()
+&#x20;       .includes(search) &&
+&#x20;     (
+&#x20;       !selectedGroup ||
+&#x20;       channel.group === selectedGroup
+&#x20;     ) &&
+&#x20;     isActive(channel)
+&#x20;   );
+
+
+&#x20; const target =
+&#x20;   document.getElementById(
+&#x20;     targetId
+&#x20;   );
+
+&#x20; target.innerHTML = "";
+
+
+&#x20; list.forEach(channel => {
+
+&#x20;   const card =
+&#x20;     document.createElement("div");
+
+&#x20;   card.className =
+&#x20;     "media-card";
+
+
+&#x20;   const image =
+&#x20;     document.createElement("img");
+
+&#x20;   image.src =
+&#x20;     channel.logo ||
+&#x20;     "[https://placehold.co/300x450?text=IPTV](https://placehold.co/300x450?text=IPTV)";
+
+&#x20;   image.alt =
+&#x20;     channel.name;
+
+
+&#x20;   const information =
+&#x20;     document.createElement("div");
+
+&#x20;   information.className =
+&#x20;     "media-info";
+
+
+&#x20;   const title =
+&#x20;     document.createElement("h3");
+
+&#x20;   title.textContent =
+&#x20;     channel.name;
+
+
+&#x20;   const group =
+&#x20;     document.createElement("p");
+
+&#x20;   group.className =
+&#x20;     "muted";
+
+&#x20;   group.textContent =
+&#x20;     channel.group;
+
+
+&#x20;   const play =
+&#x20;     document.createElement("button");
+
+&#x20;   play.textContent =
+&#x20;     "▶ PLAY";
+
+&#x20;   play.onclick = function() {
+
+&#x20;     playStream(
+&#x20;       channel.index
+&#x20;     );
+
+&#x20;     openLive();
+
+&#x20;   };
+
+
+&#x20;   information.append(
+&#x20;     title,
+&#x20;     group,
+&#x20;     play
+&#x20;   );
+
+&#x20;   card.append(
+&#x20;     image,
+&#x20;     information
+&#x20;   );
+
+&#x20;   target.appendChild(card);
+
+&#x20; });
+
+
+&#x20; if (!list.length) {
+
+&#x20;   target.textContent =
+&#x20;     "No content available.";
+
+&#x20; }
+
+}
+
+
+function renderMovies() {
+
+&#x20; renderMedia(
+&#x20;   "movie",
+&#x20;   "movieSearch",
+&#x20;   "movieGroup",
+&#x20;   "movieList"
+&#x20; );
+
+}
+
+
+function renderSeries() {
+
+&#x20; renderMedia(
+&#x20;   "series",
+&#x20;   "seriesSearch",
+&#x20;   "seriesGroup",
+&#x20;   "seriesList"
+&#x20; );
+
+}
+
+
+/\* =====================================
+&#x20;  VIDEO PLAYER
+\===================================== \*/
+
+function playStream(index) {
+
+&#x20; const channel =
+&#x20;   channels[index];
+
+
+&#x20; if (!channel) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; if (
+&#x20;   !isActive(channel)
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "This stream has expired."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; stopPlayer();
+
+&#x20; currentIndex = index;
+
+
+&#x20; const video =
+&#x20;   document.getElementById(
+&#x20;     "video"
+&#x20;   );
+
+&#x20; video.classList.remove(
+&#x20;   "hidden"
+&#x20; );
+
+
+&#x20; document
+&#x20;   .getElementById("playingName")
+&#x20;   .textContent =
+&#x20;     channel.name;
+
+&#x20; document
+&#x20;   .getElementById("playingGroup")
+&#x20;   .textContent =
+&#x20;     channel.group;
+
+
+&#x20; const logo =
+&#x20;   document.getElementById(
+&#x20;     "playingLogo"
+&#x20;   );
+
+&#x20; logo.src =
+&#x20;   channel.logo ||
+&#x20;   "[https://placehold.co/100x100?text=TV](https://placehold.co/100x100?text=TV)";
+
+
+&#x20; document
+&#x20;   .querySelector(
+&#x20;     ".player-placeholder"
+&#x20;   )
+&#x20;   .style.display = "none";
+
+
+&#x20; if (
+&#x20;   window\.Hls &&
+&#x20;   Hls.isSupported()
+&#x20; ) {
+
+&#x20;   hls = new Hls();
+
+&#x20;   hls.loadSource(
+&#x20;     channel.url
+&#x20;   );
+
+&#x20;   hls.attachMedia(
+&#x20;     video
+&#x20;   );
+
+
+&#x20;   hls.on(
+&#x20;     Hls.Events.MANIFEST_PARSED,
+&#x20;     function() {
+
+&#x20;       renderResolutions();
+
+&#x20;       video.play()
+&#x20;         .catch(function() {});
+
+&#x20;     }
+&#x20;   );
+
+
+&#x20;   hls.on(
+&#x20;     Hls.Events.ERROR,
+&#x20;     function(event, data) {
+
+&#x20;       if (data.fatal) {
+
+&#x20;         console.error(
+&#x20;           "Stream playback error",
+&#x20;           data
+&#x20;         );
+
+&#x20;       }
+
+&#x20;     }
+&#x20;   );
+
+&#x20; }
+
+
+&#x20; else if (
+&#x20;   video.canPlayType(
+&#x20;     "application/vnd.apple.mpegurl"
+&#x20;   )
+&#x20; ) {
+
+&#x20;   video.src =
+&#x20;     channel.url;
+
+&#x20;   video.play()
+&#x20;     .catch(function() {});
+
+&#x20; }
+
+
+&#x20; else {
+
+&#x20;   alert(
+&#x20;     "This browser does not support this video format."
+&#x20;   );
+
+&#x20; }
+
+
+&#x20; renderTV();
+
+}
+
+
+function stopPlayer() {
+
+&#x20; const video =
+&#x20;   document.getElementById(
+&#x20;     "video"
+&#x20;   );
+
+&#x20; video.pause();
+
+
+&#x20; if (hls) {
+
+&#x20;   hls.destroy();
+
+&#x20;   hls = null;
+
+&#x20; }
+
+
+&#x20; video.removeAttribute(
+&#x20;   "src"
+&#x20; );
+
+&#x20; video.load();
+
+}
+
+
+function changeChannel(direction) {
+
+&#x20; const list =
+&#x20;   channels
+&#x20;   .map(
+&#x20;     (channel, index) => ({
+&#x20;       ...channel,
+&#x20;       index: index
+&#x20;     })
+&#x20;   )
+&#x20;   .filter(channel =>
+&#x20;     channel.category === "tv" &&
+&#x20;     isActive(channel)
+&#x20;   );
+
+
+&#x20; if (!list.length) {
+
+&#x20;   alert(
+&#x20;     "No TV channels available."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; let position =
+&#x20;   list.findIndex(
+&#x20;     channel =>
+&#x20;       channel.index ===
+&#x20;       currentIndex
+&#x20;   );
+
+
+&#x20; position =
+&#x20;   position === -1
+&#x20;     ? 0
+&#x20;     : (
+&#x20;       position +
+&#x20;       direction +
+&#x20;       list.length
+&#x20;     ) % list.length;
+
+
+&#x20; playStream(
+&#x20;   list[position].index
+&#x20; );
+
+}
+
+
+function renderResolutions() {
+
+&#x20; const select =
+&#x20;   document.getElementById(
+&#x20;     "resolution"
+&#x20;   );
+
+&#x20; select.innerHTML =
+&#x20;   '\<option value="-1">Auto\</option>';
+
+
+&#x20; if (!hls) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; const heights =
+&#x20;   [
+&#x20;     ...new Set(
+&#x20;       hls.levels
+&#x20;         .map(level => level.height)
+&#x20;         .filter(Boolean)
+&#x20;     )
+&#x20;   ]
+&#x20;   .sort(
+&#x20;     (a, b) => b - a
+&#x20;   );
+
+
+&#x20; heights.forEach(height => {
+
+&#x20;   const index =
+&#x20;     hls.levels.findIndex(
+&#x20;       level =>
+&#x20;         level.height === height
+&#x20;     );
+
+
+&#x20;   const option =
+&#x20;     document.createElement("option");
+
+&#x20;   option.value =
+&#x20;     index;
+
+&#x20;   option.textContent =
+&#x20;     height + "p";
+
+&#x20;   select.appendChild(option);
+
+&#x20; });
+
+
+&#x20; const savedQuality =
+&#x20;   localStorage.getItem(
+&#x20;     "plc_quality"
+&#x20;   ) || "-1";
+
+
+&#x20; select.value =
+&#x20;   savedQuality;
+
+&#x20; hls.currentLevel =
+&#x20;   Number(savedQuality);
+
+}
+
+
+function changeResolution() {
+
+&#x20; const value =
+&#x20;   document
+&#x20;   .getElementById("resolution")
+&#x20;   .value;
+
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_quality",
+&#x20;   value
+&#x20; );
+
+
+&#x20; if (hls) {
+
+&#x20;   hls.currentLevel =
+&#x20;     Number(value);
+
+&#x20; }
+
+}
+
+
+/\* =====================================
+&#x20;  FAVORITES
+\===================================== \*/
+
+function toggleFavorite() {
+
+&#x20; if (
+&#x20;   currentIndex < 0
+&#x20; ) {
+
+&#x20;   alert(
+&#x20;     "Select a channel first."
+&#x20;   );
+
+&#x20;   return;
+
+&#x20; }
+
+
+&#x20; if (
+&#x20;   favorites.includes(
+&#x20;     currentIndex
+&#x20;   )
+&#x20; ) {
+
+&#x20;   favorites =
+&#x20;     favorites.filter(
+&#x20;       index =>
+&#x20;         index !== currentIndex
+&#x20;     );
+
+&#x20; }
+
+
+&#x20; else {
+
+&#x20;   favorites.push(
+&#x20;     currentIndex
+&#x20;   );
+
+&#x20; }
+
+
+&#x20; saveData();
+
+&#x20; renderFavorites();
+
+&#x20; alert(
+&#x20;   "Favorites updated."
+&#x20; );
+
+}
+
+
+function renderFavorites() {
+
+&#x20; const target =
+&#x20;   document.getElementById(
+&#x20;     "favoriteList"
+&#x20;   );
+
+&#x20; target.innerHTML = "";
+
+
+&#x20; favorites.forEach(index => {
+
+&#x20;   const channel =
+&#x20;     channels[index];
+
+
+&#x20;   if (
+&#x20;     !channel ||
+&#x20;     !isActive(channel)
+&#x20;   ) {
+&#x20;     return;
+&#x20;   }
+
+
+&#x20;   const card =
+&#x20;     document.createElement("div");
+
+&#x20;   card.className =
+&#x20;     "media-card";
+
+
+&#x20;   const image =
+&#x20;     document.createElement("img");
+
+&#x20;   image.src =
+&#x20;     channel.logo ||
+&#x20;     "[https://placehold.co/300x450?text=IPTV](https://placehold.co/300x450?text=IPTV)";
+
+
+&#x20;   const information =
+&#x20;     document.createElement("div");
+
+&#x20;   information.className =
+&#x20;     "media-info";
+
+
+&#x20;   const name =
+&#x20;     document.createElement("h3");
+
+&#x20;   name.textContent =
+&#x20;     channel.name;
+
+
+&#x20;   const play =
+&#x20;     document.createElement("button");
+
+&#x20;   play.textContent =
+&#x20;     "▶ PLAY";
+
+&#x20;   play.onclick =
+&#x20;     function() {
+
+&#x20;       playStream(index);
+
+&#x20;       openLive();
+
+&#x20;     };
+
+
+&#x20;   information.append(
+&#x20;     name,
+&#x20;     play
+&#x20;   );
+
+&#x20;   card.append(
+&#x20;     image,
+&#x20;     information
+&#x20;   );
+
+&#x20;   target.appendChild(card);
+
+&#x20; });
+
+
+&#x20; if (!target.children.length) {
+
+&#x20;   target.textContent =
+&#x20;     "No favorites yet.";
+
+&#x20; }
+
+}
+
+
+/\* =====================================
+&#x20;  PLAYLIST TABLE
+\===================================== \*/
+
+function renderPlaylist() {
+
+&#x20; const target =
+&#x20;   document.getElementById(
+&#x20;     "playlistTable"
+&#x20;   );
+
+
+&#x20; target.innerHTML =
+&#x20;   channels
+&#x20;   .map(
+&#x20;     (channel, index) => {
+
+&#x20;       const active =
+&#x20;         isActive(channel);
+
+
+&#x20;       return \`
+
+&#x20;         \<tr>
+
+&#x20;           \<td>
+&#x20;             ${escapeHTML(channel.name)}
+&#x20;           \</td>
+
+&#x20;           \<td>
+&#x20;             ${escapeHTML(channel.category)}
+&#x20;           \</td>
+
+&#x20;           \<td>
+&#x20;             ${escapeHTML(channel.group)}
+&#x20;           \</td>
+
+&#x20;           \<td class="${
+&#x20;             active
+&#x20;               ? "active-status"
+&#x20;               : "expired"
+&#x20;           }">
+
+&#x20;             ${
+&#x20;               active
+&#x20;                 ? "Active"
+&#x20;                 : "Expired"
+&#x20;             }
+
+&#x20;           \</td>
+
+&#x20;           \<td>
+
+&#x20;             \<button
+&#x20;               class="danger"
+&#x20;               onclick="deleteStream(${index})"
+&#x20;             \>
+&#x20;               Delete
+&#x20;             \</button>
+
+&#x20;           \</td>
+
+&#x20;         \</tr>
+
+&#x20;       \`;
+
+&#x20;     }
+&#x20;   )
+&#x20;   .join("");
+
+
+&#x20; if (!channels.length) {
+
+&#x20;   target.innerHTML = \`
+&#x20;     \<tr>
+&#x20;       \<td colspan="5">
+&#x20;         No playlist content available.
+&#x20;       \</td>
+&#x20;     \</tr>
+&#x20;   \`;
+
+&#x20; }
+
+}
+
+
+function deleteStream(index) {
+
+&#x20; if (
+&#x20;   !confirm(
+&#x20;     "Delete this stream?"
+&#x20;   )
+&#x20; ) {
+&#x20;   return;
+&#x20; }
+
+
+&#x20; if (
+&#x20;   currentIndex === index
+&#x20; ) {
+
+&#x20;   stopPlayer();
+
+&#x20;   currentIndex = -1;
+
+&#x20; }
+
+
+&#x20; channels.splice(
+&#x20;   index,
+&#x20;   1
+&#x20; );
+
+
+&#x20; favorites =
+&#x20;   favorites
+&#x20;   .filter(
+&#x20;     favorite =>
+&#x20;       favorite !== index
+&#x20;   )
+&#x20;   .map(
+&#x20;     favorite =>
+&#x20;       favorite > index
+&#x20;         ? favorite - 1
+&#x20;         : favorite
+&#x20;   );
+
+
+&#x20; saveData();
+
+&#x20; refreshApp();
+
+}
+
+
+/\* =====================================
+&#x20;  SETTINGS
+\===================================== \*/
+
+function saveBackground() {
+
+&#x20; const color =
+&#x20;   document
+&#x20;   .getElementById(
+&#x20;     "backgroundColor"
+&#x20;   )
+&#x20;   .value;
+
+
+&#x20; document
+&#x20;   .documentElement
+&#x20;   .style
+&#x20;   .setProperty(
+&#x20;     "--bg",
+&#x20;     color
+&#x20;   );
+
+
+&#x20; localStorage.setItem(
+&#x20;   "plc_bg",
+&#x20;   color
+&#x20; );
+
+}
+
+
+function resetBackground() {
+
+&#x20; localStorage.removeItem(
+&#x20;   "plc_bg"
+&#x20; );
+
+
+&#x20; document
+&#x20;   .documentElement
+&#x20;   .style
+&#x20;   .setProperty(
+&#x20;     "--bg",
+&#x20;     "#080e1b"
+&#x20;   );
+
+
+&#x20; document
+&#x20;   .getElementById(
+&#x20;     "backgroundColor"
+&#x20;   )
+&#x20;   .value =
+&#x20;     "#080e1b";
+
+}
+
+
+/\* =====================================
+&#x20;  REFRESH APPLICATION
+\===================================== \*/
+
+function refreshApp() {
+
+&#x20; document
+&#x20;   .getElementById("countTV")
+&#x20;   .textContent =
+&#x20;     channels.filter(
+&#x20;       channel =>
+&#x20;         channel.category === "tv"
+&#x20;     ).length;
+
+
+&#x20; document
+&#x20;   .getElementById("countMovie")
+&#x20;   .textContent =
+&#x20;     channels.filter(
+&#x20;       channel =>
+&#x20;         channel.category === "movie"
+&#x20;     ).length;
+
+
+&#x20; document
+&#x20;   .getElementById("countSeries")
+&#x20;   .textContent =
+&#x20;     channels.filter(
+&#x20;       channel =>
+&#x20;         channel.category === "series"
+&#x20;     ).length;
+
+
+&#x20; document
+&#x20;   .getElementById("countUsers")
+&#x20;   .textContent =
+&#x20;     accounts.length;
+
+
+&#x20; ["tv", "movie", "series"]
+&#x20; .forEach(category => {
+
+&#x20;   const id =
+&#x20;     category === "tv"
+&#x20;       ? "tvGroup"
+&#x20;       : (
+&#x20;         category === "movie"
+&#x20;           ? "movieGroup"
+&#x20;           : "seriesGroup"
+&#x20;       );
+
+
+&#x20;   const select =
+&#x20;     document.getElementById(id);
+
+
+&#x20;   const current =
+&#x20;     select.value;
+
+
+&#x20;   select.innerHTML =
+&#x20;     '\<option value="">All Groups\</option>';
+
+
+&#x20;   groups
+&#x20;     .filter(
+&#x20;       group =>
+&#x20;         group.category === category
+&#x20;     )
+&#x20;     .forEach(group => {
+
+&#x20;       const option =
+&#x20;         document.createElement("option");
+
+&#x20;       option.value =
+&#x20;         group.name;
+
+&#x20;       option.textContent =
+&#x20;         group.name;
+
+&#x20;       select.appendChild(option);
+
+&#x20;     });
+
+
+&#x20;   select.value =
+&#x20;     current;
+
+&#x20; });
+
+
+&#x20; renderTV();
+
+&#x20; renderMovies();
+
+&#x20; renderSeries();
+
+&#x20; renderFavorites();
+
+&#x20; renderPlaylist();
+
+&#x20; renderGroups();
+
+&#x20; renderUsers();
+
+&#x20; updateGroups();
+
+
+&#x20; const recent =
+&#x20;   document.getElementById(
+&#x20;     "recent"
+&#x20;   );
+
+&#x20; recent.innerHTML = "";
+
+
+&#x20; channels
+&#x20;   .slice(-6)
+&#x20;   .reverse()
+&#x20;   .forEach(channel => {
+
+&#x20;     const card =
+&#x20;       document.createElement("div");
+
+&#x20;     card.className =
+&#x20;       "media-card";
+
+
+&#x20;     const image =
+&#x20;       document.createElement("img");
+
+&#x20;     image.src =
+&#x20;       channel.logo ||
+&#x20;       "[https://placehold.co/300x450?text=IPTV](https://placehold.co/300x450?text=IPTV)";
+
+
+&#x20;     const information =
+&#x20;       document.createElement("div");
+
+&#x20;     information.className =
+&#x20;       "media-info";
+
+
+&#x20;     const title =
+&#x20;       document.createElement("h3");
+
+&#x20;     title.textContent =
+&#x20;       channel.name;
+
+
+&#x20;     information.append(
+&#x20;       title
+&#x20;     );
+
+&#x20;     card.append(
+&#x20;       image,
+&#x20;       information
+&#x20;     );
+
+&#x20;     recent.appendChild(card);
+
+&#x20;   });
+
+}
+
+
+/\* =====================================
+&#x20;  KEYBOARD CONTROLS
+\===================================== \*/
+
+document.addEventListener(
+&#x20; "keydown",
+&#x20; function(event) {
+
+&#x20;   if (
+&#x20;     document
+&#x20;     .getElementById("app")
+&#x20;     .classList
+&#x20;     .contains("hidden")
+&#x20;   ) {
+&#x20;     return;
+&#x20;   }
+
+
+&#x20;   const tag =
+&#x20;     document.activeElement.tagName;
+
+
+&#x20;   if (
+&#x20;     event.key === "ArrowRight" &&
+&#x20;     tag !== "INPUT" &&
+&#x20;     tag !== "TEXTAREA"
+&#x20;   ) {
+
+&#x20;     changeChannel(1);
+
+&#x20;   }
+
+
+&#x20;   if (
+&#x20;     event.key === "ArrowLeft" &&
+&#x20;     tag !== "INPUT" &&
+&#x20;     tag !== "TEXTAREA"
+&#x20;   ) {
+
+&#x20;     changeChannel(-1);
+
+&#x20;   }
+
+
+&#x20;   if (
+&#x20;     event.key === "Escape"
+&#x20;   ) {
+
+&#x20;     const video =
+&#x20;       document.getElementById(
+&#x20;         "video"
+&#x20;       );
+
+
+&#x20;     if (
+&#x20;       document.fullscreenElement
+&#x20;     ) {
+
+&#x20;       document.exitFullscreen();
+
+&#x20;     }
+
+
+&#x20;     else if (
+&#x20;       video.requestFullscreen
+&#x20;     ) {
+
+&#x20;       video
+&#x20;         .requestFullscreen()
+&#x20;         .catch(function() {});
+
+&#x20;     }
+
+&#x20;   }
+
+&#x20; }
+);
+
+
+/\* =====================================
+&#x20;  INITIALIZE APPLICATION
+\===================================== \*/
+
+const background =
+&#x20; localStorage.getItem(
+&#x20;   "plc_bg"
+&#x20; );
+
+
+if (background) {
+
+&#x20; document
+&#x20;   .documentElement
+&#x20;   .style
+&#x20;   .setProperty(
+&#x20;     "--bg",
+&#x20;     background
+&#x20;   );
+
+
+&#x20; document
+&#x20;   .getElementById(
+&#x20;     "backgroundColor"
+&#x20;   )
+&#x20;   .value =
+&#x20;     background;
+
+}
+
+
+updateGroups();
+
+
+/\* Restore user session \*/
+
+if (
+&#x20; sessionStorage.getItem(
+&#x20;   "plc_login"
+&#x20; ) === "yes"
+) {
+
+&#x20; const userId =
+&#x20;   sessionStorage.getItem(
+&#x20;     "plc_user_id"
+&#x20;   );
+
+
+&#x20; currentUser =
+&#x20;   accounts.find(
+&#x20;     user =>
+&#x20;       String(user.id) ===
+&#x20;       String(userId)
+&#x20;   );
+
+
+&#x20; if (
+&#x20;   currentUser &&
+&#x20;   currentUser.status === "Active"
+&#x20; ) {
+
+&#x20;   openApp();
+
+&#x20; }
+
+
+&#x20; else {
+
+&#x20;   sessionStorage.removeItem(
+&#x20;     "plc_login"
+&#x20;   );
+
+&#x20;   sessionStorage.removeItem(
+&#x20;     "plc_user_id"
+&#x20;   );
+
+&#x20; }
+
+}
+
+\</script>
+
+\</body>
+\</html>
