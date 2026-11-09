@@ -2,1120 +2,524 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PLC Cambodia TV</title>
-
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
-
 <style>
-:root {
-  --bg:#080d18;
-  --panel:#111a2b;
-  --panel2:#18243a;
-  --accent:#e50935;
-  --text:#fff;
-  --muted:#9baac0;
-}
+:root{--bg:#080d18;--panel:#111c2e;--accent:#e50935;--muted:#9baac0}
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,sans-serif;
-}
-header{
-  height:68px;background:#101a2b;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;position:sticky;top:0;z-index:10;
-  border-bottom:1px solid #26334a;
-}
-.brand{font-size:23px;font-weight:bold;color:#fff}
-.brand span{color:#ed1745}
-.header-right{display:flex;gap:10px}
-button{
-  cursor:pointer;border:0;border-radius:8px;
-  padding:10px 15px;font-weight:bold;
-}
-.btn{background:var(--accent);color:white}
-.btn2{background:#26354d;color:white}
-.icon-btn{background:#26354d;color:white;font-size:19px}
-main{padding:22px;max-width:1500px;margin:auto}
-.page{display:none}
-.page.active{display:block}
-h2{font-size:23px;margin:15px 0}
-h3{margin:10px 0}
-.muted{color:var(--muted)}
-.hero{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:18px;margin:15px 0 30px;
-}
-.hero-card{
-  min-height:215px;border-radius:18px;padding:25px;
-  display:flex;flex-direction:column;justify-content:space-between;
-  cursor:pointer;transition:.2s;border:1px solid #35445c;
-}
-.hero-card:hover{transform:translateY(-4px);filter:brightness(1.15)}
-.hero-card.tv{background:linear-gradient(135deg,#123d70,#101b32)}
-.hero-card.movies{background:linear-gradient(135deg,#771a36,#261329)}
-.hero-card.series{background:linear-gradient(135deg,#4c267d,#151a3c)}
-.hero-icon{font-size:57px}
-.hero-title{font-size:29px;font-weight:900}
-.hero-desc{color:#d4dceb;font-size:13px}
-.section-title{
-  display:flex;justify-content:space-between;
-  align-items:center;margin:25px 0 15px;
-}
-.grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));
-  gap:15px;
-}
-.item{
-  background:var(--panel);border-radius:12px;overflow:hidden;
-  cursor:pointer;border:1px solid #26334a;position:relative;
-}
-.item:hover{border-color:var(--accent);transform:translateY(-2px)}
-.item img{
-  width:100%;height:145px;object-fit:contain;
-  background:#1b273b;padding:10px;
-}
-.item .item-info{padding:10px}
-.item-name{
-  font-weight:bold;font-size:13px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.item-group{font-size:11px;color:var(--muted);margin-top:5px}
-.item-actions{display:flex;gap:5px;padding:0 8px 8px}
-.small-btn{padding:7px 9px;font-size:11px;background:#293750;color:white}
-.small-btn.delete{background:#9e1835}
-.layout{
-  display:grid;grid-template-columns:220px 1fr;gap:18px;
-}
-.sidebar{
-  background:var(--panel);border-radius:12px;padding:12px;
-  height:fit-content;max-height:75vh;overflow:auto;
-}
-.group-btn{
-  display:block;width:100%;text-align:left;
-  margin:4px 0;background:transparent;color:white;
-  padding:12px;border-radius:7px;
-}
-.group-btn.active,.group-btn:hover{background:#263954}
-.search{
-  background:#1b2940;border:1px solid #34445e;color:white;
-  padding:12px;border-radius:8px;width:100%;margin-bottom:15px;
-}
-.empty{
-  padding:50px 15px;text-align:center;
-  background:var(--panel);border-radius:12px;color:var(--muted);
-}
-#playerModal,#editModal,#settingsModal{
-  display:none;position:fixed;inset:0;background:#000d;
-  z-index:100;align-items:center;justify-content:center;padding:15px;
-}
-.modal{
-  width:min(900px,100%);max-height:95vh;overflow:auto;
-  background:#111c2e;border:1px solid #35445c;
-  border-radius:15px;padding:20px;
-}
-.modal-head{
-  display:flex;justify-content:space-between;
-  align-items:center;margin-bottom:15px;
-}
+body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
+header{background:#101a2b;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+.brand{font-size:22px;font-weight:bold}.brand span{color:#e50935}
+button{border:0;border-radius:7px;padding:10px 14px;cursor:pointer;font-weight:bold}
+.btn{background:var(--accent);color:white}.btn2{background:#26354d;color:white}
 .close{background:#a31b37;color:white}
-video{
-  width:100%;max-height:65vh;background:#000;
-  border-radius:10px;
-}
-.field{margin:12px 0}
-.field label{display:block;color:#bdc9db;font-size:13px;margin-bottom:6px}
-.field input,.field select{
-  width:100%;padding:12px;border:1px solid #35445c;
-  background:#202d42;color:white;border-radius:8px;
-}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
-.tab{background:#26354d;color:white}
-.tab.active{background:var(--accent)}
-.setting-section{
-  padding:15px;background:#18243a;border-radius:10px;margin:12px 0;
-}
-.notice{font-size:12px;color:#9baac0;line-height:1.6}
-#episodeList{display:grid;gap:8px;margin-top:15px}
-.episode{background:#25344b;color:white;text-align:left}
-footer{text-align:center;color:#65748b;padding:30px;font-size:12px}
-@media(max-width:700px){
-  header{padding:0 12px}
-  .brand{font-size:18px}
-  main{padding:13px}
-  .hero{grid-template-columns:1fr;gap:12px}
-  .hero-card{min-height:145px}
-  .hero-icon{font-size:40px}
-  .hero-title{font-size:24px}
-  .layout{grid-template-columns:1fr}
-  .sidebar{max-height:180px}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .item img{height:125px}
-}
+main{max-width:1500px;margin:auto;padding:20px}
+.page{display:none}.page.active{display:block}
+.hero{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:20px 0}
+.hero-card{height:210px;border-radius:17px;padding:22px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;border:1px solid #39445b}
+.tv{background:linear-gradient(135deg,#123d70,#101b32)}
+.movies{background:linear-gradient(135deg,#771a36,#261329)}
+.series{background:linear-gradient(135deg,#4c267d,#151a3c)}
+.hero-icon{font-size:55px}.hero-title{font-size:28px;font-weight:900}
+.hero-desc{font-size:13px;color:#ddd}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px}
+.item{background:var(--panel);border:1px solid #28374f;border-radius:10px;overflow:hidden}
+.item img{width:100%;height:145px;object-fit:contain;background:#1b273b;padding:10px}
+.item-info{padding:10px}.item-name{font-weight:bold;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item-group{font-size:11px;color:var(--muted);margin-top:5px}
+.item-actions{display:flex;gap:5px;padding:0 8px 9px}
+.small-btn{background:#293750;color:white;padding:7px;font-size:11px}
+.delete{background:#9e1835}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:18px}
+.sidebar,.setting-section{background:var(--panel);border-radius:10px;padding:12px;height:fit-content}
+.group-btn{display:block;width:100%;text-align:left;background:transparent;color:white;margin:3px 0}
+.group-btn.active,.group-btn:hover{background:#263954}
+.search,.field input{background:#202d42;border:1px solid #35445c;color:white;padding:12px;border-radius:8px;width:100%;margin-bottom:12px}
+.empty{text-align:center;background:var(--panel);padding:40px;color:var(--muted);border-radius:10px}
+#playerModal,#editModal,#settingsModal{display:none;position:fixed;inset:0;background:#000e;z-index:20;align-items:center;justify-content:center;padding:12px}
+.modal{width:min(900px,100%);max-height:95vh;overflow:auto;background:#111c2e;padding:20px;border-radius:14px}
+.modal-head{display:flex;justify-content:space-between;align-items:center}
+video{width:100%;max-height:60vh;background:black;border-radius:8px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tab{background:#26354d;color:white}.tab.active{background:var(--accent)}
+.field{margin:12px 0}.field label{display:block;font-size:13px;color:#bdc9db;margin-bottom:6px}
+.notice{font-size:12px;color:var(--muted);line-height:1.6}
+.episode{display:block;width:100%;margin:6px 0;text-align:left;background:#26354d;color:white}
+#channelInfo{background:#18243a;padding:12px;border-radius:8px;text-align:center;font-weight:bold;margin:10px 0}
+.manage-row{display:flex;align-items:center;gap:8px;padding:9px;border-bottom:1px solid #35445c}
+.manage-row span{flex:1;font-size:13px}
+footer{text-align:center;padding:30px;color:#66758a}
+@media(max-width:700px){main{padding:12px}.hero{grid-template-columns:1fr}.hero-card{height:145px}.hero-icon{font-size:40px}.layout{grid-template-columns:1fr}.sidebar{max-height:170px;overflow:auto}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
-
 <body>
 
 <header>
-  <div class="brand">PLC <span>CAMBODIA TV</span></div>
-  <div class="header-right">
-    <button class="icon-btn" onclick="openSettings()">⚙</button>
-    <button class="btn" onclick="showPage('home')">HOME</button>
-  </div>
+ <div class="brand">PLC <span>CAMBODIA TV</span></div>
+ <div>
+  <button class="btn2" onclick="showPage('home')">HOME</button>
+  <button class="btn" onclick="openSettings()">⚙ SETTINGS</button>
+ </div>
 </header>
 
 <main>
-
-<!-- HOME -->
 <section id="home" class="page active">
-
-  <div class="hero">
-
-    <div class="hero-card tv" onclick="showPage('tv')">
-      <div class="hero-icon">📺</div>
-      <div>
-        <div class="hero-title">LIVE TV</div>
-        <div class="hero-desc">Watch all live television channels</div>
-      </div>
-    </div>
-
-    <div class="hero-card movies" onclick="showPage('movies')">
-      <div class="hero-icon">🎬</div>
-      <div>
-        <div class="hero-title">MOVIES</div>
-        <div class="hero-desc">All movies and movie categories</div>
-      </div>
-    </div>
-
-    <div class="hero-card series" onclick="showPage('series')">
-      <div class="hero-icon">📽️</div>
-      <div>
-        <div class="hero-title">TV SERIES</div>
-        <div class="hero-desc">Watch series and episodes</div>
-      </div>
-    </div>
-
+ <div class="hero">
+  <div class="hero-card tv" onclick="showPage('tv')">
+   <div class="hero-icon">📺</div><div><div class="hero-title">LIVE TV</div><div class="hero-desc">All TV Channels and Groups</div></div>
   </div>
-
-  <div class="section-title">
-    <h2>Recently Added</h2>
+  <div class="hero-card movies" onclick="showPage('movies')">
+   <div class="hero-icon">🎬</div><div><div class="hero-title">MOVIES</div><div class="hero-desc">All Movies and Categories</div></div>
   </div>
-  <div id="recentGrid" class="grid"></div>
-
+  <div class="hero-card series" onclick="showPage('series')">
+   <div class="hero-icon">📽️</div><div><div class="hero-title">TV SERIES</div><div class="hero-desc">All Series and Episodes</div></div>
+  </div>
+ </div>
+ <h2>Recently Added</h2><div id="recentGrid" class="grid"></div>
 </section>
 
-<!-- TV -->
 <section id="tv" class="page">
-  <h2>📺 Live TV Channels</h2>
-  <input class="search" id="tvSearch" placeholder="Search TV channels..." oninput="renderTV()">
-  <div class="layout">
-    <div class="sidebar">
-      <h3>TV Groups</h3>
-      <div id="tvGroups"></div>
-    </div>
-    <div id="tvGrid" class="grid"></div>
-  </div>
+ <h2>📺 LIVE TV</h2>
+ <input id="tvSearch" class="search" placeholder="Search TV channels..." oninput="renderTV()">
+ <div class="layout"><div class="sidebar"><h3>TV Groups</h3><div id="tvGroups"></div></div><div id="tvGrid" class="grid"></div></div>
 </section>
 
-<!-- MOVIES -->
 <section id="movies" class="page">
-  <h2>🎬 All Movies</h2>
-  <input class="search" id="movieSearch" placeholder="Search movies..." oninput="renderMovies()">
-  <div class="layout">
-    <div class="sidebar">
-      <h3>Movie Groups</h3>
-      <div id="movieGroups"></div>
-    </div>
-    <div id="movieGrid" class="grid"></div>
-  </div>
+ <h2>🎬 ALL MOVIES</h2>
+ <input id="movieSearch" class="search" placeholder="Search movies..." oninput="renderMovies()">
+ <div class="layout"><div class="sidebar"><h3>Movie Groups</h3><div id="movieGroups"></div></div><div id="movieGrid" class="grid"></div></div>
 </section>
 
-<!-- SERIES -->
 <section id="series" class="page">
-  <h2>📽️ All TV Series</h2>
-  <input class="search" id="seriesSearch" placeholder="Search series..." oninput="renderSeries()">
-  <div class="layout">
-    <div class="sidebar">
-      <h3>Series Groups</h3>
-      <div id="seriesGroups"></div>
-    </div>
-    <div id="seriesGrid" class="grid"></div>
-  </div>
+ <h2>📽️ ALL SERIES</h2>
+ <input id="seriesSearch" class="search" placeholder="Search series..." oninput="renderSeries()">
+ <div class="layout"><div class="sidebar"><h3>Series Groups</h3><div id="seriesGroups"></div></div><div id="seriesGrid" class="grid"></div></div>
 </section>
-
 <footer>PLC CAMBODIA TV • IPTV PLAYER</footer>
-
 </main>
 
 <!-- PLAYER -->
 <div id="playerModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3 id="playerTitle">Player</h3>
-      <button class="close" onclick="closePlayer()">✕</button>
-    </div>
-    <video id="video" controls autoplay playsinline></video>
-    <div class="tabs">
-      <button class="btn2" onclick="openVLC()">▶ Open VLC</button>
-      <button class="btn2" onclick="copyCurrent()">Copy Stream URL</button>
-    </div>
-    <div id="episodeList"></div>
-    <p class="notice">Playback depends on the stream format, browser support and provider permissions. VLC must be installed separately.</p>
+ <div class="modal">
+  <div class="modal-head"><h3 id="playerTitle">Player</h3><button class="close" onclick="closePlayer()">✕</button></div>
+  <video id="video" controls autoplay playsinline></video>
+  <div id="channelInfo">CHANNEL</div>
+  <div class="tabs">
+   <button class="btn2" onclick="previousChannel()">⏮ PREVIOUS</button>
+   <button class="btn" onclick="nextChannel()">NEXT CHANNEL ⏭</button>
+   <button class="btn2" onclick="openVLC()">▶ VLC</button>
   </div>
+  <div id="episodeList"></div>
+  <p class="notice">Use Left/Right arrow keys to change TV channels. VLC must be installed separately. Supported formats depend on the browser and device.</p>
+ </div>
 </div>
 
 <!-- EDIT -->
 <div id="editModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>Edit Content</h3>
-      <button class="close" onclick="closeEdit()">✕</button>
-    </div>
-    <input type="hidden" id="editId">
-    <input type="hidden" id="editType">
-    <div class="field">
-      <label>Name</label>
-      <input id="editName">
-    </div>
-    <div class="field">
-      <label>Logo / Poster URL</label>
-      <input id="editLogo">
-    </div>
-    <div class="field">
-      <label>Group / Category</label>
-      <input id="editGroup">
-    </div>
-    <div class="field">
-      <label>Stream URL</label>
-      <input id="editUrl">
-    </div>
-    <button class="btn" onclick="saveEdit()">SAVE CHANGES</button>
+ <div class="modal">
+  <div class="modal-head"><h3>Edit Content</h3><button class="close" onclick="closeEdit()">✕</button></div>
+  <input type="hidden" id="editId"><input type="hidden" id="editType">
+  <div class="field"><label>Name</label><input id="editName"></div>
+  <div class="field"><label>Logo / Poster URL</label><input id="editLogo"></div>
+  <div class="field"><label>Group</label><input id="editGroup"></div>
+  <div class="field">
+   <label>Stream URL (hidden)</label>
+   <div style="display:flex;gap:6px">
+    <input id="editUrl" type="password" placeholder="Stream URL" style="flex:1">
+    <button class="btn2" onclick="toggleURL()">SHOW</button>
+   </div>
   </div>
+  <button class="btn" onclick="saveEdit()">SAVE</button>
+ </div>
 </div>
 
 <!-- SETTINGS -->
 <div id="settingsModal">
-  <div class="modal">
-    <div class="modal-head">
-      <h2>⚙ Settings</h2>
-      <button class="close" onclick="closeSettings()">✕</button>
-    </div>
-
-    <div class="tabs">
-      <button class="tab active" onclick="settingsTab('xtream',this)">Xtream Codes</button>
-      <button class="tab" onclick="settingsTab('m3u',this)">M3U Import</button>
-      <button class="tab" onclick="settingsTab('manage',this)">Manage</button>
-      <button class="tab" onclick="settingsTab('data',this)">Data</button>
-    </div>
-
-    <div id="setting-xtream" class="setting-section">
-      <h3>Xtream Codes Login</h3>
-      <div class="field">
-        <label>Server URL</label>
-        <input id="xtServer" placeholder="http://example.com:8080">
-      </div>
-      <div class="field">
-        <label>Username</label>
-        <input id="xtUser" placeholder="Username">
-      </div>
-      <div class="field">
-        <label>Password</label>
-        <input id="xtPass" type="password" placeholder="Password">
-      </div>
-      <button class="btn" onclick="connectXtream()">LOGIN & LOAD PLAYLIST</button>
-      <p class="notice" id="xtStatus">Enter your authorized Xtream Codes account.</p>
-    </div>
-
-    <div id="setting-m3u" class="setting-section" style="display:none">
-      <h3>Import M3U Playlist</h3>
-      <div class="field">
-        <label>M3U Playlist URL</label>
-        <input id="m3uUrl" placeholder="https://example.com/playlist.m3u">
-      </div>
-      <button class="btn" onclick="importM3UUrl()">IMPORT M3U URL</button>
-
-      <div class="field">
-        <label>Or select M3U file</label>
-        <input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain">
-      </div>
-      <button class="btn" onclick="importM3UFile()">IMPORT M3U FILE</button>
-      <p class="notice" id="m3uStatus">M3U files with EXTINF entries are supported. Remote servers must allow browser access (CORS).</p>
-    </div>
-
-    <div id="setting-manage" class="setting-section" style="display:none">
-      <h3>Manage TV / Movies / Series</h3>
-      <p class="notice">Select a content type to edit or delete individual items.</p>
-      <div class="tabs">
-        <button class="tab active" onclick="manageType('tv',this)">TV</button>
-        <button class="tab" onclick="manageType('movies',this)">Movies</button>
-        <button class="tab" onclick="manageType('series',this)">Series</button>
-      </div>
-      <div id="manageList"></div>
-      <button class="btn2" onclick="addItem()">+ Add New Item</button>
-    </div>
-
-    <div id="setting-data" class="setting-section" style="display:none">
-      <h3>Playlist Data</h3>
-      <p id="dataInfo" class="notice"></p>
-      <button class="btn2" onclick="exportData()">EXPORT BACKUP</button>
-      <div class="field">
-        <label>Restore JSON backup</label>
-        <input id="backupFile" type="file" accept=".json,application/json">
-      </div>
-      <button class="btn2" onclick="importBackup()">RESTORE BACKUP</button>
-      <hr style="border-color:#35445c;margin:20px 0">
-      <button class="close" onclick="clearData()">DELETE ALL PLAYLIST DATA</button>
-    </div>
-
+ <div class="modal">
+  <div class="modal-head"><h2>⚙ SETTINGS</h2><button class="close" onclick="closeSettings()">✕</button></div>
+  <div class="tabs">
+   <button class="tab active" onclick="settingsTab('xtream',this)">Xtream Codes</button>
+   <button class="tab" onclick="settingsTab('m3u',this)">M3U Import</button>
+   <button class="tab" onclick="settingsTab('manage',this)">Manage</button>
+   <button class="tab" onclick="settingsTab('data',this)">Backup</button>
   </div>
+
+  <div id="setting-xtream" class="setting-section">
+   <h3>Xtream Codes Login</h3>
+   <div class="field"><label>Server URL</label><input id="xtServer" placeholder="http://example.com:8080"></div>
+   <div class="field"><label>Username</label><input id="xtUser" placeholder="Username"></div>
+   <div class="field"><label>Password</label><input id="xtPass" type="password" placeholder="Password"></div>
+   <button class="btn" onclick="connectXtream()">LOGIN & LOAD PLAYLIST</button>
+   <p id="xtStatus" class="notice">Enter your authorized Xtream account.</p>
+  </div>
+
+  <div id="setting-m3u" class="setting-section" style="display:none">
+   <h3>Import M3U Playlist</h3>
+   <div class="field"><label>M3U URL</label><input id="m3uUrl" placeholder="https://example.com/playlist.m3u"></div>
+   <button class="btn" onclick="importM3UUrl()">IMPORT URL</button>
+   <div class="field"><label>Import M3U File</label><input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain"></div>
+   <button class="btn" onclick="importM3UFile()">IMPORT FILE</button>
+   <p id="m3uStatus" class="notice">Remote playlist servers must allow browser CORS requests.</p>
+  </div>
+
+  <div id="setting-manage" class="setting-section" style="display:none">
+   <h3>Manage Content</h3>
+   <div class="tabs">
+    <button class="tab active" onclick="manageType('tv',this)">TV</button>
+    <button class="tab" onclick="manageType('movies',this)">Movies</button>
+    <button class="tab" onclick="manageType('series',this)">Series</button>
+   </div>
+   <div id="manageList"></div>
+   <button class="btn2" onclick="addItem()">+ ADD NEW</button>
+  </div>
+
+  <div id="setting-data" class="setting-section" style="display:none">
+   <h3>Backup and Restore</h3>
+   <p id="dataInfo" class="notice"></p>
+   <button class="btn2" onclick="exportData()">EXPORT BACKUP</button>
+   <div class="field"><label>Restore JSON</label><input id="backupFile" type="file" accept=".json"></div>
+   <button class="btn2" onclick="importBackup()">RESTORE</button>
+   <hr style="border-color:#35445c">
+   <button class="close" onclick="clearData()">DELETE ALL DATA</button>
+  </div>
+ </div>
 </div>
 
 <script>
-/* ======================================
-   PLC CAMBODIA TV - IPTV PLAYER
-====================================== */
+const DB_KEY="plc_cambodia_tv_database_v2";
+let db={tv:[],movies:[],series:[]};
+let selectedGroup={tv:"All",movies:"All",series:"All"};
+let currentType="tv";
+let currentStream="";
+let currentHls=null;
+let currentPlayingItem=null;
+let currentPlayingType="tv";
+let currentSeries=null;
 
-const DB_KEY = "plc_cambodia_tv_database_v1";
-
-let db = {
-  tv:[],
-  movies:[],
-  series:[]
-};
-
-let selectedGroup = {
-  tv:"All",
-  movies:"All",
-  series:"All"
-};
-
-let currentType = "tv";
-let currentStream = "";
-let currentHls = null;
-let currentSeries = null;
-let currentEpisode = null;
-
-function saveDB(){
-  localStorage.setItem(DB_KEY,JSON.stringify(db));
-  updateDataInfo();
-}
-
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function saveDB(){localStorage.setItem(DB_KEY,JSON.stringify(db));updateDataInfo()}
 function loadDB(){
-  try{
-    const saved=JSON.parse(localStorage.getItem(DB_KEY));
-    if(saved){
-      db={
-        tv:Array.isArray(saved.tv)?saved.tv:[],
-        movies:Array.isArray(saved.movies)?saved.movies:[],
-        series:Array.isArray(saved.series)?saved.series:[]
-      };
-    }
-  }catch(e){
-    console.error("Database error",e);
-  }
-  renderAll();
-  updateDataInfo();
+ try{
+  const d=JSON.parse(localStorage.getItem(DB_KEY));
+  if(d)db={tv:Array.isArray(d.tv)?d.tv:[],movies:Array.isArray(d.movies)?d.movies:[],series:Array.isArray(d.series)?d.series:[]};
+ }catch(e){console.error(e)}
+ renderAll();
 }
 
-function uid(){
-  return Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+function showPage(p){
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(p).classList.add("active");
+ if(p==="tv")renderTV();
+ if(p==="movies")renderMovies();
+ if(p==="series")renderSeries();
 }
 
-function showPage(page){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById(page).classList.add("active");
-
-  if(page==="tv")renderTV();
-  if(page==="movies")renderMovies();
-  if(page==="series")renderSeries();
-}
-
-function getGroups(type){
-  return ["All",...new Set(db[type].map(x=>x.group||"Uncategorized"))];
-}
-
+function getGroups(type){return ["All",...new Set(db[type].map(x=>x.group||"Uncategorized"))]}
 function renderGroups(type){
-  const target=document.getElementById(type+"Groups");
-  if(!target)return;
-
-  target.innerHTML="";
-  getGroups(type).forEach(group=>{
-    const button=document.createElement("button");
-    button.className="group-btn "+(selectedGroup[type]===group?"active":"");
-    button.textContent=group==="All"?"📂 All "+type.toUpperCase(): "📁 "+group;
-    button.onclick=()=>{
-      selectedGroup[type]=group;
-      renderAll();
-    };
-    target.appendChild(button);
-  });
+ const el=document.getElementById(type+"Groups");el.innerHTML="";
+ getGroups(type).forEach(g=>{
+  const b=document.createElement("button");
+  b.className="group-btn "+(selectedGroup[type]===g?"active":"");
+  b.textContent="📁 "+g;
+  b.onclick=()=>{selectedGroup[type]=g;renderAll()};
+  el.appendChild(b);
+ });
 }
 
 function makeCard(item,type){
-  const card=document.createElement("div");
-  card.className="item";
-
-  const img=document.createElement("img");
-  img.src=item.logo||"";
-  img.alt=item.name;
-  img.onerror=()=>{img.src="";img.alt="🎬";};
-
-  const info=document.createElement("div");
-  info.className="item-info";
-
-  const name=document.createElement("div");
-  name.className="item-name";
-  name.textContent=item.name||"Untitled";
-
-  const group=document.createElement("div");
-  group.className="item-group";
-  group.textContent=item.group||"Uncategorized";
-
-  info.append(name,group);
-  card.append(img,info);
-
-  const actions=document.createElement("div");
-  actions.className="item-actions";
-
-  const play=document.createElement("button");
-  play.className="small-btn";
-  play.textContent="▶ Play";
-  play.onclick=e=>{
-    e.stopPropagation();
-    if(type==="series")openSeries(item);
-    else playItem(item);
-  };
-
-  const edit=document.createElement("button");
-  edit.className="small-btn";
-  edit.textContent="✎ Edit";
-  edit.onclick=e=>{
-    e.stopPropagation();
-    editItem(item,type);
-  };
-
-  actions.append(play,edit);
-  card.append(actions);
-
-  card.onclick=()=>{
-    if(type==="series")openSeries(item);
-    else playItem(item);
-  };
-
-  return card;
+ const card=document.createElement("div");card.className="item";
+ const img=document.createElement("img");
+ img.src=item.logo||"";
+ img.alt=item.name;
+ img.onerror=()=>{img.removeAttribute("src");img.alt="🎬"};
+ const info=document.createElement("div");info.className="item-info";
+ const name=document.createElement("div");name.className="item-name";name.textContent=item.name||"Untitled";
+ const group=document.createElement("div");group.className="item-group";group.textContent=item.group||"Uncategorized";
+ info.append(name,group);card.append(img,info);
+ const actions=document.createElement("div");actions.className="item-actions";
+ const play=document.createElement("button");play.className="small-btn";play.textContent="▶ PLAY";
+ play.onclick=()=>type==="series"?openSeries(item):playItem(item,type);
+ const edit=document.createElement("button");edit.className="small-btn";edit.textContent="EDIT";
+ edit.onclick=()=>editItem(item,type);
+ actions.append(play,edit);card.append(actions);
+ card.onclick=()=>type==="series"?openSeries(item):playItem(item,type);
+ return card;
 }
 
 function renderType(type,gridId,searchId){
-  renderGroups(type);
-  const grid=document.getElementById(gridId);
-  grid.innerHTML="";
-
-  const q=(document.getElementById(searchId)?.value||"").toLowerCase();
-
-  const items=db[type].filter(item=>{
-    const groupMatch=selectedGroup[type]==="All"||
-      (item.group||"Uncategorized")===selectedGroup[type];
-
-    return groupMatch&&(item.name||"").toLowerCase().includes(q);
-  });
-
-  if(!items.length){
-    grid.innerHTML='<div class="empty">No content found.<br>Import your playlist in Settings.</div>';
-    return;
-  }
-
-  items.forEach(item=>grid.appendChild(makeCard(item,type)));
+ renderGroups(type);
+ const grid=document.getElementById(gridId);grid.innerHTML="";
+ const q=(document.getElementById(searchId)?.value||"").toLowerCase();
+ const items=db[type].filter(x=>(selectedGroup[type]==="All"||(x.group||"Uncategorized")===selectedGroup[type])&&(x.name||"").toLowerCase().includes(q));
+ if(!items.length){grid.innerHTML='<div class="empty">No content. Import your playlist in Settings.</div>';return}
+ items.forEach(x=>grid.appendChild(makeCard(x,type)));
 }
-
-function renderTV(){
-  renderType("tv","tvGrid","tvSearch");
-}
-function renderMovies(){
-  renderType("movies","movieGrid","movieSearch");
-}
-function renderSeries(){
-  renderType("series","seriesGrid","seriesSearch");
-}
-
+function renderTV(){renderType("tv","tvGrid","tvSearch")}
+function renderMovies(){renderType("movies","movieGrid","movieSearch")}
+function renderSeries(){renderType("series","seriesGrid","seriesSearch")}
 function renderHome(){
-  const grid=document.getElementById("recentGrid");
-  grid.innerHTML="";
-  const all=[
-    ...db.tv.map(x=>({...x,_type:"tv"})),
-    ...db.movies.map(x=>({...x,_type:"movies"})),
-    ...db.series.map(x=>({...x,_type:"series"}))
-  ].slice(-8).reverse();
-
-  all.forEach(item=>{
-    grid.appendChild(makeCard(item,item._type));
-  });
-
-  if(!all.length){
-    grid.innerHTML='<div class="empty">Welcome! Import your IPTV playlist in Settings.</div>';
-  }
+ const grid=document.getElementById("recentGrid");grid.innerHTML="";
+ const items=[...db.tv.map(x=>({...x,_type:"tv"})),...db.movies.map(x=>({...x,_type:"movies"})),...db.series.map(x=>({...x,_type:"series"}))].slice(-8).reverse();
+ if(!items.length){grid.innerHTML='<div class="empty">Import your playlist from Settings to start watching.</div>';return}
+ items.forEach(x=>grid.appendChild(makeCard(x,x._type)));
 }
+function renderAll(){renderTV();renderMovies();renderSeries();renderHome()}
 
-function renderAll(){
-  renderTV();
-  renderMovies();
-  renderSeries();
-  renderHome();
+/* PLAYER */
+function playItem(item,type="tv"){
+ currentPlayingItem=item;currentPlayingType=type;
+ playURL(item.url,item.name);
 }
-
-/* ======================================
-   PLAYER
-====================================== */
-
-function playItem(item){
-  currentSeries=null;
-  currentEpisode=null;
-  playURL(item.url,item.name);
-}
-
 function playURL(url,name){
-  if(!url){
-    alert("No stream URL available.");
-    return;
-  }
-
-  currentStream=url;
-  document.getElementById("playerTitle").textContent=name||"Player";
-  document.getElementById("episodeList").innerHTML="";
-  document.getElementById("playerModal").style.display="flex";
-
-  const video=document.getElementById("video");
-  if(currentHls){
-    currentHls.destroy();
-    currentHls=null;
-  }
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-
-  if(url.includes(".m3u8")&&Hls.isSupported()){
-    currentHls=new Hls();
-    currentHls.loadSource(url);
-    currentHls.attachMedia(video);
-    currentHls.on(Hls.Events.MANIFEST_PARSED,()=>{
-      video.play().catch(()=>{});
-    });
-    currentHls.on(Hls.Events.ERROR,(event,data)=>{
-      if(data.fatal)console.warn("HLS playback error",data);
-    });
-  }else{
-    video.src=url;
-    video.play().catch(()=>{});
-  }
+ if(!url){alert("No stream URL available");return}
+ currentStream=url;
+ document.getElementById("playerTitle").textContent=name||"Player";
+ document.getElementById("channelInfo").textContent="📺 "+name;
+ document.getElementById("episodeList").innerHTML="";
+ document.getElementById("playerModal").style.display="flex";
+ const video=document.getElementById("video");
+ if(currentHls){currentHls.destroy();currentHls=null}
+ video.pause();video.removeAttribute("src");video.load();
+ if(/\.m3u8($|\?)/i.test(url)&&Hls.isSupported()){
+  currentHls=new Hls();
+  currentHls.loadSource(url);currentHls.attachMedia(video);
+  currentHls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+  currentHls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal)console.warn(d)});
+ }else{video.src=url;video.play().catch(()=>{})}
 }
-
 function closePlayer(){
-  const video=document.getElementById("video");
-  video.pause();
-  if(currentHls){
-    currentHls.destroy();
-    currentHls=null;
-  }
-  video.removeAttribute("src");
-  video.load();
-  document.getElementById("playerModal").style.display="none";
+ const v=document.getElementById("video");v.pause();
+ if(currentHls){currentHls.destroy();currentHls=null}
+ v.removeAttribute("src");v.load();
+ document.getElementById("playerModal").style.display="none";
 }
-
 function openVLC(){
-  if(!currentStream)return;
-  const link=document.createElement("a");
-  link.href="vlc://"+currentStream;
-  link.click();
+ if(!currentStream)return;
+ const a=document.createElement("a");a.href="vlc://"+currentStream;a.click();
+}
+function toggleURL(){
+ const i=document.getElementById("editUrl");i.type=i.type==="password"?"text":"password";
 }
 
-function copyCurrent(){
-  if(currentStream){
-    navigator.clipboard?.writeText(currentStream)
-      .then(()=>alert("Stream URL copied"))
-      .catch(()=>alert("Could not copy URL"));
-  }
+/* NEXT / PREVIOUS TV CHANNEL */
+function getCurrentTVChannels(){
+ return db.tv.filter(x=>selectedGroup.tv==="All"||(x.group||"Uncategorized")===selectedGroup.tv);
 }
+function nextChannel(){
+ if(currentPlayingType!=="tv")return;
+ const list=getCurrentTVChannels();if(!list.length)return;
+ let i=list.findIndex(x=>x.id===currentPlayingItem?.id);
+ i=(i+1)%list.length;
+ currentPlayingItem=list[i];playURL(list[i].url,list[i].name);
+}
+function previousChannel(){
+ if(currentPlayingType!=="tv")return;
+ const list=getCurrentTVChannels();if(!list.length)return;
+ let i=list.findIndex(x=>x.id===currentPlayingItem?.id);
+ i=i<0?0:(i-1+list.length)%list.length;
+ currentPlayingItem=list[i];playURL(list[i].url,list[i].name);
+}
+document.addEventListener("keydown",e=>{
+ if(document.getElementById("playerModal").style.display!=="flex")return;
+ if(e.target.matches("input,textarea,select"))return;
+ if(e.key==="ArrowRight"){e.preventDefault();nextChannel()}
+ if(e.key==="ArrowLeft"){e.preventDefault();previousChannel()}
+});
 
-/* ======================================
-   SERIES EPISODES
-====================================== */
-
+/* SERIES */
 function openSeries(item){
-  if(Array.isArray(item.episodes)&&item.episodes.length){
-    currentSeries=item;
-    showEpisodeList(item);
-    return;
-  }
-
-  if(item.url){
-    playItem(item);
-    return;
-  }
-
-  if(item.series_id){
-    loadSeriesEpisodes(item);
-    return;
-  }
-
-  alert("No episode data available for this series.");
+ if(item.episodes?.length){showEpisodes(item);return}
+ if(item.series_id){loadSeriesEpisodes(item);return}
+ if(item.url){playItem(item,"series");return}
+ alert("No episodes available");
 }
-
-function showEpisodeList(item){
-  const modal=document.getElementById("playerModal");
-  modal.style.display="flex";
-  document.getElementById("playerTitle").textContent=item.name;
-  document.getElementById("episodeList").innerHTML="";
-
-  const title=document.createElement("h3");
-  title.textContent="Select Episode";
-  document.getElementById("episodeList").appendChild(title);
-
-  item.episodes.forEach((ep,i)=>{
-    const button=document.createElement("button");
-    button.className="episode";
-    button.textContent=ep.name||("Episode "+(i+1));
-    button.onclick=()=>playURL(ep.url,ep.name);
-    document.getElementById("episodeList").appendChild(button);
-  });
+function showEpisodes(item){
+ currentSeries=item;
+ document.getElementById("playerModal").style.display="flex";
+ document.getElementById("playerTitle").textContent=item.name;
+ document.getElementById("channelInfo").textContent="📽️ "+item.name;
+ const list=document.getElementById("episodeList");list.innerHTML="<h3>Select Episode</h3>";
+ item.episodes.forEach((ep,i)=>{
+  const b=document.createElement("button");b.className="episode";
+  b.textContent=ep.name||"Episode "+(i+1);
+  b.onclick=()=>{currentPlayingType="series";playURL(ep.url,ep.name)};
+  list.appendChild(b);
+ });
 }
-
 async function loadSeriesEpisodes(item){
-  const url=localStorage.getItem("xtServer");
-  const user=localStorage.getItem("xtUser");
-  const pass=localStorage.getItem("xtPass");
-
-  if(!url||!user||!pass)return;
-
-  try{
-    const response=await fetch(
-      `${url}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_series_info&series_id=${encodeURIComponent(item.series_id)}`
-    );
-    const data=await response.json();
-
-    const episodes=[];
-    Object.values(data.episodes||{}).flat().forEach(ep=>{
-      episodes.push({
-        name:ep.title||ep.episode_num||"Episode",
-        url:makeXtreamStream(url,user,pass,"series",ep.id,ep.container_extension)
-      });
-    });
-
-    item.episodes=episodes;
-    saveDB();
-    showEpisodeList(item);
-  }catch(e){
-    alert("Unable to load episodes. Check your server.");
-  }
+ const server=localStorage.getItem("xtServer"),user=localStorage.getItem("xtUser"),pass=localStorage.getItem("xtPass");
+ if(!server||!user||!pass)return alert("Connect Xtream Codes first");
+ try{
+  const url=server+"/player_api.php?username="+encodeURIComponent(user)+"&password="+encodeURIComponent(pass)+"&action=get_series_info&series_id="+encodeURIComponent(item.series_id);
+  const r=await fetch(url);if(!r.ok)throw Error("Server error");
+  const data=await r.json(),episodes=[];
+  Object.values(data.episodes||{}).flat().forEach(ep=>episodes.push({
+   name:ep.title||"Episode "+ep.episode_num,
+   url:makeXtreamStream(server,user,pass,"series",ep.id,ep.container_extension)
+  }));
+  item.episodes=episodes;saveDB();showEpisodes(item);
+ }catch(e){alert("Unable to load episodes: "+e.message)}
 }
 
-/* ======================================
-   EDIT AND DELETE
-====================================== */
-
+/* EDIT / DELETE */
 function editItem(item,type){
-  document.getElementById("editId").value=item.id;
-  document.getElementById("editType").value=type;
-  document.getElementById("editName").value=item.name||"";
-  document.getElementById("editLogo").value=item.logo||"";
-  document.getElementById("editGroup").value=item.group||"";
-  document.getElementById("editUrl").value=item.url||"";
-  document.getElementById("editModal").style.display="flex";
+ document.getElementById("editId").value=item.id;
+ document.getElementById("editType").value=type;
+ document.getElementById("editName").value=item.name||"";
+ document.getElementById("editLogo").value=item.logo||"";
+ document.getElementById("editGroup").value=item.group||"";
+ document.getElementById("editUrl").value=item.url||"";
+ document.getElementById("editUrl").type="password";
+ document.getElementById("editModal").style.display="flex";
 }
-
-function closeEdit(){
-  document.getElementById("editModal").style.display="none";
-}
-
+function closeEdit(){document.getElementById("editModal").style.display="none"}
 function saveEdit(){
-  const id=document.getElementById("editId").value;
-  const type=document.getElementById("editType").value;
-
-  let item=db[type].find(x=>x.id===id);
-
-  if(!item){
-    item={
-      id,
-      episodes:[],
-      series_id:null
-    };
-    db[type].push(item);
-  }
-
-  item.name=document.getElementById("editName").value.trim();
-  item.logo=document.getElementById("editLogo").value.trim();
-  item.group=document.getElementById("editGroup").value.trim()||"Uncategorized";
-
-  const newUrl=document.getElementById("editUrl").value.trim();
-  if(newUrl)item.url=newUrl;
-  else if(!item.url)item.url="";
-
-  saveDB();
-  closeEdit();
-  renderAll();
-  renderManage();
+ const type=document.getElementById("editType").value,id=document.getElementById("editId").value;
+ let item=db[type].find(x=>x.id===id);
+ if(!item){item={id,episodes:[]};db[type].push(item)}
+ item.name=document.getElementById("editName").value.trim();
+ item.logo=document.getElementById("editLogo").value.trim();
+ item.group=document.getElementById("editGroup").value.trim()||"Uncategorized";
+ item.url=document.getElementById("editUrl").value.trim();
+ saveDB();closeEdit();renderAll();renderManage();
 }
-
 function deleteItem(id,type){
-  if(!confirm("Delete this item?"))return;
-  db[type]=db[type].filter(x=>x.id!==id);
-  saveDB();
-  renderAll();
-  renderManage();
+ if(!confirm("Delete this item?"))return;
+ db[type]=db[type].filter(x=>x.id!==id);
+ saveDB();renderAll();renderManage();
 }
-
 function addItem(){
-  const type=currentType;
-  const id=uid();
-  const item={
-    id,name:"New Item",logo:"",group:"Uncategorized",url:""
-  };
-  db[type].push(item);
-  editItem(item,type);
+ const id=uid(),item={id,name:"New Item",logo:"",group:"Uncategorized",url:""};
+ db[currentType].push(item);editItem(item,currentType);
 }
 
-/* ======================================
-   SETTINGS
-====================================== */
-
+/* SETTINGS */
 function openSettings(){
-  document.getElementById("settingsModal").style.display="flex";
-  document.getElementById("xtServer").value=localStorage.getItem("xtServer")||"";
-  document.getElementById("xtUser").value=localStorage.getItem("xtUser")||"";
-  document.getElementById("xtPass").value=localStorage.getItem("xtPass")||"";
-  renderManage();
-  updateDataInfo();
+ document.getElementById("settingsModal").style.display="flex";
+ document.getElementById("xtServer").value=localStorage.getItem("xtServer")||"";
+ document.getElementById("xtUser").value=localStorage.getItem("xtUser")||"";
+ document.getElementById("xtPass").value=localStorage.getItem("xtPass")||"";
+ renderManage();updateDataInfo();
 }
-
-function closeSettings(){
-  document.getElementById("settingsModal").style.display="none";
+function closeSettings(){document.getElementById("settingsModal").style.display="none"}
+function settingsTab(tab,btn){
+ document.querySelectorAll("#settingsModal .tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+ ["xtream","m3u","manage","data"].forEach(x=>document.getElementById("setting-"+x).style.display=x===tab?"block":"none");
 }
-
-function settingsTab(tab,button){
-  document.querySelectorAll("#settingsModal .tab").forEach(b=>b.classList.remove("active"));
-  button.classList.add("active");
-
-  ["xtream","m3u","manage","data"].forEach(x=>{
-    document.getElementById("setting-"+x).style.display=x===tab?"block":"none";
-  });
+function manageType(type,btn){
+ currentType=type;
+ document.querySelectorAll("#setting-manage .tab").forEach(x=>x.classList.remove("active"));btn.classList.add("active");
+ renderManage();
 }
-
-function manageType(type,button){
-  currentType=type;
-  document.querySelectorAll("#setting-manage .tab").forEach(b=>b.classList.remove("active"));
-  button.classList.add("active");
-  renderManage();
-}
-
 function renderManage(){
-  const list=document.getElementById("manageList");
-  if(!list)return;
-  list.innerHTML="";
-
-  db[currentType].forEach(item=>{
-    const row=document.createElement("div");
-    row.style.cssText="display:flex;align-items:center;gap:8px;padding:10px;border-bottom:1px solid #35445c";
-
-    const name=document.createElement("span");
-    name.textContent=item.name;
-    name.style.cssText="flex:1;font-size:13px";
-
-    const edit=document.createElement("button");
-    edit.className="small-btn";
-    edit.textContent="Edit";
-    edit.onclick=()=>editItem(item,currentType);
-
-    const del=document.createElement("button");
-    del.className="small-btn delete";
-    del.textContent="Delete";
-    del.onclick=()=>deleteItem(item.id,currentType);
-
-    row.append(name,edit,del);
-    list.appendChild(row);
-  });
+ const list=document.getElementById("manageList");if(!list)return;list.innerHTML="";
+ db[currentType].forEach(item=>{
+  const row=document.createElement("div");row.className="manage-row";
+  const name=document.createElement("span");name.textContent=item.name;
+  const edit=document.createElement("button");edit.className="small-btn";edit.textContent="EDIT";edit.onclick=()=>editItem(item,currentType);
+  const del=document.createElement("button");del.className="small-btn delete";del.textContent="DELETE";del.onclick=()=>deleteItem(item.id,currentType);
+  row.append(name,edit,del);list.appendChild(row);
+ });
 }
 
-/* ======================================
-   M3U IMPORT
-====================================== */
-
-function classifyM3U(item){
-  const text=(item.group+" "+item.name).toLowerCase();
-  const ext=(item.url.split("?")[0].split(".").pop()||"").toLowerCase();
-
-  if(/series|tv series|drama|episode/.test(text))return "series";
-
-  if(/movie|vod|film|cinema/.test(text)||
-    ["mp4","mkv","avi","mov"].includes(ext))return "movies";
-
-  return "tv";
+/* M3U IMPORT */
+function classifyM3U(x){
+ const t=(x.group+" "+x.name).toLowerCase();
+ const ext=(x.url.split("?")[0].split(".").pop()||"").toLowerCase();
+ if(/series|tv series|episode|drama/.test(t))return "series";
+ if(/movie|vod|film|cinema/.test(t)||["mp4","mkv","avi","mov"].includes(ext))return "movies";
+ return "tv";
 }
-
 function parseM3U(content){
-  const lines=content.replace(/^\uFEFF/,"").split(/\r?\n/);
-  let current=null;
-  let count=0;
-
-  lines.forEach(line=>{
-    line=line.trim();
-    if(!line)return;
-
-    if(line.startsWith("#EXTINF:")){
-      const nameMatch=line.match(/,(.*)$/);
-      const logoMatch=line.match(/tvg-logo=["']([^"']*)["']/i);
-      const groupMatch=line.match(/group-title=["']([^"']*)["']/i);
-      const tvgId=line.match(/tvg-id=["']([^"']*)["']/i);
-
-      current={
-        id:uid(),
-        name:nameMatch?nameMatch[1].trim():"Unknown Channel",
-        logo:logoMatch?logoMatch[1]:"",
-        group:groupMatch?groupMatch[1]:"Uncategorized",
-        tvgId:tvgId?tvgId[1]:"",
-        url:""
-      };
-    }else if(!line.startsWith("#")&&current){
-      current.url=line;
-      const type=classifyM3U(current);
-      db[type].push(current);
-      current=null;
-      count++;
-    }
-  });
-
-  return count;
+ const lines=content.replace(/^\uFEFF/,"").split(/\r?\n");
+ let current=null,count=0;
+ lines.forEach(line=>{
+  line=line.trim();if(!line)return;
+  if(line.startsWith("#EXTINF:")){
+   const n=line.match(/,(.*)$/),logo=line.match(/tvg-logo=["']([^"']*)["']/i),g=line.match(/group-title=["']([^"']*)["']/i);
+   current={id:uid(),name:n?n[1].trim():"Unknown",logo:logo?logo[1]:"",group:g?g[1]:"Uncategorized",url:""};
+  }else if(!line.startsWith("#")&&current){
+   current.url=line;db[classifyM3U(current)].push(current);current=null;count++;
+  }
+ });
+ return count;
 }
-
 async function importM3UUrl(){
-  const url=document.getElementById("m3uUrl").value.trim();
-  if(!url)return alert("Enter an M3U URL");
-
-  const status=document.getElementById("m3uStatus");
-  status.textContent="Loading playlist...";
-
-  try{
-    const response=await fetch(url);
-    if(!response.ok)throw new Error("HTTP "+response.status);
-
-    const text=await response.text();
-    const count=parseM3U(text);
-
-    if(!count)throw new Error("No valid M3U channels found");
-
-    saveDB();
-    renderAll();
-    status.textContent="Successfully imported "+count+" items.";
-  }catch(e){
-    status.textContent="Import failed: "+e.message+
-      ". Check the URL and server CORS settings.";
-  }
+ const url=document.getElementById("m3uUrl").value.trim();if(!url)return alert("Enter M3U URL");
+ const s=document.getElementById("m3uStatus");s.textContent="Loading...";
+ try{
+  const r=await fetch(url);if(!r.ok)throw Error("HTTP "+r.status);
+  const count=parseM3U(await r.text());if(!count)throw Error("No valid entries found");
+  saveDB();renderAll();s.textContent="Imported "+count+" items.";
+ }catch(e){s.textContent="Import failed: "+e.message+". Check URL and CORS."}
 }
-
 async function importM3UFile(){
-  const file=document.getElementById("m3uFile").files[0];
-  if(!file)return alert("Select an M3U file");
-
-  try{
-    const text=await file.text();
-    const count=parseM3U(text);
-    if(!count)throw new Error("No valid M3U entries found");
-
-    saveDB();
-    renderAll();
-    document.getElementById("m3uStatus").textContent=
-      "Imported "+count+" items successfully.";
-  }catch(e){
-    alert("Import failed: "+e.message);
-  }
+ const f=document.getElementById("m3uFile").files[0];if(!f)return alert("Select M3U file");
+ try{
+  const count=parseM3U(await f.text());if(!count)throw Error("No entries found");
+  saveDB();renderAll();document.getElementById("m3uStatus").textContent="Imported "+count+" items.";
+ }catch(e){alert(e.message)}
 }
 
-/* ======================================
-   XTREAM CODES
-====================================== */
-
+/* XTREAM */
 function makeXtreamStream(server,user,pass,type,id,ext){
-  const path={
-    tv:"/live/",
-    movies:"/movie/",
-    series:"/series/"
-  }[type];
-
-  return server+path+
-    encodeURIComponent(user)+"/"+
-    encodeURIComponent(pass)+"/"+
-    encodeURIComponent(id)+
-    (ext?"."+ext:"");
+ const paths={tv:"/live/",movies:"/movie/",series:"/series/"};
+ return server+paths[type]+encodeURIComponent(user)+"/"+encodeURIComponent(pass)+"/"+encodeURIComponent(id)+(ext?"."+ext:"");
 }
-
-async function connectXtream(){
-  let server=document.getElementById("xtServer").value.trim().replace(/\/+$/,"");
-  const user=document.getElementById("xtUser").value.trim();
-  const pass=document.getElementById("xtPass").value;
-  const status=document.getElementById("xtStatus");
-
-  if(!server||!user||!pass)return alert("Complete all login fields.");
-
-  status.textContent="Connecting to Xtream server...";
-
-  const api=server+"/player_api.php?username="+
-    encodeURIComponent(user)+"&password="+encodeURIComponent(pass);
-
-  try{
-    const response=await fetch(api);
-    if(!response.ok)throw new Error("Server HTTP "+response.status);
-
-    const auth=await response.json();
-
-    if(auth.user_info?.auth===0){
-      throw new Error("Invalid username or password");
-    }
-
-    localStorage.setItem("xtServer",server);
-    localStorage.setItem("xtUser",user);
-    localStorage.setItem("xtPass",pass);
-
-    status.textContent="Login successful. Loading TV, Movies and Series...";
-
-    const [tvCats,movieCats,seriesCats,tv,movies,series]=await Promise.all([
-      xtGet(server,user,pass,"get_live_categories"),
-      xtGet(server,user,pass,"get_vod_categories"),
-      xtGet(server,user,pass,"get_series_categories"),
-      xtGet(server,user,pass,"get_live_streams"),
-      xtGet(server,user,pass,"get_vod_streams"),
-      xtGet(server,user,pass,"get_series")
-    ]);
-
-    const tvMap=categoryMap(tvCats);
-    const movieMap=categoryMap(movieCats);
-    const seriesMap=categoryMap(seriesCats);
-
-    if(Array.isArray(tv)){
-      db.tv=tv.map(x=>({
-        id:uid(),
-        name:x.name||"Live Channel",
-        logo:x.stream_icon||"",
-        group:tvMap[x.category_id]||"Uncategorized",
-        url:makeXtreamStream(server,user,pass,"tv",x.stream_id,x.container_extension),
-        stream_id:x.stream_id
-      }));
-    }
-
-    if(Array.isArray(movies)){
-      db.movies=movies.map(x=>({
-        id:uid(),
-        name:x.name||"Movie",
-        logo:x.stream_icon||"",
-        group:movieMap[x.category_id]||"Uncategorized",
-        url:makeXtreamStream(server,user,pass,"movies",x.stream_id,x.container_extension),
-        stream_id:x.stream_id
-      }));
-    }
-
-    if(Array.isArray(series)){
-      db.series=series.map(x=>({
-        id:uid(),
-        name:x.name||"Series",
-        logo:x.cover||x.stream_icon||"",
-        group:seriesMap[x.category_id]||"Uncategorized",
-        url:"",
-        series_id:x.series_id
-      }));
-    }
-
-    saveDB();
-    renderAll();
-
-    status.textContent=
-      "SUCCESS! TV: "+db.tv.length+
-      " | Movies: "+db.movies.length+
-      " | Series: "+db.series.length;
-
-    alert("Xtream playlist loaded successfully!");
-  }catch(e){
-    status.textContent="Connection failed: "+e.message+
-      ". Check server URL, login and CORS support.";
-  }
-}
-
 async function xtGet(server,user,pass,action){
-  const url=server+"/player_api.php?username="+
-    encodeURIComponent(user)+"&password="+
-    encodeURIComponent(pass)+"&action="+action;
-
-  const response=await fetch(url);
-  if(!response.ok)throw new Error(action+" failed");
-
-  return response.json();
+ const url=server+"/player_api.php?username="+encodeURIComponent(user)+"&password="+encodeURIComponent(pass)+"&action="+action;
+ const r=await fetch(url);if(!r.ok)throw Error(action+" failed");return r.json();
+}
+function categoryMap(cats){
+ const m={};if(Array.isArray(cats))cats.forEach(x=>m[x.category_id]=x.category_name);return m;
+}
+async function connectXtream(){
+ const server=document.getElementById("xtServer").value.trim().replace(/\/+$/,"");
+ const user=document.getElementById("xtUser").value.trim(),pass=document.getElementById("xtPass").value;
+ const status=document.getElementById("xtStatus");
+ if(!server||!user||!pass)return alert("Complete login fields");
+ status.textContent="Connecting...";
+ try{
+  const auth=await fetch(server+"/player_api.php?username="+encodeURIComponent(user)+"&password="+encodeURIComponent(pass));
+  if(!auth.ok)throw Error("Server connection failed");
+  const a=await auth.json();if(a.user_info?.auth===0)throw Error("Invalid login");
+  localStorage.setItem("xtServer",server);localStorage.setItem("xtUser",user);localStorage.setItem("xtPass",pass);
+  const [tc,mc,sc,tv,mv,se]=await Promise.all([
+   xtGet(server,user,pass,"get_live_categories"),xtGet(server,user,pass,"get_vod_categories"),xtGet(server,user,pass,"get_series_categories"),
+   xtGet(server,user,pass,"get_live_streams"),xtGet(server,user,pass,"get_vod_streams"),xtGet(server,user,pass,"get_series")
+  ]);
+  const tm=categoryMap(tc),mm=categoryMap(mc),sm=categoryMap(sc);
+  if(Array.isArray(tv))db.tv=tv.map(x=>({id:uid(),name:x.name||"TV",logo:x.stream_icon||"",group:tm[x.category_id]||"Uncategorized",url:makeXtreamStream(server,user,pass,"tv",x.stream_id,x.container_extension)}));
+  if(Array.isArray(mv))db.movies=mv.map(x=>({id:uid(),name:x.name||"Movie",logo:x.stream_icon||"",group:mm[x.category_id]||"Uncategorized",url:makeXtreamStream(server,user,pass,"movies",x.stream_id,x.container_extension)}));
+  if(Array.isArray(se))db.series=se.map(x=>({id:uid(),name:x.name||"Series",logo:x.cover||x.stream_icon||"",group:sm[x.category_id]||"Uncategorized",url:"",series_id:x.series_id}));
+  saveDB();renderAll();
+  status.textContent="SUCCESS TV "+db.tv.length+" | Movies "+db.movies.length+" | Series "+db.series.length;
+ }catch(e){status.textContent="Login failed: "+e.message+". Check server and CORS."}
 }
 
-function categoryMap(categories){
-  const map={};
-  if(Array.isArray(categories)){
-    categories.forEach(x=>map[x.category_id]=x.category_name);
-  }
-  return map;
-}
-
-/* ======================================
-   BACKUP / RESTORE
-====================================== */
-
+/* BACKUP */
 function updateDataInfo(){
-  const el=document.getElementById("dataInfo");
-  if(!el)return;
-
-  el.textContent=
-    "TV: "+db.tv.length+
-    " | Movies: "+db.movies.length+
-    " | Series: "+db.series.length;
+ const e=document.getElementById("dataInfo");if(e)e.textContent="TV "+db.tv.length+" | Movies "+db.movies.length+" | Series "+db.series.length;
 }
-
 function exportData(){
-  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(blob);
-  a.download="PLC-Cambodia-TV-Backup.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="PLC-Cambodia-TV-Backup.json";a.click();URL.revokeObjectURL(a.href);
 }
-
 async function importBackup(){
-  const file=document.getElementById("backupFile").files[0];
-  if(!file)return alert("Select backup JSON file");
-
-  try{
-    const data=JSON.parse(await file.text());
-
-    if(!Array.isArray(data.tv)||
-       !Array.isArray(data.movies)||
-       !Array.isArray(data.series)){
-      throw new Error("Invalid backup format");
-    }
-
-    db=data;
-    saveDB();
-    renderAll();
-    renderManage();
-    alert("Backup restored!");
-  }catch(e){
-    alert("Restore failed: "+e.message);
-  }
+ const f=document.getElementById("backupFile").files[0];if(!f)return alert("Select backup");
+ try{
+  const d=JSON.parse(await f.text());
+  if(!Array.isArray(d.tv)||!Array.isArray(d.movies)||!Array.isArray(d.series))throw Error("Invalid backup");
+  db=d;saveDB();renderAll();renderManage();alert("Backup restored");
+ }catch(e){alert("Restore failed: "+e.message)}
 }
-
 function clearData(){
-  if(!confirm("Delete all TV, movies and series?"))return;
-  db={tv:[],movies:[],series:[]};
-  saveDB();
-  renderAll();
-  renderManage();
+ if(!confirm("Delete all playlist data?"))return;
+ db={tv:[],movies:[],series:[]};saveDB();renderAll();renderManage();
 }
-
-/* ======================================
-   START APPLICATION
-====================================== */
 
 loadDB();
 </script>
-
 </body>
 </html>
