@@ -16,7 +16,7 @@ button,input,select{font:inherit}button{cursor:pointer;border:0;color:inherit}.a
 body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42,#0d1727)}body.tpl-light{--bg:#eef1f7;--panel:#fff;--panel2:#e6eaf3;--line:#cbd2df;--text:#151925;--muted:#596275}body.tpl-light input,body.tpl-light select{background:#fff;color:#151925}</style>
 </head>
 <body>
-<div class="login-screen" id="loginScreen"><div class="login-card"><div class="brand"><div class="brand-mark">▶</div><span>MY IPTV</span></div><h1 style="margin-top:22px">Sign in</h1><p class="muted">Enter your account to continue.</p><form onsubmit="event.preventDefault();loginUser()"><div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" required></div><div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn primary" style="width:100%;margin-top:18px" type="submit">Login</button></form><p class="hint" style="margin-top:16px"></p></div></div>
+<div class="login-screen" id="loginScreen"><div class="login-card"><div class="brand"><div class="brand-mark">▶</div><span>MY IPTV</span></div><h1 style="margin-top:22px">Sign in</h1><p class="muted">Enter your account to continue.</p><form onsubmit="event.preventDefault();loginUser()"><div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" required></div><div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn primary" style="width:100%;margin-top:18px" type="submit">Login</button></form><p class="hint" style="margin-top:16px"></div>
 <div class="app" id="mainApp" style="display:none">
 <header class="top">
  <div class="brand"><div class="brand-mark">▶</div><span id="appTitle">MY IPTV</span></div>
@@ -65,7 +65,7 @@ body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42
   <div class="field full"><button class="btn primary" onclick="loginXtream()">Connect Xtream account</button></div>
  </div><p class="hint">Xtream access depends on provider support and browser CORS settings. Credentials are saved only in this browser's local storage; do not use a shared/public device.</p></div>
  <div class="panel" id="displaySettingsPanel"><h3>Subscription & display</h3><div class="form-grid">
-  <div class="field"><label>IPTV expiry date</label><input id="expiryInput" type="date" lang="en-GB"></div>
+  <div class="field"><label>IPTV expiry date</label><input id="expiryInput" type="date"></div>
   <div class="field"><label>Language</label><select id="language" onchange="setLanguage(this.value)"><option value="en">English</option><option value="km">ខ្មែរ (Khmer)</option><option value="zh">中文 (Chinese)</option></select></div>
   <div class="field"><label>Font size</label><select id="fontSize" onchange="setFont(this.value)"><option value="14">Small</option><option value="16" selected>Medium</option><option value="19">Large</option><option value="22">Extra large</option></select></div>
   <div class="field"><label>App name</label><input id="appName" value="MY IPTV" onchange="saveSettings()"></div>
@@ -75,7 +75,7 @@ body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42
 <div class="panel"><h3>Categories</h3><p class="hint">Edit category names and logos. Moving an item to another category is available from Edit.</p><div class="row-tools"><select id="categoryType" class="search" onchange="renderCategories()"><option value="live">TV</option><option value="movie">Movies</option><option value="series">Series</option></select><button class="btn primary" onclick="openCategoryModal()">＋ Create category</button></div><div id="categoryList" style="margin-top:12px"></div></div>
 <div class="panel" id="displaySettingsPanel"><h3>Template & background</h3><div class="form-grid"><div class="field"><label>Template</label><select id="templateStyle" onchange="previewTemplate()"><option value="default">Default dark</option><option value="gradient">Color gradient</option><option value="light">Light</option></select></div><div class="field"><label>Background image</label><input id="bgImage" type="file" accept="image/*" onchange="loadBackground(event)"></div><div class="field full"><label>Background image URL (optional)</label><input id="bgImageUrl" placeholder="https://..."></div><div class="field full"><button class="btn primary" onclick="saveAppearance()">Save template</button><button class="btn" onclick="clearBackground()">Remove background image</button></div></div></div>
 <div class="panel"><h3>Manage channels, movies & series</h3><p class="hint">Edit a title, category, channel number or logo; delete unwanted entries. Use the up/down buttons to change order. Changes are stored in this browser.</p><div class="row-tools"><select id="manageType" class="search" onchange="renderManage()"><option value="live">TV channels</option><option value="movie">Movies</option><option value="series">Series</option></select><input class="search" id="manageSearch" placeholder="Search..." oninput="renderManage()"></div><div id="manageList" style="margin-top:12px"></div></div>
- <div class="panel" id="dataPanel"><h3>Data</h3><div class="row-tools"><button class="btn danger-btn" onclick="deleteAllType('live')">Delete all TV channels</button><button class="btn danger-btn" onclick="deleteAllType('movie')">Delete all movies</button><button class="btn danger-btn" onclick="deleteAllType('series')">Delete all series</button><button class="btn" onclick="exportData()">Export playlist backup</button><button class="btn" onclick="document.getElementById('backupFile').click()">Import backup</button><input id="backupFile" class="hide" type="file" accept=".json" onchange="importBackup(event)"><button class="btn" onclick="clearPlaylist()">Delete all imported data</button></div></div>
+ <div class="panel"><h3>Data</h3><div class="row-tools"><button class="btn danger-btn" onclick="deleteAllType('live')">Delete all TV channels</button><button class="btn danger-btn" onclick="deleteAllType('movie')">Delete all movies</button><button class="btn danger-btn" onclick="deleteAllType('series')">Delete all series</button><button class="btn" onclick="exportData()">Export playlist backup</button><button class="btn" onclick="document.getElementById('backupFile').click()">Import backup</button><input id="backupFile" class="hide" type="file" accept=".json" onchange="importBackup(event)"><button class="btn" onclick="clearPlaylist()">Delete all imported data</button></div></div>
 </section>
 <p class="footer-note">Demo login security note: accounts are stored in this browser and are not secure authentication. For production or internet hosting, use a server-side authentication/database and enforce roles on the server. This is a standalone demo player interface. It does not provide TV channels, movies, series, subscriptions or stream links. Playback depends on your lawful playlist/provider and browser codec support. HLS quality selection works when the stream exposes multiple HLS levels.</p>
 </div>
@@ -96,7 +96,7 @@ function saveUsers(){localStorage.setItem('iptv_users',JSON.stringify(users))}
 function roleName(r){return r==='admin'?'Administrator':r==='manager'?'Manager':'Normal User'}
 function canManageContent(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='manager')}
 function requireContentRight(){if(!canManageContent()){toast('Permission denied: Manager or Administrator only');return false}return true}
-function loginUser(){let u=$('loginUsername').value.trim(),p=$('loginPassword').value;let found=users.find(x=>x.username===u&&x.password===p);if(!found){toast('Incorrect username or password');return}currentUser={username:found.username,role:found.role};$('loginScreen').style.display='none';$('mainApp').style.display='block';$('currentUserLabel').innerHTML=esc(found.username)+' <span class="role-tag">'+roleName(found.role)+'</span>';applyRolePermissions();renderUsers();startAutoUpdateTimer();toast('Welcome '+found.username);if(found.role!=='normal'&&settings.updateOnOpen!==false&&settings.autoSource)refreshSavedSource()}
+function loginUser(){let u=$('loginUsername').value.trim(),p=$('loginPassword').value;let found=users.find(x=>x.username===u&&x.password===p);if(!found){toast('Incorrect username or password');return}currentUser={username:found.username,role:found.role};$('loginScreen').style.display='none';$('mainApp').style.display='block';$('currentUserLabel').innerHTML=esc(found.username)+' <span class="role-tag">'+roleName(found.role)+'</span>';applyRolePermissions();renderUsers();toast('Welcome '+found.username)}
 function logoutUser(){if(activeVideo){activeVideo.pause();activeVideo.removeAttribute('src');activeVideo.load()}if(hls){hls.destroy();hls=null}currentUser=null;$('mainApp').style.display='none';$('loginScreen').style.display='grid';$('loginPassword').value=''}
 function applyRolePermissions(){let normal=currentUser.role==='normal';$('settingsNavBtn').classList.toggle('hide',normal);document.querySelectorAll('.nav button[data-view="settings"]').forEach(b=>b.classList.toggle('hide',normal));$('userAdminPanel').classList.toggle('hide',currentUser.role!=='admin');$('dataPanel').classList.toggle('hide',currentUser.role!=='admin');document.querySelectorAll('#settings .panel').forEach((panel,i)=>{if(currentUser.role==='manager'&&panel.id==='displaySettingsPanel')panel.classList.add('hide')});document.querySelectorAll('#settings .panel').forEach((panel,i)=>{if(currentUser.role==='manager'&&panel.id!=='userAdminPanel'&&panel.id!=='dataPanel'&&i===2)panel.classList.add('hide')});renderManage();}
 function addUser(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let username=$('newUsername').value.trim(),password=$('newUserPassword').value,role=$('newUserRole').value;if(!username||!password)return toast('Enter username and password');if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))return toast('Username already exists');users.push({username,password,role});saveUsers();$('newUsername').value='';$('newUserPassword').value='';renderUsers();toast('User created')}
@@ -118,12 +118,12 @@ function applyLanguage(){let lang=settings.lang||'en';document.documentElement.l
 function setFont(v){document.documentElement.style.setProperty('--font',v+'px');settings.font=v;persist()}
 function saveSettings(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');settings.expiry=$('expiryInput').value;settings.appName=$('appName').value||'MY IPTV';settings.lang=$('language').value;settings.font=$('fontSize').value;persist();applySettings();toast('Settings saved')}
 function applySettings(){if(settings.expiry)$('expiryInput').value=settings.expiry;if(settings.lang)$('language').value=settings.lang;if(settings.font){$('fontSize').value=settings.font;setFont(settings.font)}if(settings.appName){$('appName').value=settings.appName;$('appTitle').textContent=settings.appName}applyLanguage();updateExpiry()}
-function updateExpiry(){if(!settings.expiry){$('countdown').textContent='Not set';$('expireDate').textContent='Set an expiry date in Settings';return}let end=new Date(settings.expiry+'T23:59:59'),ms=end-Date.now(),days=Math.ceil(ms/86400000);$('countdown').textContent=ms<0?'Expired':days+' day'+(days===1?'':'s')+' left';$('expireDate').textContent='Expiry: '+end.toLocaleDateString('en-GB')}
+function updateExpiry(){if(!settings.expiry){$('countdown').textContent='Not set';$('expireDate').textContent='Set an expiry date in Settings';return}let end=new Date(settings.expiry+'T23:59:59'),ms=end-Date.now(),days=Math.ceil(ms/86400000);$('countdown').textContent=ms<0?'Expired':days+' day'+(days===1?'':'s')+' left';$('expireDate').textContent='Expiry: '+end.toLocaleDateString()}
 function updateCounts(){$('tvCount').textContent=db.live.length+' channels';$('movieCount').textContent=db.movie.length+' movies';$('seriesCount').textContent=db.series.length+' series';$('statusPill').textContent=(db.live.length+db.movie.length+db.series.length)+' items loaded';renderRecent()}
 function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function parseM3U(text){let lines=text.replace(/^\uFEFF/,'').split(/\r?\n/),out=[],meta=null;for(let line of lines){line=line.trim();if(line.startsWith('#EXTINF')){let name=(line.split(',').slice(1).join(',')||'Untitled').trim(),attr=k=>(line.match(new RegExp(k+'="([^"]*)"','i'))||[])[1]||'';meta={name,logo:attr('tvg-logo'),group:attr('group-title')||'Uncategorized',number:attr('tvg-chno'),type:/movie|vod|film/i.test(attr('group-title'))?'movie':/series|tv show/i.test(attr('group-title'))?'series':'live'};}else if(line&&!line.startsWith('#')&&meta){out.push({...meta,url:line,id:crypto.randomUUID?.()||String(Date.now()+Math.random())});meta=null}}return out}
 function mergeItems(items){items.forEach(x=>{let type=x.type||'live';if(!db[type])type='live';db[type].push({...x,type,id:x.id||String(Date.now()+Math.random())})});persist();toast('Imported '+items.length+' items')}
-function importFile(file){if(!requireContentRight())return;if(!file)return;setImportProgress(10,'Reading M3U file…','Loading local file');let r=new FileReader();r.onprogress=e=>{if(e.lengthComputable)setImportProgress(10+Math.round(e.loaded/e.total*75),'Reading M3U file…','Parsing playlist')};r.onload=()=>{let items=parseM3U(r.result);if(!items.length){setImportProgress(0,'Import failed: no M3U entries found','No items loaded');return}mergeItems(items);finishImport(items,'M3U file import successful')};r.onerror=()=>setImportProgress(0,'Could not read M3U file','Please choose the file again');r.readAsText(file)}
+function importFile(file){if(!requireContentRight())return;if(!file)return;let r=new FileReader();r.onload=()=>mergeItems(parseM3U(r.result));r.readAsText(file)}
 $('m3uFile').addEventListener('change',e=>importFile(e.target.files[0]));
 async function importM3UUrl(){if(!requireContentRight())return;let url=$('m3uUrl').value.trim();if(!url)return toast('Enter an M3U URL');try{let res=await fetch(url);if(!res.ok)throw Error('HTTP '+res.status);mergeItems(parseM3U(await res.text()))}catch(e){toast('Could not fetch URL (CORS or network). Try importing the M3U file.');}}
 async function loginXtream(){if(!requireContentRight())return;let server=$('xtServer').value.trim().replace(/\/+$/,''),u=$('xtUser').value.trim(),p=$('xtPass').value;if(!server||!u||!p)return toast('Enter server, username and password');let base=server+'/player_api.php?username='+encodeURIComponent(u)+'&password='+encodeURIComponent(p);try{let auth=await fetch(base).then(r=>r.json());if(!auth.user_info)throw Error('Login failed');let [lc,ls,mc,ms,sc,ss]=await Promise.all(['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'].map(a=>fetch(base+'&action='+a).then(r=>r.json())));let items=[];(ls||[]).forEach(x=>items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));(ms||[]).forEach(x=>items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));(ss||[]).forEach(x=>items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',url:server+'/series/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.series_id+'.mp4'}));mergeItems(items);settings.xtream={server,u,p};persist();toast('Xtream connected')}catch(e){toast('Xtream connection failed: '+e.message+' (check CORS/provider API)')}}
@@ -148,7 +148,7 @@ function exportData(){if(!currentUser||currentUser.role!=='admin')return toast('
 function importBackup(e){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);db=d.db||d;settings=d.settings||settings;persist();applySettings();renderManage();toast('Backup imported')}catch{toast('Invalid backup file')}};r.readAsText(f)}
 function clearPlaylist(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');if(!confirm('Delete all imported channels, movies and series?'))return;db={live:[],movie:[],series:[]};persist();renderManage();renderTV();renderMedia('movie');renderMedia('series');toast('Imported data cleared')}
 
-function updateClock(){let d=new Date();$('clockNow').textContent=d.toLocaleTimeString('en-GB')}
+function updateClock(){let d=new Date();$('clockNow').textContent=d.toLocaleTimeString()}
 function toggleSecret(id,b){let el=$(id);el.type=el.type==='password'?'text':'password';b.textContent=el.type==='password'?'Show':'Hide'}
 function categoryKey(type,name){return 'cat_'+type+'_'+name}
 function getCategoryMeta(type,name){return (settings.categories||{})[categoryKey(type,name)]||{}}
@@ -166,206 +166,7 @@ function saveAppearance(){if(!currentUser||currentUser.role!=='admin')return toa
 function clearBackground(){delete settings.bgImage;persist();document.body.style.backgroundImage='';$('bgImageUrl').value='';toast('Background removed')}
 function applyAppearance(){let t=settings.template||'default';if($('templateStyle'))$('templateStyle').value=t;document.body.classList.remove('tpl-gradient','tpl-light');if(t==='gradient')document.body.classList.add('tpl-gradient');if(t==='light')document.body.classList.add('tpl-light');if(settings.bgImage)document.body.style.backgroundImage=`linear-gradient(#090b16cc,#090b16cc),url(${settings.bgImage})`}
 document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;if(e.key==='ArrowUp')changeItem(-1);if(e.key==='ArrowDown')changeItem(1)});
-
-// --- Import progress, private source storage and automatic refresh enhancements ---
-let autoUpdateTimer = null;
-let importBusy = false;
-
-function setImportProgress(percent, status, countsText) {
-  const pct = Math.max(0, Math.min(100, Number(percent) || 0));
-  $('importStatus').textContent = status;
-  $('importPercent').textContent = pct + '%';
-  $('importBar').style.width = pct + '%';
-  if (countsText) $('importCounts').textContent = countsText;
-}
-function showImportCounts(items) {
-  const counts = {live:0, movie:0, series:0};
-  items.forEach(x => { if (counts[x.type] !== undefined) counts[x.type]++; });
-  return `TV: ${counts.live} · Movies: ${counts.movie} · Series: ${counts.series} · Total: ${items.length}`;
-}
-function addSourceItems(items, sourceKey) {
-  const safe = items.map(x => ({...x, sourceKey, id:x.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()))}));
-  ['live','movie','series'].forEach(type => {
-    db[type] = db[type].filter(x => x.sourceKey !== sourceKey);
-  });
-  safe.forEach(x => {
-    const type = db[x.type] ? x.type : 'live';
-    db[type].push({...x, type});
-  });
-  persist();
-  renderTV(); renderMedia('movie'); renderMedia('series'); renderManage();
-  return safe;
-}
-function finishImport(items, message) {
-  setImportProgress(100, message || 'Import successful', showImportCounts(items));
-  $('statusPill').textContent = db.live.length + db.movie.length + db.series.length + ' items loaded';
-  settings.lastUpdate = new Date().toISOString();
-  persist();
-  updateLastUpdateLabel();
-  toast('Import successful: ' + items.length + ' items');
-}
-function updateLastUpdateLabel() {
-  const el = $('lastUpdateLabel');
-  if (!el) return;
-  el.textContent = 'Last update: ' + (settings.lastUpdate ? new Date(settings.lastUpdate).toLocaleString('en-GB') : 'Never');
-}
-async function importM3UUrl() {
-  if (!requireContentRight() || importBusy) return;
-  const url = $('m3uUrl').value.trim();
-  if (!url) return toast('Enter an M3U URL');
-  importBusy = true;
-  setImportProgress(5, 'Connecting to M3U playlist…', 'Waiting for playlist data');
-  try {
-    const response = await fetch(url, {cache:'no-store'});
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    setImportProgress(35, 'Downloading playlist…', 'Reading playlist');
-    const text = await response.text();
-    setImportProgress(70, 'Reading channels, movies and series…', 'Parsing playlist');
-    const items = parseM3U(text);
-    if (!items.length) throw new Error('No playable M3U entries found');
-    addSourceItems(items, 'm3u-url');
-    settings.autoSource = {type:'m3u', url};
-    persist();
-    $('m3uUrl').value = '';
-    finishImport(items, 'M3U import successful');
-  } catch (e) {
-    setImportProgress(0, 'Import failed: ' + (e.message || 'Network/CORS error'), 'No new playlist data was imported');
-    toast('M3U import failed. Check URL, network and CORS settings.');
-  } finally { importBusy = false; }
-}
-async function loginXtream() {
-  if (!requireContentRight() || importBusy) return;
-  const server = $('xtServer').value.trim().replace(/\/+$/,'');
-  const u = $('xtUser').value.trim(), p = $('xtPass').value;
-  if (!server || !u || !p) return toast('Enter server, username and password');
-  importBusy = true;
-  setImportProgress(3, 'Connecting to Xtream server…', 'Authenticating account');
-  const base = server + '/player_api.php?username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p);
-  try {
-    const authResponse = await fetch(base, {cache:'no-store'});
-    if (!authResponse.ok) throw new Error('Server HTTP ' + authResponse.status);
-    const auth = await authResponse.json();
-    if (!auth.user_info || String(auth.user_info.auth) === '0') throw new Error('Login rejected by provider');
-    setImportProgress(15, 'Login successful. Loading categories…', 'Fetching TV, movie and series data');
-    const actions = ['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'];
-    const responses = await Promise.all(actions.map(async action => {
-      const r = await fetch(base + '&action=' + action, {cache:'no-store'});
-      if (!r.ok) throw new Error(action + ' HTTP ' + r.status);
-      return r.json();
-    }));
-    const [lc,ls,mc,ms,sc,ss] = responses;
-    const items = [];
-    (ls||[]).forEach(x => items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));
-    (ms||[]).forEach(x => items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));
-    (ss||[]).forEach(x => items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',url:server+'/series/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.series_id+'.mp4'}));
-    setImportProgress(85, 'Importing Xtream content…', showImportCounts(items));
-    if (!items.length) throw new Error('Provider returned no channels, movies or series');
-    addSourceItems(items, 'xtream');
-    settings.autoSource = {type:'xtream', server, username:u, password:p};
-    persist();
-    $('xtServer').value = ''; $('xtUser').value = ''; $('xtPass').value = '';
-    $('m3uUrl').value = '';
-    finishImport(items, 'Xtream import successful');
-  } catch (e) {
-    setImportProgress(0, 'Xtream import failed: ' + (e.message || 'Connection error'), 'Check server, login details, API and CORS access');
-    toast('Xtream connection failed: ' + (e.message || 'Check provider/CORS'));
-  } finally { importBusy = false; }
-}
-function saveAutoUpdateSettings() {
-  if (!currentUser || currentUser.role !== 'admin') return toast('Administrator only');
-  settings.autoUpdateHours = Number($('autoUpdateHours').value || 1);
-  settings.updateOnOpen = $('updateOnOpen').value === 'yes';
-  persist();
-  startAutoUpdateTimer();
-  toast('Automatic update settings saved');
-}
-function startAutoUpdateTimer() {
-  if (autoUpdateTimer) clearInterval(autoUpdateTimer);
-  const hours = [1,2,3,4,5,6,12].includes(Number(settings.autoUpdateHours)) ? Number(settings.autoUpdateHours) : 1;
-  autoUpdateTimer = setInterval(() => {
-    if (currentUser && currentUser.role !== 'normal') refreshSavedSource();
-  }, hours * 60 * 60 * 1000);
-}
-async function refreshSavedSource() {
-  const source = settings.autoSource;
-  if (!source || importBusy) return;
-  if (source.type === 'm3u') {
-    try {
-      importBusy = true;
-      setImportProgress(5, 'Automatically updating M3U…', 'Connecting to saved playlist');
-      const r = await fetch(source.url, {cache:'no-store'});
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      const items = parseM3U(await r.text());
-      if (!items.length) throw new Error('No playlist entries found');
-      addSourceItems(items, 'm3u-url');
-      finishImport(items, 'Automatic M3U update successful');
-    } catch (e) {
-      setImportProgress(0, 'Automatic update failed: ' + e.message, 'Previous imported data was kept');
-      toast('Automatic M3U update failed');
-    } finally { importBusy = false; }
-  } else if (source.type === 'xtream') {
-    // Reuse the same Xtream API import logic without placing credentials back in visible fields.
-    try {
-      importBusy = true;
-      setImportProgress(5, 'Automatically updating Xtream…', 'Connecting to saved account');
-      const {server, username:u, password:p} = source;
-      const base = server + '/player_api.php?username=' + encodeURIComponent(u) + '&password=' + encodeURIComponent(p);
-      const auth = await fetch(base, {cache:'no-store'}).then(r=>r.json());
-      if (!auth.user_info || String(auth.user_info.auth)==='0') throw new Error('Authentication failed');
-      const actions=['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'];
-      const data=await Promise.all(actions.map(a=>fetch(base+'&action='+a,{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(a+' failed');return r.json()})));
-      const [lc,ls,mc,ms,sc,ss]=data, items=[];
-      (ls||[]).forEach(x=>items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));
-      (ms||[]).forEach(x=>items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));
-      (ss||[]).forEach(x=>items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',url:server+'/series/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.series_id+'.mp4'}));
-      if (!items.length) throw new Error('No items returned');
-      addSourceItems(items,'xtream');
-      finishImport(items,'Automatic Xtream update successful');
-    } catch(e) {
-      setImportProgress(0,'Automatic Xtream update failed: '+e.message,'Previous imported data was kept');
-      toast('Automatic Xtream update failed');
-    } finally { importBusy=false; }
-  }
-}
-function saveEdit() {
-  if (!requireContentRight() || !editing) return;
-  const x = db[editing.type][editing.i];
-  const oldUrl = x.url;
-  Object.assign(x,{name:$('editName').value.trim()||x.name,group:$('editGroup').value.trim()||'Uncategorized',number:$('editNumber').value,logo:$('editLogo').value.trim(),url:$('editUrl').value.trim()});
-  persist(); closeEdit(); renderManage(); renderTV(); renderMedia('movie'); renderMedia('series');
-  if (x.url !== oldUrl) {
-    // The edited stream URL is saved immediately; the next scheduled playlist refresh
-    // will use the provider source and may replace provider-managed entries.
-    toast('Channel URL updated and saved automatically');
-  } else toast('Item updated');
-}
-function applyRolePermissions() {
-  if (!currentUser) return;
-  const normal=currentUser.role==='normal', admin=currentUser.role==='admin';
-  $('settingsNavBtn').classList.toggle('hide',normal);
-  document.querySelectorAll('.nav button[data-view="settings"]').forEach(b=>b.classList.toggle('hide',normal));
-  $('userAdminPanel').classList.toggle('hide',!admin);
-  $('dataPanel').classList.toggle('hide',!admin);
-  document.querySelectorAll('#settings .panel').forEach(panel=>{
-    if (panel.id==='userAdminPanel' || panel.id==='dataPanel') panel.classList.toggle('hide',!admin);
-    else if (panel.id==='displaySettingsPanel' || panel.id==='autoUpdatePanel') panel.classList.toggle('hide',!admin);
-    else panel.classList.toggle('hide',normal);
-  });
-  renderManage();
-}
-function applySettings() {
-  if(settings.expiry)$('expiryInput').value=settings.expiry;
-  if(settings.lang)$('language').value=settings.lang;
-  if(settings.font){$('fontSize').value=settings.font;setFont(settings.font)}
-  if(settings.appName){$('appName').value=settings.appName;$('appTitle').textContent=settings.appName}
-  $('expiryInput').setAttribute('lang','en-GB');
-  if($('autoUpdateHours')) $('autoUpdateHours').value=String(settings.autoUpdateHours||1);
-  if($('updateOnOpen')) $('updateOnOpen').value=settings.updateOnOpen===false?'no':'yes';
-  applyLanguage(); updateExpiry(); updateLastUpdateLabel();
-}
-
 applySettings();applyAppearance();updateCounts();updateClock();setInterval(updateClock,1000);renderTV();renderManage();renderUsers();setInterval(updateExpiry,60000);
-startAutoUpdateTimer();
 </script>
 </body>
 </html>
