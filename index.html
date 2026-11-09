@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My IPTV</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15"></script>
+<style>
+body {
+  margin: 0;
+  background: #101522;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+header {
+  background: #202b40;
+  padding: 18px;
+  font-size: 24px;
+  font-weight: bold;
+}
+main { padding: 15px; }
+textarea {
+  width: 100%;
+  height: 110px;
+  box-sizing: border-box;
+  padding: 12px;
+  margin: 10px 0;
+}
+button {
+  padding: 12px;
+  background: #1685ff;
+  color: white;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+video {
+  width: 100%;
+  background: black;
+  margin-top: 15px;
+}
+.channel {
+  background: #202b40;
+  padding: 14px;
+  margin: 8px 0;
+  cursor: pointer;
+  border-radius: 5px;
+}
+</style>
+</head>
+<body>
+
+<header>MY IPTV</header>
+
+<main>
+<h3>My Playlist</h3>
+
+<textarea id="playlist"
+placeholder="Paste your authorized M3U playlist here">
+</textarea>
+
+<button onclick="loadPlaylist()">Load Channels</button>
+
+<h3>Live TV Player</h3>
+<video id="video" controls playsinline></video>
+
+<h3>Channel List</h3>
+<div id="channels"></div>
+</main>
+
+<script>
+let hls;
+
+function loadPlaylist() {
+  const text = document.getElementById("playlist").value;
+  const lines = text.split(/\r?\n/);
+  const channels = [];
+  let name = "Unknown Channel";
+
+  lines.forEach(line => {
+    line = line.trim();
+
+    if (line.startsWith("#EXTINF:")) {
+      name = line.split(",").pop().trim();
+    } else if (line && !line.startsWith("#")) {
+      channels.push({ name, url: line });
+      name = "Unknown Channel";
+    }
+  });
+
+  const container = document.getElementById("channels");
+  container.innerHTML = "";
+
+  channels.forEach(channel => {
+    const item = document.createElement("div");
+    item.className = "channel";
+    item.textContent = channel.name;
+    item.onclick = () => playChannel(channel.url);
+    container.appendChild(item);
+  });
+}
+
+function playChannel(url) {
+  const video = document.getElementById("video");
+
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+
+  video.pause();
+  video.removeAttribute("src");
+  video.load();
+
+  if (Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.play().catch(console.error);
+    });
+  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src = url;
+    video.play().catch(console.error);
+  } else {
+    alert("This browser does not support HLS playback.");
+  }
+}
+</script>
+
+</body>
+</html>
