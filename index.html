@@ -3,150 +3,310 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MY IPTV PLAYER</title>
+<title>Nova IPTV Player</title>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15"></script>
 
 <style>
 :root {
-  --bg: #101522;
-  --panel: #1b2638;
-  --accent: #1685ff;
-  --text: #ffffff;
+  --bg:#080e1b;
+  --panel:#101b30;
+  --panel2:#172641;
+  --blue:#1685ff;
+  --text:#f4f7ff;
+  --muted:#9cacc5;
 }
-* { box-sizing: border-box; }
+* {box-sizing:border-box}
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
 }
-button, input, select, textarea {
-  font: inherit;
-}
+button,input,select,textarea {font:inherit}
 button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 6px;
-  padding: 11px 15px;
-  background: var(--accent);
-  color: white;
+  cursor:pointer;
+  border:0;
+  border-radius:7px;
+  padding:11px 15px;
+  background:var(--blue);
+  color:white;
 }
-input, select, textarea {
-  width: 100%;
-  padding: 11px;
-  margin: 7px 0 13px;
-  border: 1px solid #44516a;
-  background: #101522;
-  color: white;
-  border-radius: 6px;
+button:hover {filter:brightness(1.15)}
+input,select,textarea {
+  background:#0a1426;
+  color:white;
+  border:1px solid #344461;
+  border-radius:7px;
+  padding:12px;
+  width:100%;
+  margin:7px 0 13px;
 }
-header {
-  padding: 17px;
-  background: var(--panel);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+.hidden {display:none!important}
+.app {min-height:100vh}
+.topbar {
+  height:65px;
+  background:#101b30;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+  border-bottom:1px solid #263550;
 }
-.logo { font-size: 22px; font-weight: bold; }
-.layout { display: flex; min-height: 90vh; }
+.brand {font-size:22px;font-weight:bold}
+.brand span {color:#1685ff}
+.top-right {display:flex;align-items:center;gap:12px}
+.layout {display:flex;min-height:calc(100vh - 65px)}
 .sidebar {
-  width: 210px;
-  padding: 15px;
-  background: var(--panel);
-  flex-shrink: 0;
+  width:205px;
+  flex-shrink:0;
+  background:#0d1729;
+  padding:17px 10px;
+  border-right:1px solid #263550;
 }
-.sidebar button {
-  width: 100%;
-  margin-bottom: 9px;
-  text-align: left;
-  background: transparent;
+.nav-title {
+  color:#7085a5;
+  font-size:11px;
+  padding:13px 12px 7px;
+  letter-spacing:1px;
 }
-.sidebar button:hover, .sidebar button.active {
-  background: var(--accent);
+.nav {
+  display:block;
+  width:100%;
+  background:transparent;
+  text-align:left;
+  margin:3px 0;
+  color:#bac8df;
 }
-main { flex: 1; padding: 20px; min-width: 0; }
-.page { display: none; }
-.page.active { display: block; }
-h2 { margin-top: 0; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(155px,1fr));
-  gap: 13px;
+.nav.active {
+  background:#153b70;
+  color:white;
+  border-left:3px solid #2196ff;
 }
-.card {
-  background: var(--panel);
-  border-radius: 9px;
-  padding: 15px;
-  cursor: pointer;
+.content {flex:1;min-width:0;padding:20px}
+.page {display:none}
+.page.active {display:block}
+h2 {margin:0 0 18px;font-size:23px}
+h3 {font-size:16px}
+.muted {color:var(--muted);font-size:13px}
+.panel {
+  background:var(--panel);
+  border:1px solid #263550;
+  border-radius:10px;
+  padding:15px;
+  margin-bottom:15px;
 }
-.card:hover { outline: 2px solid var(--accent); }
-.card h3 { font-size: 15px; }
-.muted { color: #aab7ca; font-size: 12px; }
-.player {
-  background: black;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 20px;
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:20px;
 }
-video { width: 100%; max-height: 480px; display: block; }
+.stat {
+  background:var(--panel);
+  padding:17px;
+  border-radius:10px;
+}
+.stat strong {font-size:25px;color:#55a8ff}
+.stat p {color:var(--muted);font-size:13px;margin-bottom:0}
+
+/* LIVE PLAYER */
+.live-layout {
+  display:grid;
+  grid-template-columns:290px minmax(0,1fr);
+  gap:15px;
+}
+.channel-panel {
+  background:var(--panel);
+  border:1px solid #263550;
+  border-radius:10px;
+  overflow:hidden;
+  min-width:0;
+}
+.channel-heading {
+  padding:14px;
+  border-bottom:1px solid #263550;
+}
+.channel-list {
+  max-height:510px;
+  overflow-y:auto;
+}
+.channel {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:11px;
+  border-bottom:1px solid #263550;
+  cursor:pointer;
+}
+.channel:hover {background:#1b3152}
+.channel.selected {
+  background:#153b70;
+  border-left:3px solid #2196ff;
+}
+.channel img {
+  width:42px;
+  height:42px;
+  object-fit:contain;
+  background:white;
+  border-radius:6px;
+  padding:3px;
+}
+.channel-name {font-size:13px;font-weight:bold}
+.channel-group {font-size:11px;color:var(--muted);margin-top:4px}
+.channel-number {
+  color:#7792b6;
+  font-size:12px;
+  min-width:20px;
+}
+.player-area {min-width:0}
+.video-box {
+  background:#000;
+  border-radius:10px;
+  overflow:hidden;
+  aspect-ratio:16/9;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+video {
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+.player-placeholder {
+  text-align:center;
+  color:#8ea5c8;
+}
+.player-placeholder div {font-size:45px;margin-bottom:10px}
+.playing-info {
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 0;
+}
+.playing-info img {
+  width:50px;height:50px;
+  background:white;
+  object-fit:contain;
+  border-radius:7px;
+}
+.controls {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+.controls button {flex:1}
+.controls select {width:auto;min-width:110px;margin:0}
+.guide {
+  background:var(--panel);
+  border-radius:9px;
+  padding:15px;
+  margin-top:15px;
+}
+.guide-row {
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid #344461;
+  padding:12px 0;
+  font-size:13px;
+}
+
+/* MOVIES AND SERIES */
+.media-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:15px;
+}
+.media-card {
+  background:var(--panel);
+  border:1px solid #263550;
+  border-radius:9px;
+  overflow:hidden;
+  cursor:pointer;
+}
+.media-card:hover {
+  border-color:var(--blue);
+  transform:translateY(-2px);
+}
+.media-card img {
+  width:100%;
+  height:190px;
+  object-fit:cover;
+  background:#172641;
+}
+.media-info {padding:10px}
+.media-info h3 {margin:4px 0;font-size:14px}
+.media-info button {width:100%;margin-top:8px}
+
+/* SETTINGS */
 .formbox {
-  background: var(--panel);
-  padding: 18px;
-  border-radius: 10px;
-  margin-bottom: 17px;
-  max-width: 700px;
+  max-width:650px;
+  background:var(--panel);
+  border:1px solid #263550;
+  padding:18px;
+  border-radius:10px;
+  margin-bottom:15px;
 }
-.formbox button { margin: 4px 3px 4px 0; }
-.row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.formbox label {font-size:13px;color:#b9c9e0}
+.formbox button {margin:5px 3px}
+.table-wrap {overflow-x:auto}
+table {width:100%;border-collapse:collapse;background:var(--panel)}
+td,th {
+  padding:12px;
+  text-align:left;
+  border-bottom:1px solid #344461;
+  font-size:13px;
 }
-.row > * { flex: 1; min-width: 130px; }
-table {
-  border-collapse: collapse;
-  width: 100%;
-  background: var(--panel);
+.expired {color:#ff6262}
+.active-status {color:#3bda9a}
+.danger {background:#bc3549}
+.search-row {
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
 }
-td, th {
-  padding: 11px;
-  border-bottom: 1px solid #39465c;
-  text-align: left;
-  font-size: 13px;
-}
-.tablewrap { overflow-x: auto; }
-.danger { background: #cf3c48; }
-.success { color: #44d68b; }
-.expired { color: #ff6262; }
+.search-row input {flex:1}
+footer {text-align:center;color:#687d9e;padding:20px}
+
 #login {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
 }
-#login .formbox { width: 100%; }
-.hidden { display: none !important; }
-footer {
-  padding: 18px;
-  text-align: center;
-  color: #8491a6;
+.login-box {
+  width:100%;
+  max-width:370px;
+  padding:25px;
+  background:var(--panel);
+  border:1px solid #344461;
+  border-radius:12px;
 }
-@media(max-width:650px) {
-  .layout { display: block; }
+.login-box h1 {text-align:center}
+.login-box h1 span {color:var(--blue)}
+@media(max-width:850px) {
+  .live-layout {grid-template-columns:1fr}
+  .channel-list {max-height:300px}
+}
+@media(max-width:600px) {
   .sidebar {
-    width: 100%;
-    display: flex;
-    overflow-x: auto;
-    gap: 5px;
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+    padding:8px;
+    border:0;
   }
-  .sidebar button {
-    width: auto;
-    white-space: nowrap;
-  }
-  main { padding: 13px; }
+  .layout {display:block}
+  .nav-title {display:none}
+  .nav {width:auto;white-space:nowrap}
+  .content {padding:12px}
+  .topbar {padding:0 12px}
+  .brand {font-size:18px}
+  .stats {grid-template-columns:repeat(2,1fr)}
+  .media-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .media-card img {height:160px}
 }
 </style>
 </head>
@@ -154,814 +314,998 @@ footer {
 <body>
 
 <!-- LOGIN -->
-<section id="login">
-  <div class="formbox">
-    <h2>📺 MY IPTV PLAYER</h2>
-    <p class="muted">Please login to continue</p>
+<div id="login">
+  <div class="login-box">
+    <h1> NOVA <span>IPTV</span></h1>
+    <p class="muted" style="text-align:center">Your entertainment player</p>
 
     <label>Username</label>
-    <input id="loginUser" placeholder="Username">
+    <input id="username" placeholder="Username">
 
     <label>Password</label>
-    <input id="loginPass" type="password" placeholder="Password">
+    <input id="password" type="password" placeholder="Password">
 
-    <button onclick="login()" style="width:100%">LOGIN</button>
+    <button style="width:100%" onclick="login()">LOGIN</button>
     <p id="loginError" class="expired"></p>
-    <p class="muted">Initial demo login: admin / admin123</p>
+    <p class="muted">Demo login: admin / admin123</p>
   </div>
-</section>
+</div>
 
-<!-- APPLICATION -->
-<div id="app" class="hidden">
+<!-- MAIN APP -->
+<div id="app" class="app hidden">
 
-<header>
-  <div class="logo">📺 MY IPTV PLAYER</div>
-  <div>
-    <span id="welcome"></span>
+<header class="topbar">
+  <div class="brand">NOVA <span>IPTV</span></div>
+  <div class="top-right">
+    <span id="userLabel" class="muted"></span>
     <button onclick="logout()" class="danger">Logout</button>
   </div>
 </header>
 
 <div class="layout">
 
-<!-- SIDEBAR -->
-<nav class="sidebar">
-  <button class="active" onclick="showPage('home',this)">🏠 Dashboard</button>
-  <button onclick="showPage('tv',this)">📡 TV Category</button>
-  <button onclick="showPage('movies',this)">🎬 Movie Category</button>
-  <button onclick="showPage('series',this)">📺 Series Category</button>
-  <button onclick="showPage('groups',this)">📂 Groups</button>
-  <button onclick="showPage('playlist',this)">🔗 Playlist Manager</button>
-  <button onclick="showPage('settings',this)">⚙️ Settings</button>
-</nav>
+<!-- NAVIGATION -->
+<aside class="sidebar">
+  <div class="nav-title">MAIN MENU</div>
+  <button class="nav active" onclick="page('dashboard',this)">⌂ Dashboard</button>
+  <button class="nav" onclick="page('live',this)">◉ Live TV</button>
+  <button class="nav" onclick="page('movies',this)">▣ Movies</button>
+  <button class="nav" onclick="page('series',this)">▤ Series</button>
+  <button class="nav" onclick="page('favorites',this)">☆ Favorites</button>
 
-<main>
+  <div class="nav-title">MANAGEMENT</div>
+  <button class="nav" onclick="page('playlist',this)">▤ Playlist</button>
+  <button class="nav" onclick="page('groups',this)">▦ Groups</button>
+  <button class="nav" onclick="page('settings',this)">⚙ Settings</button>
+</aside>
+
+<main class="content">
 
 <!-- DASHBOARD -->
-<section id="home" class="page active">
+<section id="dashboard" class="page active">
   <h2>Dashboard</h2>
 
-  <div class="grid">
-    <div class="card">
-      <h2 id="tvCount">0</h2>
-      <p>TV Channels</p>
-    </div>
-    <div class="card">
-      <h2 id="movieCount">0</h2>
-      <p>Movies</p>
-    </div>
-    <div class="card">
-      <h2 id="seriesCount">0</h2>
-      <p>Series</p>
-    </div>
-    <div class="card">
-      <h2 id="groupCount">0</h2>
-      <p>Total Groups</p>
-    </div>
+  <div class="stats">
+    <div class="stat"><strong id="countTV">0</strong><p>Live TV</p></div>
+    <div class="stat"><strong id="countMovie">0</strong><p>Movies</p></div>
+    <div class="stat"><strong id="countSeries">0</strong><p>Series</p></div>
+    <div class="stat"><strong id="countGroup">0</strong><p>Groups</p></div>
   </div>
 
-  <h2 style="margin-top:30px">Video Player</h2>
-  <div class="player">
-    <video id="video" controls playsinline></video>
+  <div class="panel">
+    <h3>Welcome to Nova IPTV</h3>
+    <p class="muted">Watch your authorized live TV channels, movies and series.</p>
+    <button onclick="page('live',document.querySelectorAll('.nav')[1])">Watch Live TV</button>
+    <button onclick="page('playlist',document.querySelectorAll('.nav')[5])">Add Playlist</button>
   </div>
-  <p id="nowPlaying">Select a channel to play.</p>
-  <label>Video Resolution</label>
-  <select id="resolution" onchange="changeResolution()">
-    <option value="-1">Auto</option>
-  </select>
 
-  <h2 style="margin-top:30px">Recently added channels</h2>
-  <div id="recent" class="grid"></div>
+  <h3>Recently added</h3>
+  <div id="recent" class="media-grid"></div>
 </section>
 
-<!-- TV -->
-<section id="tv" class="page">
-  <h2>📡 TV Category</h2>
-  <input id="tvSearch" placeholder="Search TV channels..."
-         oninput="renderCategory('tv')">
-  <select id="tvGroup" onchange="renderCategory('tv')">
-    <option value="">All TV Groups</option>
-  </select>
-  <div id="tvList" class="grid"></div>
+<!-- LIVE TV -->
+<section id="live" class="page">
+  <h2>◉ Live Television</h2>
+
+  <div class="live-layout">
+
+    <div class="channel-panel">
+      <div class="channel-heading">
+        <input id="tvSearch" placeholder="Search channels..." oninput="renderTV()">
+        <select id="tvGroup" onchange="renderTV()">
+          <option value="">All TV Groups</option>
+        </select>
+      </div>
+      <div id="channelList" class="channel-list"></div>
+    </div>
+
+    <div class="player-area">
+
+      <div class="video-box" id="videoBox">
+        <div class="player-placeholder">
+          <div>▶</div>
+          <h3>NOVA IPTV</h3>
+          <p>Select a channel to start watching</p>
+        </div>
+        <video id="video" controls playsinline class="hidden"></video>
+      </div>
+
+      <div class="playing-info">
+        <img id="playingLogo"
+             src="https://placehold.co/100x100?text=TV"
+             alt="Logo">
+        <div>
+          <strong id="playingName">No channel selected</strong>
+          <p class="muted" id="playingGroup">Live TV</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button onclick="changeChannel(-1)">◀ Previous</button>
+        <button onclick="changeChannel(1)">Next ▶</button>
+        <button onclick="toggleFavorite()">☆ Favorite</button>
+      </div>
+
+      <label class="muted">Resolution</label>
+      <select id="resolution" onchange="changeResolution()">
+        <option value="-1">Auto</option>
+      </select>
+
+      <div class="guide">
+        <h3>Electronic Program Guide</h3>
+        <div id="epg">
+          <p class="muted">
+            EPG information is not loaded. Import an XMLTV guide
+            through a future EPG integration to display real schedules.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </section>
 
 <!-- MOVIES -->
 <section id="movies" class="page">
-  <h2>🎬 Movie Category</h2>
-  <input id="movieSearch" placeholder="Search movies..."
-         oninput="renderCategory('movie')">
-  <select id="movieGroup" onchange="renderCategory('movie')">
+  <h2>▣ Movies</h2>
+  <input id="movieSearch" placeholder="Search movies..." oninput="renderMovies()">
+  <select id="movieGroup" onchange="renderMovies()">
     <option value="">All Movie Groups</option>
   </select>
-  <div id="movieList" class="grid"></div>
+  <div id="movieList" class="media-grid"></div>
 </section>
 
 <!-- SERIES -->
 <section id="series" class="page">
-  <h2>📺 Series Category</h2>
-  <input id="seriesSearch" placeholder="Search series..."
-         oninput="renderCategory('series')">
-  <select id="seriesGroup" onchange="renderCategory('series')">
+  <h2>▤ TV Series</h2>
+  <input id="seriesSearch" placeholder="Search series..." oninput="renderSeries()">
+  <select id="seriesGroup" onchange="renderSeries()">
     <option value="">All Series Groups</option>
   </select>
-  <div id="seriesList" class="grid"></div>
+  <div id="seriesList" class="media-grid"></div>
+</section>
+
+<!-- FAVORITES -->
+<section id="favorites" class="page">
+  <h2>☆ My Favorites</h2>
+  <div id="favoriteList" class="media-grid"></div>
+</section>
+
+<!-- PLAYLIST -->
+<section id="playlist" class="page">
+  <h2>Playlist Manager</h2>
+
+  <div class="formbox">
+    <h3>Import M3U Playlist</h3>
+    <textarea id="m3u" rows="8"
+      placeholder="#EXTM3U&#10;#EXTINF:-1 tvg-logo=&quot;https://example.com/logo.png&quot; group-title=&quot;News&quot;,News TV&#10;https://example.com/live.m3u8"></textarea>
+
+    <label>Import Category</label>
+    <select id="importCategory">
+      <option value="tv">Live TV</option>
+      <option value="movie">Movies</option>
+      <option value="series">Series</option>
+    </select>
+
+    <label>Playlist Expiration Date (optional)</label>
+    <input type="date" id="importExpiry">
+
+    <button onclick="importPlaylist()">Import Playlist</button>
+  </div>
+
+  <div class="formbox">
+    <h3>Add Individual Stream</h3>
+
+    <label>Name</label>
+    <input id="newName" placeholder="Channel or movie name">
+
+    <label>Stream URL</label>
+    <input id="newURL" placeholder="https://example.com/stream.m3u8">
+
+    <label>Logo or Poster URL</label>
+    <input id="newLogo" placeholder="https://example.com/logo.png">
+
+    <label>Category</label>
+    <select id="newCategory" onchange="updateGroups()">
+      <option value="tv">Live TV</option>
+      <option value="movie">Movies</option>
+      <option value="series">Series</option>
+    </select>
+
+    <label>Group</label>
+    <select id="newGroup"></select>
+
+    <label>Expiration Date</label>
+    <input type="date" id="newExpiry">
+
+    <button onclick="addStream()">Add Stream</button>
+  </div>
+
+  <h3>All Playlist Links</h3>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Category</th><th>Group</th>
+          <th>Expiration</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="playlistTable"></tbody>
+    </table>
+  </div>
 </section>
 
 <!-- GROUPS -->
 <section id="groups" class="page">
-  <h2>📂 Group Management</h2>
+  <h2>Group Management</h2>
 
   <div class="formbox">
     <label>Group Name</label>
     <input id="groupName" placeholder="Example: Sports">
 
-    <label>Group Category</label>
+    <label>Category</label>
     <select id="groupCategory">
       <option value="tv">TV Group</option>
       <option value="movie">Movie Group</option>
       <option value="series">Series Group</option>
     </select>
 
-    <button onclick="addGroup()">+ Add Group</button>
+    <button onclick="addGroup()">Add Group</button>
   </div>
 
-  <div id="groupList"></div>
-</section>
-
-<!-- PLAYLIST MANAGER -->
-<section id="playlist" class="page">
-  <h2>🔗 Playlist Manager</h2>
-
-  <div class="formbox">
-    <h3>Add Channel or Link</h3>
-
-    <label>Channel / Movie / Series Name</label>
-    <input id="itemName" placeholder="Enter name">
-
-    <label>Stream URL (.m3u8 or supported media URL)</label>
-    <input id="itemURL" placeholder="https://example.com/stream.m3u8">
-
-    <label>Category</label>
-    <select id="itemCategory" onchange="updateGroupOptions()">
-      <option value="tv">TV</option>
-      <option value="movie">Movie</option>
-      <option value="series">Series</option>
-    </select>
-
-    <label>Group</label>
-    <select id="itemGroup"></select>
-
-    <label>Link Expiration Date</label>
-    <input id="itemExpiry" type="date">
-
-    <button onclick="addItem()">+ Add Link</button>
-  </div>
-
-  <div class="formbox">
-    <h3>Import M3U Playlist</h3>
-    <p class="muted">Paste an authorized M3U playlist below.</p>
-    <textarea id="m3uText" rows="7"
-      placeholder="#EXTM3U&#10;#EXTINF:-1 group-title=&quot;Sports&quot;,Sports Channel&#10;https://example.com/live.m3u8"></textarea>
-
-    <label>Default Category for Imported Links</label>
-    <select id="importCategory">
-      <option value="tv">TV</option>
-      <option value="movie">Movie</option>
-      <option value="series">Series</option>
-    </select>
-
-    <button onclick="importM3U()">Import Playlist</button>
-  </div>
-
-  <h3>All Links and Expiration Dates</h3>
-  <div class="tablewrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Category</th>
-          <th>Group</th>
-          <th>Expires</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody id="linkTable"></tbody>
-    </table>
-  </div>
+  <div id="groupTable"></div>
 </section>
 
 <!-- SETTINGS -->
 <section id="settings" class="page">
-  <h2>⚙️ Settings</h2>
+  <h2>⚙ Settings</h2>
 
   <div class="formbox">
-    <h3>🎥 Video Resolution</h3>
-    <select id="defaultResolution" onchange="setDefaultResolution()">
+    <h3>Video Quality</h3>
+    <select id="defaultQuality" onchange="saveQuality()">
       <option value="-1">Auto</option>
-      <option value="0">Lowest available quality</option>
+      <option value="0">Lowest available</option>
     </select>
-    <p class="muted">Available resolutions depend on the video stream.</p>
+    <p class="muted">Available quality depends on the stream.</p>
   </div>
 
   <div class="formbox">
-    <h3>🌐 Language</h3>
-    <select id="language" onchange="changeLanguage()">
+    <h3>Language</h3>
+    <select id="language" onchange="saveLanguage()">
       <option value="en">English</option>
-      <option value="km">ភាសាខ្មែរ (Khmer)</option>
+      <option value="km">Khmer</option>
     </select>
-    <p class="muted">Changes the main navigation labels.</p>
   </div>
 
   <div class="formbox">
-    <h3>🎨 Background Color</h3>
-    <label>Choose background</label>
-    <input id="bgColor" type="color" value="#101522"
-           onchange="changeBackground()">
-    <button onclick="resetBackground()">Reset Background</button>
+    <h3>Background Theme</h3>
+    <input type="color" id="backgroundColor" value="#080e1b"
+           onchange="saveBackground()">
+    <button onclick="resetBackground()">Reset Theme</button>
   </div>
 
   <div class="formbox">
-    <h3>🔐 Security</h3>
-    <p class="muted">Change your local demo login credentials.</p>
-
-    <label>Current Username</label>
-    <input id="newUsername" placeholder="New username">
+    <h3>Account Security</h3>
+    <label>New Username</label>
+    <input id="changeUsername" placeholder="New username">
 
     <label>New Password</label>
-    <input id="newPassword" type="password"
-           placeholder="New password">
+    <input type="password" id="changePassword" placeholder="New password">
 
     <label>Confirm Password</label>
-    <input id="confirmPassword" type="password"
-           placeholder="Confirm password">
+    <input type="password" id="confirmPassword" placeholder="Confirm password">
 
-    <button onclick="changeCredentials()">Save Credentials</button>
-    <p id="securityMessage"></p>
+    <button onclick="saveAccount()">Change Account</button>
   </div>
 </section>
 
 </main>
 </div>
 
-<footer>MY IPTV PLAYER · Personal IPTV Dashboard</footer>
+<footer>NOVA IPTV PLAYER</footer>
 
 <script>
-// --------------------------------
-// STORAGE
-// --------------------------------
-const getData = (key, fallback) => {
+// =====================================
+// DATABASE
+// =====================================
+function read(key, fallback) {
   try {
-    const value = JSON.parse(localStorage.getItem(key));
-    return value ?? fallback;
+    return JSON.parse(localStorage.getItem(key)) ?? fallback;
   } catch {
     return fallback;
   }
-};
+}
 
-let channels = getData("iptv_channels", []);
-let groups = getData("iptv_groups", [
+let channels = read("nova_channels",[]);
+let groups = read("nova_groups",[
   {name:"General",category:"tv"},
   {name:"Action",category:"movie"},
   {name:"Drama",category:"series"}
 ]);
-
-let credentials = getData("iptv_credentials", {
+let favorites = read("nova_favorites",[]);
+let account = read("nova_account",{
   username:"admin",
   password:"admin123"
 });
 
 let hls = null;
-let activeChannel = null;
+let currentIndex = -1;
 
-function save() {
-  localStorage.setItem("iptv_channels", JSON.stringify(channels));
-  localStorage.setItem("iptv_groups", JSON.stringify(groups));
+function saveData() {
+  localStorage.setItem("nova_channels",JSON.stringify(channels));
+  localStorage.setItem("nova_groups",JSON.stringify(groups));
+  localStorage.setItem("nova_favorites",JSON.stringify(favorites));
 }
 
-function validExpiry(item) {
-  if (!item.expiry) return true;
-  return item.expiry >= new Date().toLocaleDateString("en-CA");
+// =====================================
+// SECURITY HELPERS
+// =====================================
+function escapeHTML(value) {
+  return String(value).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
 }
 
-// --------------------------------
+function validURL(value) {
+  try {
+    const u = new URL(value);
+    return u.protocol === "http:" || u.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isActive(c) {
+  if (!c.expiry) return true;
+  return c.expiry >= new Date().toLocaleDateString("en-CA");
+}
+
+// =====================================
 // LOGIN
-// --------------------------------
+// =====================================
 function login() {
-  const u = document.getElementById("loginUser").value;
-  const p = document.getElementById("loginPass").value;
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
 
-  if (u === credentials.username && p === credentials.password) {
-    sessionStorage.setItem("iptv_logged_in", "yes");
-    showApp();
+  if (u === account.username && p === account.password) {
+    sessionStorage.setItem("nova_login","yes");
+    openApp();
   } else {
     document.getElementById("loginError").textContent =
       "Incorrect username or password.";
   }
 }
 
-function showApp() {
+function openApp() {
   document.getElementById("login").classList.add("hidden");
   document.getElementById("app").classList.remove("hidden");
-  document.getElementById("welcome").textContent =
-    "Welcome, " + credentials.username;
+  document.getElementById("userLabel").textContent =
+    account.username;
+
   refresh();
 }
 
 function logout() {
-  sessionStorage.removeItem("iptv_logged_in");
+  sessionStorage.removeItem("nova_login");
+  stopPlayer();
+
   document.getElementById("app").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
-  stopVideo();
 }
 
-// --------------------------------
+// =====================================
 // NAVIGATION
-// --------------------------------
-function showPage(id, btn) {
-  document.querySelectorAll(".page").forEach(p =>
-    p.classList.remove("active"));
+// =====================================
+function page(id,button) {
+  document.querySelectorAll(".page").forEach(p=>
+    p.classList.remove("active")
+  );
 
   document.getElementById(id).classList.add("active");
 
-  document.querySelectorAll(".sidebar button").forEach(b =>
-    b.classList.remove("active"));
+  document.querySelectorAll(".nav").forEach(b=>
+    b.classList.remove("active")
+  );
 
-  if (btn) btn.classList.add("active");
+  if(button) button.classList.add("active");
 }
 
-// --------------------------------
-// GROUP MANAGEMENT
-// --------------------------------
+// =====================================
+// GROUPS
+// =====================================
 function addGroup() {
   const name = document.getElementById("groupName").value.trim();
   const category = document.getElementById("groupCategory").value;
 
-  if (!name) return alert("Enter group name.");
+  if(!name) return alert("Enter group name.");
 
-  if (groups.some(g =>
-    g.category === category &&
-    g.name.toLowerCase() === name.toLowerCase()
-  )) return alert("Group already exists.");
+  if(groups.some(g=>g.category===category &&
+    g.name.toLowerCase()===name.toLowerCase())) {
+    return alert("Group already exists.");
+  }
 
-  groups.push({name, category});
-  document.getElementById("groupName").value = "";
-  save();
+  groups.push({name,category});
+  document.getElementById("groupName").value="";
+  saveData();
   refresh();
 }
 
-function deleteGroup(index) {
-  const g = groups[index];
+function updateGroups() {
+  const category = document.getElementById("newCategory").value;
+  const select = document.getElementById("newGroup");
 
-  if (channels.some(c =>
-    c.category === g.category && c.group === g.name
-  )) return alert("Move or delete its channels before deleting this group.");
+  select.innerHTML = "";
 
-  if (!confirm("Delete this group?")) return;
-
-  groups.splice(index, 1);
-  save();
-  refresh();
-}
-
-function renderGroups() {
-  document.getElementById("groupList").innerHTML =
-    ["tv","movie","series"].map(category => {
-      const title = category.toUpperCase() + " GROUPS";
-      const list = groups.map((g,i) =>
-        g.category === category
-          ? `<tr>
-               <td>${escapeHTML(g.name)}</td>
-               <td><button class="danger" onclick="deleteGroup(${i})">Delete</button></td>
-             </tr>`
-          : ""
-      ).join("");
-
-      return `<h3>${title}</h3>
-        <div class="tablewrap"><table>
-        <tr><th>Group Name</th><th>Action</th></tr>
-        ${list || "<tr><td colspan='2'>No groups</td></tr>"}
-        </table></div>`;
-    }).join("");
-}
-
-function updateGroupOptions() {
-  const category = document.getElementById("itemCategory").value;
-  const select = document.getElementById("itemGroup");
-
-  select.innerHTML = groups
-    .filter(g => g.category === category)
-    .map(g => `<option value="${escapeHTML(g.name)}">${escapeHTML(g.name)}</option>`)
-    .join("");
-}
-
-// --------------------------------
-// ADD CHANNEL
-// --------------------------------
-function addItem() {
-  const name = document.getElementById("itemName").value.trim();
-  const url = document.getElementById("itemURL").value.trim();
-  const category = document.getElementById("itemCategory").value;
-  const group = document.getElementById("itemGroup").value;
-  const expiry = document.getElementById("itemExpiry").value;
-
-  if (!name || !url) return alert("Enter channel name and URL.");
-
-  if (!validURL(url)) return alert("Enter a valid HTTP or HTTPS URL.");
-
-  if (!group) return alert("Create a group first.");
-
-  if (expiry && expiry < new Date().toLocaleDateString("en-CA")) {
-    return alert("Expiration date cannot be in the past.");
-  }
-
-  channels.push({name,url,category,group,expiry});
-  save();
-
-  document.getElementById("itemName").value = "";
-  document.getElementById("itemURL").value = "";
-  document.getElementById("itemExpiry").value = "";
-
-  refresh();
-  alert("Link added successfully.");
-}
-
-// --------------------------------
-// IMPORT M3U
-// --------------------------------
-function importM3U() {
-  const text = document.getElementById("m3uText").value;
-  const defaultCategory = document.getElementById("importCategory").value;
-
-  if (!text.trim()) return alert("Paste an M3U playlist first.");
-
-  const lines = text.split(/\r?\n/);
-  let info = null;
-  let count = 0;
-
-  lines.forEach(line => {
-    line = line.trim();
-
-    if (line.startsWith("#EXTINF:")) {
-      const name = line.substring(line.lastIndexOf(",") + 1).trim();
-      const groupMatch = line.match(/group-title="([^"]*)"/i);
-
-      info = {
-        name: name || "Unknown Channel",
-        group: groupMatch ? groupMatch[1] : "General"
-      };
-
-      if (groupMatch && !groups.some(g =>
-        g.category === defaultCategory &&
-        g.name.toLowerCase() === info.group.toLowerCase()
-      )) {
-        groups.push({
-          name: info.group,
-          category: defaultCategory
-        });
-      }
-
-    } else if (line && !line.startsWith("#") && info) {
-      if (validURL(line)) {
-        channels.push({
-          name: info.name,
-          url: line,
-          category: defaultCategory,
-          group: info.group,
-          expiry: ""
-        });
-        count++;
-      }
-      info = null;
-    }
-  });
-
-  save();
-  refresh();
-  alert(count + " links imported.");
-}
-
-// --------------------------------
-// CATEGORY DISPLAY
-// --------------------------------
-function renderCategory(category) {
-  const search = document.getElementById(
-    category + "Search"
-  ).value.toLowerCase();
-
-  const selectedGroup = document.getElementById(
-    category + "Group"
-  ).value;
-
-  const result = channels.filter(c =>
-    c.category === category &&
-    c.name.toLowerCase().includes(search) &&
-    (!selectedGroup || c.group === selectedGroup)
-  );
-
-  const target = document.getElementById(
-    category === "tv" ? "tvList" :
-    category === "movie" ? "movieList" : "seriesList"
-  );
-
-  target.innerHTML = result.map(c => {
-    const index = channels.indexOf(c);
-    const expired = !validExpiry(c);
-
-    return `<div class="card" onclick="playChannel(${index})">
-      <h3>${escapeHTML(c.name)}</h3>
-      <p class="muted">${escapeHTML(c.group)}</p>
-      <p class="${expired ? "expired" : "success"}">
-        ${expired ? "Expired" : "Available"}
-      </p>
-      <p class="muted">${c.expiry || "No expiration date"}</p>
-      <button onclick="event.stopPropagation();favorite(${index})">
-        ☆ Favorite
-      </button>
-    </div>`;
-  }).join("") || "<p>No channels found.</p>";
-}
-
-// --------------------------------
-// PLAY VIDEO
-// --------------------------------
-function playChannel(index) {
-  const channel = channels[index];
-
-  if (!channel) return;
-
-  if (!validExpiry(channel)) {
-    alert("This playlist link has expired.");
-    return;
-  }
-
-  const video = document.getElementById("video");
-  stopVideo();
-
-  activeChannel = channel;
-  document.getElementById("nowPlaying").textContent =
-    "Now Playing: " + channel.name;
-
-  if (window.Hls && Hls.isSupported()) {
-    hls = new Hls();
-    hls.loadSource(channel.url);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      updateResolutions();
-      video.play().catch(() => {});
-    });
-
-    hls.on(Hls.Events.ERROR, (event, data) => {
-      if (data.fatal) {
-        console.error("HLS playback error:", data);
-      }
-    });
-
-  } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-    video.src = channel.url;
-    video.play().catch(() => {});
-  } else {
-    alert("This browser does not support this stream format.");
-  }
-}
-
-function stopVideo() {
-  if (hls) {
-    hls.destroy();
-    hls = null;
-  }
-
-  const video = document.getElementById("video");
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
-  activeChannel = null;
-}
-
-function updateResolutions() {
-  const select = document.getElementById("resolution");
-  select.innerHTML = '<option value="-1">Auto</option>';
-
-  if (!hls) return;
-
-  const heights = [...new Set(
-    hls.levels.map(level => level.height).filter(Boolean)
-  )].sort((a,b) => b-a);
-
-  heights.forEach(height => {
-    const index = hls.levels.findIndex(l => l.height === height);
-    const option = document.createElement("option");
-    option.value = index;
-    option.textContent = height + "p";
+  groups.filter(g=>g.category===category).forEach(g=>{
+    const option=document.createElement("option");
+    option.value=g.name;
+    option.textContent=g.name;
     select.appendChild(option);
   });
 }
 
-function changeResolution() {
-  if (hls) {
-    hls.currentLevel =
-      Number(document.getElementById("resolution").value);
+function renderGroups() {
+  const target=document.getElementById("groupTable");
+
+  target.innerHTML=["tv","movie","series"].map(category=>{
+    const items=groups.map((g,i)=>g.category===category?
+      `<tr>
+        <td>${escapeHTML(g.name)}</td>
+        <td><button class="danger" onclick="removeGroup(${i})">Delete</button></td>
+      </tr>`:"").join("");
+
+    return `<div class="panel">
+      <h3>${category.toUpperCase()} GROUPS</h3>
+      <table><tr><th>Group</th><th>Action</th></tr>
+      ${items || "<tr><td>No groups</td></tr>"}
+      </table>
+    </div>`;
+  }).join("");
+}
+
+function removeGroup(i) {
+  const g=groups[i];
+
+  if(channels.some(c=>c.category===g.category && c.group===g.name))
+    return alert("Delete or move the streams in this group first.");
+
+  if(!confirm("Delete group?")) return;
+
+  groups.splice(i,1);
+  saveData();
+  refresh();
+}
+
+// =====================================
+// ADD STREAM
+// =====================================
+function addStream() {
+  const name=document.getElementById("newName").value.trim();
+  const url=document.getElementById("newURL").value.trim();
+  const logo=document.getElementById("newLogo").value.trim();
+  const category=document.getElementById("newCategory").value;
+  const group=document.getElementById("newGroup").value;
+  const expiry=document.getElementById("newExpiry").value;
+
+  if(!name || !url) return alert("Enter name and URL.");
+  if(!validURL(url)) return alert("Invalid stream URL.");
+  if(!group) return alert("Create a group first.");
+  if(expiry && expiry<new Date().toLocaleDateString("en-CA"))
+    return alert("Expiration date is in the past.");
+
+  channels.push({name,url,logo,category,group,expiry});
+  saveData();
+
+  ["newName","newURL","newLogo","newExpiry"].forEach(id=>
+    document.getElementById(id).value=""
+  );
+
+  refresh();
+  alert("Stream added!");
+}
+
+// =====================================
+// M3U IMPORT
+// =====================================
+function importPlaylist() {
+  const text=document.getElementById("m3u").value.trim();
+  const category=document.getElementById("importCategory").value;
+  const expiry=document.getElementById("importExpiry").value;
+
+  if(!text) return alert("Paste your M3U playlist.");
+
+  const lines=text.split(/\r?\n/);
+  let info=null;
+  let count=0;
+
+  lines.forEach(line=>{
+    line=line.trim();
+
+    if(line.startsWith("#EXTINF:")) {
+      const name=line.substring(line.lastIndexOf(",")+1).trim();
+      const groupMatch=line.match(/group-title="([^"]*)"/i);
+      const logoMatch=line.match(/tvg-logo="([^"]*)"/i);
+
+      info={
+        name:name || "Unknown",
+        group:groupMatch ? groupMatch[1] : "General",
+        logo:logoMatch ? logoMatch[1] : ""
+      };
+
+      if(!groups.some(g=>g.category===category &&
+        g.name===info.group)) {
+        groups.push({name:info.group,category});
+      }
+
+    } else if(line && !line.startsWith("#") && info) {
+      if(validURL(line)) {
+        channels.push({
+          name:info.name,
+          url:line,
+          logo:info.logo,
+          category,
+          group:info.group,
+          expiry
+        });
+        count++;
+      }
+      info=null;
+    }
+  });
+
+  saveData();
+  refresh();
+  alert(count+" streams imported.");
+}
+
+// =====================================
+// LIVE TV
+// =====================================
+function renderTV() {
+  const search=document.getElementById("tvSearch").value.toLowerCase();
+  const group=document.getElementById("tvGroup").value;
+
+  const list=channels.map((c,i)=>({...c,index:i}))
+    .filter(c=>c.category==="tv" &&
+      c.name.toLowerCase().includes(search) &&
+      (!group || c.group===group) &&
+      isActive(c));
+
+  const target=document.getElementById("channelList");
+  target.innerHTML="";
+
+  list.forEach(c=>{
+    const item=document.createElement("div");
+    item.className="channel"+
+      (currentIndex===c.index?" selected":"");
+
+    const img=document.createElement("img");
+    img.src=c.logo || "https://placehold.co/100x100?text=TV";
+    img.alt="TV";
+    img.onerror=()=>img.src="https://placehold.co/100x100?text=TV";
+
+    const number=document.createElement("span");
+    number.className="channel-number";
+    number.textContent=c.index+1;
+
+    const info=document.createElement("div");
+    const name=document.createElement("div");
+    name.className="channel-name";
+    name.textContent=c.name;
+
+    const grp=document.createElement("div");
+    grp.className="channel-group";
+    grp.textContent=c.group;
+
+    info.append(name,grp);
+    item.append(number,img,info);
+    item.onclick=()=>playStream(c.index);
+    target.appendChild(item);
+  });
+
+  if(!list.length) target.textContent="No available TV channels.";
+}
+
+// =====================================
+// MOVIES AND SERIES
+// =====================================
+function renderMedia(category,searchId,groupId,targetId) {
+  const search=document.getElementById(searchId).value.toLowerCase();
+  const group=document.getElementById(groupId).value;
+
+  const list=channels.map((c,i)=>({...c,index:i}))
+    .filter(c=>c.category===category &&
+      c.name.toLowerCase().includes(search) &&
+      (!group || c.group===group) &&
+      isActive(c));
+
+  const target=document.getElementById(targetId);
+  target.innerHTML="";
+
+  list.forEach(c=>{
+    const card=document.createElement("div");
+    card.className="media-card";
+
+    const img=document.createElement("img");
+    img.src=c.logo || "https://placehold.co/300x450?text=IPTV";
+    img.alt=c.name;
+    img.onerror=()=>img.src="https://placehold.co/300x450?text=IPTV";
+
+    const info=document.createElement("div");
+    info.className="media-info";
+
+    const title=document.createElement("h3");
+    title.textContent=c.name;
+
+    const grp=document.createElement("p");
+    grp.className="muted";
+    grp.textContent=c.group;
+
+    const play=document.createElement("button");
+    play.textContent="▶ PLAY";
+    play.onclick=()=>playStream(c.index);
+
+    info.append(title,grp,play);
+    card.append(img,info);
+    target.appendChild(card);
+  });
+
+  if(!list.length) target.textContent="No content available.";
+}
+
+function renderMovies() {
+  renderMedia("movie","movieSearch","movieGroup","movieList");
+}
+
+function renderSeries() {
+  renderMedia("series","seriesSearch","seriesGroup","seriesList");
+}
+
+// =====================================
+// VIDEO PLAYER
+// =====================================
+function playStream(index) {
+  const c=channels[index];
+  if(!c) return;
+
+  if(!isActive(c)) {
+    alert("This stream has expired.");
+    return;
   }
-}
 
-function setDefaultResolution() {
-  const value = document.getElementById("defaultResolution").value;
-  localStorage.setItem("iptv_resolution", value);
-  if (hls) hls.currentLevel = Number(value);
-}
+  stopPlayer();
+  currentIndex=index;
 
-// --------------------------------
-// FAVORITES
-// --------------------------------
-function favorite(index) {
-  let favorites = getData("iptv_favorites", []);
+  const video=document.getElementById("video");
+  video.classList.remove("hidden");
 
-  if (favorites.includes(index)) {
-    favorites = favorites.filter(i => i !== index);
+  document.getElementById("playingName").textContent=c.name;
+  document.getElementById("playingGroup").textContent=c.group;
+  document.getElementById("playingLogo").src=
+    c.logo || "https://placehold.co/100x100?text=TV";
+
+  const placeholder=document.querySelector(".player-placeholder");
+  if(placeholder) placeholder.style.display="none";
+
+  if(window.Hls && Hls.isSupported()) {
+    hls=new Hls();
+    hls.loadSource(c.url);
+    hls.attachMedia(video);
+
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+      renderResolutions();
+      video.play().catch(()=>{});
+    });
+
+    hls.on(Hls.Events.ERROR,(event,data)=>{
+      if(data.fatal) {
+        console.error("Stream playback error",data);
+      }
+    });
+
+  } else if(video.canPlayType("application/vnd.apple.mpegurl")) {
+    video.src=c.url;
+    video.play().catch(()=>{});
   } else {
-    favorites.push(index);
+    alert("This browser does not support this video format.");
   }
 
-  localStorage.setItem("iptv_favorites", JSON.stringify(favorites));
+  renderTV();
+}
+
+function stopPlayer() {
+  const video=document.getElementById("video");
+  video.pause();
+
+  if(hls) {
+    hls.destroy();
+    hls=null;
+  }
+
+  video.removeAttribute("src");
+  video.load();
+}
+
+function changeChannel(direction) {
+  const list=channels.map((c,i)=>({...c,index:i}))
+    .filter(c=>c.category==="tv" && isActive(c));
+
+  if(!list.length) return alert("No TV channels.");
+
+  let position=list.findIndex(c=>c.index===currentIndex);
+  position=position===-1 ? 0 :
+    (position+direction+list.length)%list.length;
+
+  playStream(list[position].index);
+}
+
+function renderResolutions() {
+  const select=document.getElementById("resolution");
+  select.innerHTML='<option value="-1">Auto</option>';
+
+  if(!hls) return;
+
+  const heights=[...new Set(
+    hls.levels.map(l=>l.height).filter(Boolean)
+  )].sort((a,b)=>b-a);
+
+  heights.forEach(height=>{
+    const index=hls.levels.findIndex(l=>l.height===height);
+    const option=document.createElement("option");
+    option.value=index;
+    option.textContent=height+"p";
+    select.appendChild(option);
+  });
+
+  select.value=localStorage.getItem("nova_quality") || "-1";
+  hls.currentLevel=Number(select.value);
+}
+
+function changeResolution() {
+  const value=document.getElementById("resolution").value;
+  localStorage.setItem("nova_quality",value);
+  if(hls) hls.currentLevel=Number(value);
+}
+
+// =====================================
+// FAVORITES
+// =====================================
+function toggleFavorite() {
+  if(currentIndex<0) return alert("Select a channel first.");
+
+  if(favorites.includes(currentIndex))
+    favorites=favorites.filter(i=>i!==currentIndex);
+  else favorites.push(currentIndex);
+
+  saveData();
   alert("Favorites updated.");
 }
 
-// --------------------------------
-// LINKS TABLE
-// --------------------------------
-function renderLinks() {
-  document.getElementById("linkTable").innerHTML =
-    channels.map((c,i) => {
-      const expired = !validExpiry(c);
+function renderFavorites() {
+  const target=document.getElementById("favoriteList");
+  target.innerHTML="";
+
+  favorites.forEach(i=>{
+    const c=channels[i];
+    if(!c || !isActive(c)) return;
+
+    const card=document.createElement("div");
+    card.className="media-card";
+
+    const img=document.createElement("img");
+    img.src=c.logo || "https://placehold.co/300x450?text=IPTV";
+
+    const info=document.createElement("div");
+    info.className="media-info";
+
+    const name=document.createElement("h3");
+    name.textContent=c.name;
+
+    const play=document.createElement("button");
+    play.textContent="▶ PLAY";
+    play.onclick=()=>playStream(i);
+
+    info.append(name,play);
+    card.append(img,info);
+    target.append(card);
+  });
+}
+
+// =====================================
+// PLAYLIST TABLE
+// =====================================
+function renderPlaylist() {
+  document.getElementById("playlistTable").innerHTML=
+    channels.map((c,i)=>{
+      const active=isActive(c);
 
       return `<tr>
         <td>${escapeHTML(c.name)}</td>
         <td>${escapeHTML(c.category)}</td>
         <td>${escapeHTML(c.group)}</td>
-        <td>${c.expiry || "Never"}</td>
-        <td class="${expired ? "expired" : "success"}">
-          ${expired ? "Expired" : "Active"}
+        <td class="${active?'active-status':'expired'}">
+          ${c.expiry || "Never"}
+          ${active?" Active":" Expired"}
         </td>
-        <td>
-          <button class="danger" onclick="deleteItem(${i})">
-            Delete
-          </button>
-        </td>
+        <td><button class="danger" onclick="deleteStream(${i})">Delete</button></td>
       </tr>`;
     }).join("");
 }
 
-function deleteItem(index) {
-  if (!confirm("Delete this link?")) return;
+function deleteStream(i) {
+  if(!confirm("Delete this stream?")) return;
 
-  if (activeChannel === channels[index]) stopVideo();
+  if(currentIndex===i) {
+    stopPlayer();
+    currentIndex=-1;
+  }
 
-  channels.splice(index,1);
-  save();
+  channels.splice(i,1);
+
+  favorites=favorites.filter(f=>f!==i).map(f=>f>i?f-1:f);
+
+  saveData();
   refresh();
 }
 
-// --------------------------------
+// =====================================
 // SETTINGS
-// --------------------------------
-function changeBackground() {
-  const color = document.getElementById("bgColor").value;
-  document.documentElement.style.setProperty("--bg", color);
-  localStorage.setItem("iptv_bg", color);
+// =====================================
+function saveBackground() {
+  const color=document.getElementById("backgroundColor").value;
+  document.documentElement.style.setProperty("--bg",color);
+  localStorage.setItem("nova_bg",color);
 }
 
 function resetBackground() {
-  localStorage.removeItem("iptv_bg");
-  document.documentElement.style.setProperty("--bg","#101522");
-  document.getElementById("bgColor").value = "#101522";
+  localStorage.removeItem("nova_bg");
+  document.documentElement.style.setProperty("--bg","#080e1b");
+  document.getElementById("backgroundColor").value="#080e1b";
 }
 
-function changeCredentials() {
-  const username = document.getElementById("newUsername").value.trim();
-  const password = document.getElementById("newPassword").value;
-  const confirmPassword = document.getElementById("confirmPassword").value;
+function saveQuality() {
+  const value=document.getElementById("defaultQuality").value;
+  localStorage.setItem("nova_quality",value);
+  document.getElementById("resolution").value=value;
+  changeResolution();
+}
 
-  if (!username || !password) {
-    return alert("Enter username and password.");
-  }
+function saveLanguage() {
+  const lang=document.getElementById("language").value;
+  localStorage.setItem("nova_language",lang);
 
-  if (password.length < 8) {
-    return alert("Password must be at least 8 characters.");
-  }
+  const english=["⌂ Dashboard","◉ Live TV","▣ Movies","▤ Series",
+    "☆ Favorites","▤ Playlist","▦ Groups","⚙ Settings"];
 
-  if (password !== confirmPassword) {
-    return alert("Passwords do not match.");
-  }
+  const khmer=["⌂ ផ្ទាំងគ្រប់គ្រង","◉ ទូរទស្សន៍ផ្ទាល់","▣ ភាពយន្ត",
+    "▤ ស៊េរី","☆ ចំណូលចិត្ត","▤ បញ្ជី","▦ ក្រុម","⚙ ការកំណត់"];
 
-  credentials = {username,password};
-  localStorage.setItem("iptv_credentials",JSON.stringify(credentials));
+  document.querySelectorAll(".nav").forEach((b,i)=>{
+    b.textContent=(lang==="km"?khmer:english)[i];
+  });
+}
 
-  document.getElementById("securityMessage").textContent =
-    "Credentials updated. Please log in again.";
+function saveAccount() {
+  const username=document.getElementById("changeUsername").value.trim();
+  const password=document.getElementById("changePassword").value;
+  const confirm=document.getElementById("confirmPassword").value;
 
+  if(!username || !password) return alert("Enter username and password.");
+  if(password.length<8) return alert("Use at least 8 characters.");
+  if(password!==confirm) return alert("Passwords do not match.");
+
+  account={username,password};
+  localStorage.setItem("nova_account",JSON.stringify(account));
+
+  alert("Account changed. Please log in again.");
   logout();
 }
 
-function changeLanguage() {
-  const lang = document.getElementById("language").value;
-  localStorage.setItem("iptv_language",lang);
-
-  const labels = lang === "km"
-    ? ["ផ្ទាំងគ្រប់គ្រង","ទូរទស្សន៍","ភាពយន្ត","ស៊េរី","ក្រុម","បញ្ជីកម្មវិធី","ការកំណត់"]
-    : ["🏠 Dashboard","📡 TV Category","🎬 Movie Category",
-       "📺 Series Category","📂 Groups","🔗 Playlist Manager","⚙️ Settings"];
-
-  document.querySelectorAll(".sidebar button").forEach((b,i) => {
-    b.textContent = labels[i];
-  });
-}
-
-// --------------------------------
-// DASHBOARD / REFRESH
-// --------------------------------
+// =====================================
+// REFRESH ALL
+// =====================================
 function refresh() {
-  document.getElementById("tvCount").textContent =
-    channels.filter(c => c.category === "tv").length;
+  document.getElementById("countTV").textContent=
+    channels.filter(c=>c.category==="tv").length;
 
-  document.getElementById("movieCount").textContent =
-    channels.filter(c => c.category === "movie").length;
+  document.getElementById("countMovie").textContent=
+    channels.filter(c=>c.category==="movie").length;
 
-  document.getElementById("seriesCount").textContent =
-    channels.filter(c => c.category === "series").length;
+  document.getElementById("countSeries").textContent=
+    channels.filter(c=>c.category==="series").length;
 
-  document.getElementById("groupCount").textContent = groups.length;
+  document.getElementById("countGroup").textContent=groups.length;
 
-  ["tv","movie","series"].forEach(category => {
-    const select = document.getElementById(category + "Group");
-    const current = select.value;
+  ["tv","movie","series"].forEach(category=>{
+    const id=category==="tv"?"tvGroup":
+      category==="movie"?"movieGroup":"seriesGroup";
 
-    select.innerHTML =
-      `<option value="">All ${category} Groups</option>` +
-      groups.filter(g => g.category === category).map(g =>
-        `<option value="${escapeHTML(g.name)}">${escapeHTML(g.name)}</option>`
-      ).join("");
+    const select=document.getElementById(id);
+    const current=select.value;
 
-    select.value = current;
-    renderCategory(category);
+    select.innerHTML='<option value="">All Groups</option>';
+
+    groups.filter(g=>g.category===category).forEach(g=>{
+      const option=document.createElement("option");
+      option.value=g.name;
+      option.textContent=g.name;
+      select.appendChild(option);
+    });
+
+    select.value=current;
   });
 
+  renderTV();
+  renderMovies();
+  renderSeries();
+  renderFavorites();
+  renderPlaylist();
   renderGroups();
-  renderLinks();
-  updateGroupOptions();
+  updateGroups();
 
-  document.getElementById("recent").innerHTML =
-    channels.slice(-6).reverse().map(c => `
-      <div class="card">
-        <h3>${escapeHTML(c.name)}</h3>
-        <p class="muted">${escapeHTML(c.category)}</p>
-      </div>
-    `).join("") || "<p>No channels yet.</p>";
+  const recent=document.getElementById("recent");
+  recent.innerHTML="";
+
+  channels.slice(-6).reverse().forEach(c=>{
+    const card=document.createElement("div");
+    card.className="media-card";
+
+    const img=document.createElement("img");
+    img.src=c.logo || "https://placehold.co/300x450?text=IPTV";
+
+    const info=document.createElement("div");
+    info.className="media-info";
+
+    const title=document.createElement("h3");
+    title.textContent=c.name;
+
+    info.append(title);
+    card.append(img,info);
+    recent.append(card);
+  });
 }
 
-// --------------------------------
-// SECURITY HELPERS
-// --------------------------------
-function validURL(url) {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "https:" || parsed.protocol === "http:";
-  } catch {
-    return false;
+// =====================================
+// KEYBOARD / REMOTE
+// =====================================
+document.addEventListener("keydown",e=>{
+  if(document.getElementById("app").classList.contains("hidden")) return;
+
+  if(e.key==="ArrowRight" && document.activeElement.tagName!=="INPUT") {
+    changeChannel(1);
   }
+
+  if(e.key==="ArrowLeft" && document.activeElement.tagName!=="INPUT") {
+    changeChannel(-1);
+  }
+
+  if(e.key==="Escape") {
+    const video=document.getElementById("video");
+    if(document.fullscreenElement) document.exitFullscreen();
+    else if(video.requestFullscreen) video.requestFullscreen().catch(()=>{});
+  }
+});
+
+// =====================================
+// INITIALIZE
+// =====================================
+const bg=localStorage.getItem("nova_bg");
+if(bg) {
+  document.documentElement.style.setProperty("--bg",bg);
+  document.getElementById("backgroundColor").value=bg;
 }
 
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  })[c]);
-}
+document.getElementById("defaultQuality").value=
+  localStorage.getItem("nova_quality") || "-1";
 
-// --------------------------------
-// INITIALIZATION
-// --------------------------------
-const savedBg = localStorage.getItem("iptv_bg");
+document.getElementById("language").value=
+  localStorage.getItem("nova_language") || "en";
 
-if (savedBg) {
-  document.documentElement.style.setProperty("--bg",savedBg);
-  document.getElementById("bgColor").value = savedBg;
-}
+saveLanguage();
+updateGroups();
 
-document.getElementById("defaultResolution").value =
-  localStorage.getItem("iptv_resolution") || "-1";
-
-document.getElementById("language").value =
-  localStorage.getItem("iptv_language") || "en";
-
-changeLanguage();
-updateGroupOptions();
-
-if (sessionStorage.getItem("iptv_logged_in") === "yes") {
-  showApp();
+if(sessionStorage.getItem("nova_login")==="yes") {
+  openApp();
 }
 </script>
 
