@@ -4,20 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>PLC Cambodia TV</title>
+<title>PLC Cambodia IPTV Player</title>
 
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.15"></script>
 
 <style>
 :root {
-  --bg: #071326;
-  --panel: #10213d;
-  --panel-light: #172f52;
-  --primary: #e31b23;
-  --secondary: #1685ff;
-  --text: #ffffff;
-  --muted: #9eb0cc;
-  --border: #294566;
+  --bg: #080e1b;
+  --panel: #101b30;
+  --panel2: #172641;
+  --blue: #1685ff;
+  --text: #f4f7ff;
+  --muted: #9cacc5;
+  --danger: #bc3549;
+  --success: #3bda9a;
 }
 
 * {
@@ -26,12 +26,48 @@
 
 body {
   margin: 0;
-  font-family: Arial, "Noto Sans Khmer", sans-serif;
   background: var(--bg);
   color: var(--text);
+  font-family: Arial, sans-serif;
 }
 
-/* LOGIN */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 7px;
+  padding: 11px 15px;
+  background: var(--blue);
+  color: white;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+input,
+select,
+textarea {
+  background: #0a1426;
+  color: white;
+  border: 1px solid #344461;
+  border-radius: 7px;
+  padding: 12px;
+  width: 100%;
+  margin: 7px 0 13px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ================= LOGIN ================= */
 
 #loginPage {
   min-height: 100vh;
@@ -39,98 +75,61 @@ body {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background:
-    linear-gradient(135deg, rgba(7,19,38,.95), rgba(15,40,75,.9));
 }
 
-.login-card {
+.login-box {
   width: 100%;
   max-width: 400px;
-  padding: 30px;
+  padding: 28px;
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
+  border: 1px solid #344461;
+  border-radius: 12px;
 }
 
-.logo {
+.login-box h1 {
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 5px;
 }
 
-.logo h1 {
-  margin: 0;
-  font-size: 30px;
+.login-box h1 span {
+  color: var(--blue);
 }
 
-.logo span {
-  color: var(--primary);
-}
-
-.logo p {
+.login-help {
+  text-align: center;
   color: var(--muted);
+  font-size: 13px;
 }
 
-input, select, textarea {
-  width: 100%;
-  padding: 13px;
-  margin: 7px 0 15px;
-  background: #08172c;
-  color: white;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-}
+/* ================= APP ================= */
 
-button {
-  border: 0;
-  border-radius: 8px;
-  padding: 12px 16px;
-  cursor: pointer;
-  background: var(--secondary);
-  color: white;
-  font-weight: bold;
-}
-
-button:hover {
-  filter: brightness(1.1);
-}
-
-.danger {
-  background: var(--primary);
-}
-
-.hidden {
-  display: none !important;
-}
-
-/* APP */
-
-#app {
+.app {
   min-height: 100vh;
 }
 
-.header {
+.topbar {
   height: 65px;
+  background: var(--panel);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
+  padding: 0 22px;
+  border-bottom: 1px solid #263550;
 }
 
-.header-brand {
-  font-size: 21px;
+.brand {
+  font-size: 22px;
   font-weight: bold;
 }
 
-.header-brand span {
-  color: var(--primary);
+.brand span {
+  color: var(--blue);
 }
 
-.user-area {
+.top-right {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 12px;
 }
 
 .layout {
@@ -139,35 +138,33 @@ button:hover {
 }
 
 .sidebar {
-  width: 220px;
+  width: 210px;
   flex-shrink: 0;
-  background: #09182d;
-  border-right: 1px solid var(--border);
-  padding: 15px 10px;
+  background: #0d1729;
+  padding: 17px 10px;
+  border-right: 1px solid #263550;
 }
 
 .nav-title {
-  color: #7186a7;
+  color: #7085a5;
   font-size: 11px;
+  padding: 13px 12px 7px;
   letter-spacing: 1px;
-  margin: 15px 10px 7px;
 }
 
-.nav-btn {
+.nav {
   display: block;
   width: 100%;
-  text-align: left;
-  margin: 4px 0;
-  padding: 12px;
   background: transparent;
-  color: #b8c9e2;
+  text-align: left;
+  margin: 3px 0;
+  color: #bac8df;
 }
 
-.nav-btn.active,
-.nav-btn:hover {
-  background: var(--panel-light);
+.nav.active {
+  background: #153b70;
   color: white;
-  border-left: 3px solid var(--primary);
+  border-left: 3px solid #2196ff;
 }
 
 .content {
@@ -184,108 +181,145 @@ button:hover {
   display: block;
 }
 
-/* DASHBOARD */
+h2 {
+  margin: 0 0 18px;
+}
+
+h3 {
+  font-size: 16px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.expired {
+  color: #ff6262;
+}
+
+.active-status {
+  color: var(--success);
+}
+
+.danger {
+  background: var(--danger);
+}
+
+.panel,
+.formbox {
+  background: var(--panel);
+  border: 1px solid #263550;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 15px;
+}
+
+.formbox {
+  max-width: 750px;
+}
 
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.stat-card {
+.stat {
   background: var(--panel);
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  padding: 17px;
+  border-radius: 10px;
+  border: 1px solid #263550;
 }
 
-.stat-card strong {
-  display: block;
-  font-size: 28px;
-  color: var(--secondary);
+.stat strong {
+  font-size: 25px;
+  color: #55a8ff;
 }
 
-.stat-card p {
-  margin-bottom: 0;
+.stat p {
   color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 0;
 }
 
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  margin-top: 20px;
-}
-
-/* LIVE TV */
+/* ================= LIVE PLAYER ================= */
 
 .live-layout {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 290px minmax(0, 1fr);
   gap: 15px;
 }
 
-.channel-box {
+.channel-panel {
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  border: 1px solid #263550;
+  border-radius: 10px;
   overflow: hidden;
 }
 
-.channel-search {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
+.channel-heading {
+  padding: 14px;
+  border-bottom: 1px solid #263550;
 }
 
 .channel-list {
-  max-height: 600px;
+  max-height: 510px;
   overflow-y: auto;
 }
 
 .channel {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 10px;
   padding: 11px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #263550;
   cursor: pointer;
 }
 
-.channel:hover,
+.channel:hover {
+  background: #1b3152;
+}
+
 .channel.selected {
-  background: var(--panel-light);
+  background: #153b70;
+  border-left: 3px solid #2196ff;
 }
 
 .channel img {
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
   background: white;
-  border-radius: 7px;
+  border-radius: 6px;
+  padding: 3px;
 }
 
 .channel-name {
+  font-size: 13px;
   font-weight: bold;
-  font-size: 14px;
 }
 
 .channel-group {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--muted);
   margin-top: 4px;
 }
 
-.video-area {
-  min-width: 0;
+.channel-number {
+  color: #7792b6;
+  min-width: 22px;
 }
 
 .video-box {
   background: black;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 video {
@@ -294,31 +328,61 @@ video {
   object-fit: contain;
 }
 
-.now-playing {
-  padding: 15px 0;
-  font-size: 18px;
+.player-placeholder {
+  text-align: center;
+  color: #8ea5c8;
 }
 
-/* MEDIA */
+.playing-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 0;
+}
+
+.playing-info img {
+  width: 50px;
+  height: 50px;
+  background: white;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.controls button {
+  flex: 1;
+}
+
+/* ================= MEDIA ================= */
 
 .media-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 15px;
 }
 
 .media-card {
   background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: 1px solid #263550;
+  border-radius: 9px;
   overflow: hidden;
+}
+
+.media-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
 }
 
 .media-card img {
   width: 100%;
-  height: 210px;
+  height: 190px;
   object-fit: cover;
-  background: var(--panel-light);
+  background: var(--panel2);
 }
 
 .media-info {
@@ -330,42 +394,38 @@ video {
   font-size: 14px;
 }
 
-.media-info p {
-  color: var(--muted);
-  font-size: 12px;
-}
-
 .media-info button {
   width: 100%;
+  margin-top: 8px;
 }
 
-/* PLAYLIST */
+/* ================= TABLE ================= */
 
-.form-box {
-  max-width: 750px;
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
   background: var(--panel);
-  border: 1px solid var(--border);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
 }
 
-.form-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.status {
-  color: #54e39a;
+td,
+th {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #344461;
   font-size: 13px;
 }
 
-.error {
-  color: #ff7272;
+footer {
+  text-align: center;
+  color: #687d9e;
+  padding: 20px;
 }
 
-@media (max-width: 850px) {
+@media(max-width:850px) {
   .live-layout {
     grid-template-columns: 1fr;
   }
@@ -373,31 +433,26 @@ video {
   .channel-list {
     max-height: 300px;
   }
-
-  .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
-@media (max-width: 600px) {
-
-  .layout {
-    display: block;
-  }
-
+@media(max-width:600px) {
   .sidebar {
     width: 100%;
     display: flex;
     overflow-x: auto;
     padding: 8px;
-    border-right: 0;
+    border: 0;
+  }
+
+  .layout {
+    display: block;
   }
 
   .nav-title {
     display: none;
   }
 
-  .nav-btn {
+  .nav {
     width: auto;
     white-space: nowrap;
   }
@@ -406,11 +461,11 @@ video {
     padding: 12px;
   }
 
-  .header {
-    padding: 0 12px;
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
   }
 
-  .stats {
+  .media-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -419,45 +474,87 @@ video {
 
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- ================= LOGIN ================= -->
 
 <div id="loginPage">
 
-  <div class="login-card">
+  <div class="login-box">
 
-    <div class="logo">
-      <h1>PLC <span>CAMBODIA TV</span></h1>
-      <p>ទូរទស្សន៍ និងកម្សាន្តរបស់អ្នក</p>
-    </div>
+    <h1>PLC <span>IPTV</span></h1>
 
-    <label>Username / ឈ្មោះអ្នកប្រើ</label>
-    <input id="username" placeholder="Username">
+    <p class="login-help">
+      Cambodia Entertainment Player
+    </p>
 
-    <label>Password / ពាក្យសម្ងាត់</label>
-    <input id="password" type="password" placeholder="Password">
+    <label>
+      Username, Email or Phone Number
+    </label>
 
-    <button style="width:100%" onclick="login()">LOGIN / ចូល</button>
+    <input
+      id="username"
+      placeholder="Username, email or phone number"
+      autocomplete="username"
+    >
 
-    <p id="loginError" class="error"></p>
+    <label>Password</label>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+    <button
+      style="width:100%"
+      onclick="login()"
+    >
+      LOGIN
+    </button>
+
+    <p
+      id="loginError"
+      class="expired"
+    ></p>
+
+    <p class="login-help">
+      Demo Admin:<br>
+      Username: admin<br>
+      Password: admin123
+    </p>
 
   </div>
 
 </div>
 
 
-<!-- MAIN APPLICATION -->
+<!-- ================= MAIN APP ================= -->
 
-<div id="app" class="hidden">
+<div
+  id="app"
+  class="app hidden"
+>
 
-<header class="header">
+<header class="topbar">
 
-  <div class="header-brand">
-    PLC <span>CAMBODIA TV</span>
+  <div class="brand">
+    PLC <span>IPTV</span>
   </div>
 
-  <div class="user-area">
-    <span id="userLabel"></span>
-    <button class="danger" onclick="logout()">Logout</button>
+  <div class="top-right">
+
+    <span
+      id="userLabel"
+      class="muted"
+    ></span>
+
+    <button
+      class="danger"
+      onclick="logout()"
+    >
+      Logout
+    </button>
+
   </div>
 
 </header>
@@ -465,258 +562,677 @@ video {
 
 <div class="layout">
 
-<!-- SIDEBAR -->
+<!-- ================= SIDEBAR ================= -->
 
 <aside class="sidebar">
 
-  <div class="nav-title">MENU</div>
+  <div class="nav-title">MAIN MENU</div>
 
-  <button class="nav-btn active"
-    onclick="showPage('dashboard',this)">
-    🏠 Dashboard
+  <button
+    class="nav active"
+    onclick="page('dashboard',this)"
+  >
+    ⌂ Dashboard
   </button>
 
-  <button class="nav-btn"
-    onclick="showPage('live',this)">
-    📺 Live TV
+  <button
+    class="nav"
+    onclick="page('live',this)"
+  >
+    ◉ Live TV
   </button>
 
-  <button class="nav-btn"
-    onclick="showPage('movies',this)">
-    🎬 Movies
+  <button
+    class="nav"
+    onclick="page('movies',this)"
+  >
+    ▣ Movies
   </button>
 
-  <button class="nav-btn"
-    onclick="showPage('favorites',this)">
-    ⭐ Favorites
+  <button
+    class="nav"
+    onclick="page('series',this)"
+  >
+    ▤ Series
   </button>
+
+  <button
+    class="nav"
+    onclick="page('favorites',this)"
+  >
+    ☆ Favorites
+  </button>
+
 
   <div class="nav-title">MANAGEMENT</div>
 
-  <button class="nav-btn"
-    onclick="showPage('playlist',this)">
-    📋 Playlist
+  <button
+    class="nav"
+    onclick="page('playlist',this)"
+  >
+    ▤ Playlist
+  </button>
+
+  <button
+    class="nav"
+    onclick="page('groups',this)"
+  >
+    ▦ Groups
+  </button>
+
+  <button
+    class="nav admin-only"
+    onclick="page('users',this)"
+  >
+    👤 Users
+  </button>
+
+  <button
+    class="nav"
+    onclick="page('settings',this)"
+  >
+    ⚙ Settings
   </button>
 
 </aside>
 
 
-<!-- CONTENT -->
-
 <main class="content">
 
-<!-- DASHBOARD -->
 
-<section id="dashboard" class="page active">
+<!-- ================= DASHBOARD ================= -->
 
-  <h2>Dashboard / ផ្ទាំងគ្រប់គ្រង</h2>
+<section
+  id="dashboard"
+  class="page active"
+>
 
-  <div class="stats">
+<h2>Dashboard</h2>
 
-    <div class="stat-card">
-      <strong id="tvCount">0</strong>
-      <p>Live TV Channels</p>
-    </div>
+<div class="stats">
 
-    <div class="stat-card">
-      <strong id="movieCount">0</strong>
-      <p>Movies</p>
-    </div>
-
-    <div class="stat-card">
-      <strong id="favoriteCount">0</strong>
-      <p>Favorites</p>
-    </div>
-
-    <div class="stat-card">
-      <strong id="groupCount">0</strong>
-      <p>Groups</p>
-    </div>
-
+  <div class="stat">
+    <strong id="countTV">0</strong>
+    <p>Live TV</p>
   </div>
 
-  <div class="panel">
-
-    <h2>Welcome to PLC Cambodia TV</h2>
-
-    <p>
-      Import and watch your authorized playlists and video streams.
-    </p>
-
-    <button onclick="showPage('live', document.querySelectorAll('.nav-btn')[1])">
-      📺 Watch Live TV
-    </button>
-
-    <button onclick="showPage('playlist', document.querySelectorAll('.nav-btn')[4])">
-      📋 Import Playlist
-    </button>
-
+  <div class="stat">
+    <strong id="countMovie">0</strong>
+    <p>Movies</p>
   </div>
+
+  <div class="stat">
+    <strong id="countSeries">0</strong>
+    <p>Series</p>
+  </div>
+
+  <div class="stat">
+    <strong id="countUsers">0</strong>
+    <p>User Accounts</p>
+  </div>
+
+</div>
+
+<div class="panel">
+
+  <h3>Welcome to PLC Cambodia IPTV</h3>
+
+  <p class="muted">
+    Manage your authorized playlists and watch your available content.
+  </p>
+
+  <button onclick="openLive()">
+    Watch Live TV
+  </button>
+
+  <button onclick="openPlaylist()">
+    Add Playlist
+  </button>
+
+</div>
+
+<h3>Recently Added</h3>
+
+<div
+  id="recent"
+  class="media-grid"
+></div>
 
 </section>
 
 
-<!-- LIVE TV -->
+<!-- ================= LIVE TV ================= -->
 
-<section id="live" class="page">
+<section
+  id="live"
+  class="page"
+>
 
-  <h2>📺 Live TV / ទូរទស្សន៍ផ្ទាល់</h2>
+<h2>◉ Live Television</h2>
 
-  <div class="live-layout">
+<div class="live-layout">
 
-    <div class="channel-box">
+<div class="channel-panel">
 
-      <div class="channel-search">
+<div class="channel-heading">
 
-        <input
-          id="channelSearch"
-          placeholder="Search channels..."
-          oninput="renderChannels()">
+<input
+  id="tvSearch"
+  placeholder="Search channels..."
+  oninput="renderTV()"
+>
 
-      </div>
+<select
+  id="tvGroup"
+  onchange="renderTV()"
+>
+  <option value="">All Groups</option>
+</select>
 
-      <div id="channelList" class="channel-list"></div>
+</div>
 
-    </div>
+<div
+  id="channelList"
+  class="channel-list"
+></div>
+
+</div>
 
 
-    <div class="video-area">
+<div>
 
-      <div class="video-box">
+<div
+  class="video-box"
+  id="videoBox"
+>
 
-        <video
-          id="videoPlayer"
-          controls
-          playsinline>
-        </video>
+<div class="player-placeholder">
 
-      </div>
+<div style="font-size:45px">▶</div>
 
-      <div class="now-playing">
-        <strong id="playingName">
-          Select a channel
-        </strong>
-      </div>
+<h3>PLC IPTV</h3>
 
-      <button onclick="changeChannel(-1)">
-        ◀ Previous
-      </button>
+<p>Select a channel to start watching</p>
 
-      <button onclick="changeChannel(1)">
-        Next ▶
-      </button>
+</div>
 
-      <button onclick="toggleFavorite()">
-        ⭐ Favorite
-      </button>
+<video
+  id="video"
+  controls
+  playsinline
+  class="hidden"
+></video>
 
-    </div>
+</div>
 
-  </div>
+
+<div class="playing-info">
+
+<img
+  id="playingLogo"
+  src="https://placehold.co/100x100?text=TV"
+  alt="Channel logo"
+>
+
+<div>
+
+<strong id="playingName">
+  No channel selected
+</strong>
+
+<p
+  id="playingGroup"
+  class="muted"
+>
+  Live TV
+</p>
+
+</div>
+
+</div>
+
+
+<div class="controls">
+
+<button onclick="changeChannel(-1)">
+  ◀ Previous
+</button>
+
+<button onclick="changeChannel(1)">
+  Next ▶
+</button>
+
+<button onclick="toggleFavorite()">
+  ☆ Favorite
+</button>
+
+</div>
+
+
+<label class="muted">Video Resolution</label>
+
+<select
+  id="resolution"
+  onchange="changeResolution()"
+>
+  <option value="-1">Auto</option>
+</select>
+
+</div>
+
+</div>
 
 </section>
 
 
-<!-- MOVIES -->
+<!-- ================= MOVIES ================= -->
 
-<section id="movies" class="page">
+<section
+  id="movies"
+  class="page"
+>
 
-  <h2>🎬 Movies</h2>
+<h2>▣ Movies</h2>
 
-  <input
-    id="movieSearch"
-    placeholder="Search movies..."
-    oninput="renderMovies()">
+<input
+  id="movieSearch"
+  placeholder="Search movies..."
+  oninput="renderMovies()"
+>
 
-  <div id="movieList" class="media-grid"></div>
+<select
+  id="movieGroup"
+  onchange="renderMovies()"
+>
+  <option value="">All Groups</option>
+</select>
+
+<div
+  id="movieList"
+  class="media-grid"
+></div>
 
 </section>
 
 
-<!-- FAVORITES -->
+<!-- ================= SERIES ================= -->
 
-<section id="favorites" class="page">
+<section
+  id="series"
+  class="page"
+>
 
-  <h2>⭐ My Favorites</h2>
+<h2>▤ TV Series</h2>
 
-  <div id="favoriteList" class="media-grid"></div>
+<input
+  id="seriesSearch"
+  placeholder="Search series..."
+  oninput="renderSeries()"
+>
+
+<select
+  id="seriesGroup"
+  onchange="renderSeries()"
+>
+  <option value="">All Groups</option>
+</select>
+
+<div
+  id="seriesList"
+  class="media-grid"
+></div>
 
 </section>
 
 
-<!-- PLAYLIST -->
+<!-- ================= FAVORITES ================= -->
 
-<section id="playlist" class="page">
+<section
+  id="favorites"
+  class="page"
+>
 
-  <div class="form-header">
+<h2>☆ My Favorites</h2>
 
-    <h2>📋 Playlist Manager</h2>
+<div
+  id="favoriteList"
+  class="media-grid"
+></div>
 
-    <button
-      id="toggleImportButton"
-      onclick="toggleImport()">
-      Hide Import
-    </button>
-
-  </div>
-
-
-  <div id="importBox" class="form-box">
-
-    <h3>Import Authorized M3U Playlist</h3>
-
-    <textarea
-      id="playlistText"
-      rows="9"
-      placeholder="#EXTM3U
-
-#EXTINF:-1 group-title=&quot;Cambodia TV&quot;,My Channel
-https://your-authorized-stream.example/live.m3u8">
-    </textarea>
-
-    <label>Content Category</label>
-
-    <select id="importCategory">
-      <option value="tv">Live TV</option>
-      <option value="movie">Movies</option>
-    </select>
-
-    <button onclick="importPlaylist()">
-      Import Playlist
-    </button>
-
-  </div>
+</section>
 
 
-  <div class="form-box">
+<!-- ================= PLAYLIST ================= -->
 
-    <h3>Add Individual Authorized Stream</h3>
+<section
+  id="playlist"
+  class="page"
+>
 
-    <label>Channel Name</label>
-    <input id="streamName" placeholder="Channel name">
+<h2>Playlist Manager</h2>
 
-    <label>Stream URL</label>
-    <input
-      id="streamURL"
-      placeholder="https://example.com/authorized-stream.m3u8">
+<div class="formbox">
 
-    <label>Logo URL (optional)</label>
-    <input
-      id="streamLogo"
-      placeholder="https://example.com/logo.png">
+<h3>Import M3U Playlist</h3>
 
-    <label>Category</label>
+<textarea
+  id="m3u"
+  rows="9"
+  placeholder="#EXTM3U
 
-    <select id="streamCategory">
-      <option value="tv">Live TV</option>
-      <option value="movie">Movie</option>
-    </select>
+#EXTINF:-1 tvg-logo=&quot;https://example.com/logo.png&quot; group-title=&quot;News&quot;,News Channel
+https://example.com/stream.m3u8"
+></textarea>
 
-    <button onclick="addStream()">
-      Add Stream
-    </button>
+<label>Import Category</label>
 
-  </div>
+<select id="importCategory">
+
+<option value="tv">
+  Live TV
+</option>
+
+<option value="movie">
+  Movies
+</option>
+
+<option value="series">
+  Series
+</option>
+
+</select>
+
+<label>
+  Playlist Expiration Date (Optional)
+</label>
+
+<input
+  type="date"
+  id="importExpiry"
+>
+
+<button onclick="importPlaylist()">
+  Import Playlist
+</button>
+
+</div>
+
+
+<div class="formbox">
+
+<h3>Add Individual Stream</h3>
+
+<label>Name</label>
+
+<input
+  id="newName"
+  placeholder="Channel or movie name"
+>
+
+<label>Stream URL</label>
+
+<input
+  id="newURL"
+  placeholder="https://example.com/stream.m3u8"
+>
+
+<label>Logo or Poster URL</label>
+
+<input
+  id="newLogo"
+  placeholder="https://example.com/logo.png"
+>
+
+<label>Category</label>
+
+<select
+  id="newCategory"
+  onchange="updateGroups()"
+>
+
+<option value="tv">Live TV</option>
+<option value="movie">Movies</option>
+<option value="series">Series</option>
+
+</select>
+
+<label>Group</label>
+
+<select id="newGroup"></select>
+
+<label>Expiration Date</label>
+
+<input
+  type="date"
+  id="newExpiry"
+>
+
+<button onclick="addStream()">
+  Add Stream
+</button>
+
+</div>
+
+
+<h3>All Playlist Content</h3>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Name</th>
+<th>Category</th>
+<th>Group</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="playlistTable"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- ================= GROUPS ================= -->
+
+<section
+  id="groups"
+  class="page"
+>
+
+<h2>Group Management</h2>
+
+<div class="formbox">
+
+<label>Group Name</label>
+
+<input
+  id="groupName"
+  placeholder="Example: Sports"
+>
+
+<label>Category</label>
+
+<select id="groupCategory">
+
+<option value="tv">TV Group</option>
+<option value="movie">Movie Group</option>
+<option value="series">Series Group</option>
+
+</select>
+
+<button onclick="addGroup()">
+  Add Group
+</button>
+
+</div>
+
+<div id="groupTable"></div>
+
+</section>
+
+
+<!-- ================= USER MANAGEMENT ================= -->
+
+<section
+  id="users"
+  class="page"
+>
+
+<h2>👤 User Management</h2>
+
+<div class="formbox">
+
+<h3>Create New Account</h3>
+
+<label>Username</label>
+
+<input
+  id="newUsername"
+  placeholder="Enter username"
+>
+
+<label>Email or Phone Number</label>
+
+<input
+  id="newContact"
+  placeholder="example@email.com or phone number"
+>
+
+<label>Password</label>
+
+<input
+  id="newPassword"
+  type="password"
+  placeholder="Minimum 8 characters"
+>
+
+<label>Account Type</label>
+
+<select id="newUserType">
+
+<option value="User">
+  User
+</option>
+
+<option value="Admin">
+  Admin
+</option>
+
+</select>
+
+<button onclick="createUser()">
+  + Create Account
+</button>
+
+</div>
+
+
+<div class="panel">
+
+<h3>All User Accounts</h3>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Username</th>
+<th>Email / Phone</th>
+<th>Type</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="userTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= SETTINGS ================= -->
+
+<section
+  id="settings"
+  class="page"
+>
+
+<h2>⚙ Settings</h2>
+
+<div class="formbox">
+
+<h3>Background Theme</h3>
+
+<input
+  type="color"
+  id="backgroundColor"
+  value="#080e1b"
+  onchange="saveBackground()"
+>
+
+<button onclick="resetBackground()">
+  Reset Theme
+</button>
+
+</div>
+
+
+<div class="formbox">
+
+<h3>Change My Account</h3>
+
+<label>New Username</label>
+
+<input
+  id="changeUsername"
+  placeholder="New username"
+>
+
+<label>New Contact</label>
+
+<input
+  id="changeContact"
+  placeholder="Email or phone number"
+>
+
+<label>New Password</label>
+
+<input
+  type="password"
+  id="changePassword"
+  placeholder="Leave empty to keep current password"
+>
+
+<label>Confirm New Password</label>
+
+<input
+  type="password"
+  id="confirmPassword"
+  placeholder="Confirm new password"
+>
+
+<button onclick="saveMyAccount()">
+  Save Account Changes
+</button>
+
+</div>
 
 </section>
 
@@ -726,32 +1242,94 @@ https://your-authorized-stream.example/live.m3u8">
 
 </div>
 
+<footer>
+  PLC CAMBODIA IPTV PLAYER
+</footer>
+
 
 <script>
 
-/* =========================
+/* =====================================
    DATABASE
-========================= */
+===================================== */
 
-let channels =
-  JSON.parse(localStorage.getItem("plc_channels") || "[]");
+function read(key, fallback) {
 
-let favorites =
-  JSON.parse(localStorage.getItem("plc_favorites") || "[]");
+  try {
+    return JSON.parse(
+      localStorage.getItem(key)
+    ) ?? fallback;
 
-let account =
-  JSON.parse(
-    localStorage.getItem("plc_account") ||
-    '{"username":"admin","password":"admin123"}'
+  } catch {
+    return fallback;
+  }
+
+}
+
+
+/* =====================================
+   USER ACCOUNTS
+===================================== */
+
+let accounts = read("plc_accounts", [
+  {
+    id: 1,
+    username: "admin",
+    password: "admin123",
+    contact: "admin@example.com",
+    type: "Admin",
+    status: "Active"
+  }
+]);
+
+let currentUser = null;
+
+function saveAccounts() {
+
+  localStorage.setItem(
+    "plc_accounts",
+    JSON.stringify(accounts)
   );
 
-let currentIndex = -1;
+}
+
+
+/* =====================================
+   IPTV DATA
+===================================== */
+
+let channels = read(
+  "plc_channels",
+  []
+);
+
+let groups = read(
+  "plc_groups",
+  [
+    {
+      name: "General",
+      category: "tv"
+    },
+    {
+      name: "Action",
+      category: "movie"
+    },
+    {
+      name: "Drama",
+      category: "series"
+    }
+  ]
+);
+
+let favorites = read(
+  "plc_favorites",
+  []
+);
+
 let hls = null;
 
+let currentIndex = -1;
 
-/* =========================
-   SAVE DATA
-========================= */
 
 function saveData() {
 
@@ -761,121 +1339,51 @@ function saveData() {
   );
 
   localStorage.setItem(
+    "plc_groups",
+    JSON.stringify(groups)
+  );
+
+  localStorage.setItem(
     "plc_favorites",
     JSON.stringify(favorites)
   );
-}
-
-
-/* =========================
-   LOGIN
-========================= */
-
-function login() {
-
-  const username =
-    document.getElementById("username").value;
-
-  const password =
-    document.getElementById("password").value;
-
-  if (
-    username === account.username &&
-    password === account.password
-  ) {
-
-    sessionStorage.setItem(
-      "plc_login",
-      "yes"
-    );
-
-    openApp();
-
-  } else {
-
-    document.getElementById(
-      "loginError"
-    ).textContent =
-      "Incorrect username or password.";
-
-  }
-}
-
-
-function openApp() {
-
-  document.getElementById(
-    "loginPage"
-  ).classList.add("hidden");
-
-  document.getElementById(
-    "app"
-  ).classList.remove("hidden");
-
-  document.getElementById(
-    "userLabel"
-  ).textContent =
-    account.username;
-
-  refreshApp();
-}
-
-
-function logout() {
-
-  sessionStorage.removeItem("plc_login");
-
-  stopPlayer();
-
-  document.getElementById(
-    "app"
-  ).classList.add("hidden");
-
-  document.getElementById(
-    "loginPage"
-  ).classList.remove("hidden");
-}
-
-
-/* =========================
-   NAVIGATION
-========================= */
-
-function showPage(id, button) {
-
-  document.querySelectorAll(".page")
-    .forEach(page =>
-      page.classList.remove("active")
-    );
-
-  document.getElementById(id)
-    .classList.add("active");
-
-  document.querySelectorAll(".nav-btn")
-    .forEach(button =>
-      button.classList.remove("active")
-    );
-
-  if (button) {
-    button.classList.add("active");
-  }
 
 }
 
 
-/* =========================
-   VALIDATE URL
-========================= */
+/* =====================================
+   SECURITY HELPERS
+===================================== */
 
-function validURL(url) {
+function escapeHTML(value) {
+
+  return String(value).replace(
+    /[&<>"']/g,
+    function(character) {
+
+      return {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[character];
+
+    }
+  );
+
+}
+
+
+function validURL(value) {
 
   try {
 
-    const parsed = new URL(url);
+    const url = new URL(value);
 
     return (
-      parsed.protocol === "http:" ||
-      parsed.protocol === "https:"
+      url.protocol === "http:" ||
+      url.protocol === "https:"
     );
 
   } catch {
@@ -883,36 +1391,241 @@ function validURL(url) {
     return false;
 
   }
+
 }
 
 
-/* =========================
-   ADD STREAM
-========================= */
+function isActive(channel) {
 
-function addStream() {
+  if (!channel.expiry) {
+    return true;
+  }
 
-  const name =
-    document.getElementById("streamName")
-      .value.trim();
+  const today =
+    new Date()
+    .toLocaleDateString("en-CA");
 
-  const url =
-    document.getElementById("streamURL")
-      .value.trim();
+  return channel.expiry >= today;
 
-  const logo =
-    document.getElementById("streamLogo")
-      .value.trim();
-
-  const category =
-    document.getElementById("streamCategory")
-      .value;
+}
 
 
-  if (!name || !url) {
+/* =====================================
+   LOGIN
+===================================== */
+
+function login() {
+
+  const loginInput =
+    document
+    .getElementById("username")
+    .value
+    .trim()
+    .toLowerCase();
+
+  const password =
+    document
+    .getElementById("password")
+    .value;
+
+  const user =
+    accounts.find(account => {
+
+      const contact =
+        String(
+          account.contact || ""
+        ).toLowerCase();
+
+      return (
+        (
+          account.username
+            .toLowerCase() === loginInput ||
+
+          contact === loginInput
+        ) &&
+
+        account.password === password
+      );
+
+    });
+
+
+  if (!user) {
+
+    document
+      .getElementById("loginError")
+      .textContent =
+        "Incorrect username, email, phone number or password.";
+
+    return;
+
+  }
+
+
+  if (user.status !== "Active") {
+
+    document
+      .getElementById("loginError")
+      .textContent =
+        "This account is disabled.";
+
+    return;
+
+  }
+
+
+  currentUser = user;
+
+  sessionStorage.setItem(
+    "plc_login",
+    "yes"
+  );
+
+  sessionStorage.setItem(
+    "plc_user_id",
+    user.id
+  );
+
+  document
+    .getElementById("loginError")
+    .textContent = "";
+
+  openApp();
+
+}
+
+
+function openApp() {
+
+  const savedUserId =
+    sessionStorage.getItem(
+      "plc_user_id"
+    );
+
+
+  if (
+    !currentUser &&
+    savedUserId
+  ) {
+
+    currentUser =
+      accounts.find(
+        user =>
+          String(user.id) ===
+          String(savedUserId)
+      );
+
+  }
+
+
+  if (!currentUser) {
+
+    logout();
+
+    return;
+
+  }
+
+
+  document
+    .getElementById("loginPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("userLabel")
+    .textContent =
+      currentUser.username +
+      " (" +
+      currentUser.type +
+      ")";
+
+
+  updateAdminAccess();
+
+  refreshApp();
+
+}
+
+
+function logout() {
+
+  sessionStorage.removeItem(
+    "plc_login"
+  );
+
+  sessionStorage.removeItem(
+    "plc_user_id"
+  );
+
+  currentUser = null;
+
+  stopPlayer();
+
+
+  document
+    .getElementById("app")
+    .classList.add("hidden");
+
+  document
+    .getElementById("loginPage")
+    .classList.remove("hidden");
+
+
+  document
+    .getElementById("password")
+    .value = "";
+
+}
+
+
+function updateAdminAccess() {
+
+  const adminOnly =
+    document.querySelectorAll(
+      ".admin-only"
+    );
+
+  adminOnly.forEach(element => {
+
+    if (
+      currentUser &&
+      currentUser.type === "Admin"
+    ) {
+
+      element.style.display = "block";
+
+    } else {
+
+      element.style.display = "none";
+
+    }
+
+  });
+
+}
+
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+function page(id, button) {
+
+  if (
+    id === "users" &&
+    (
+      !currentUser ||
+      currentUser.type !== "Admin"
+    )
+  ) {
 
     alert(
-      "Please enter a channel name and authorized stream URL."
+      "Only administrators can access user management."
     );
 
     return;
@@ -920,9 +1633,837 @@ function addStream() {
   }
 
 
-  if (!validURL(url)) {
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
 
-    alert("Please enter a valid HTTP or HTTPS URL.");
+      page.classList.remove("active");
+
+    });
+
+
+  document
+    .getElementById(id)
+    .classList.add("active");
+
+
+  document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+
+      nav.classList.remove("active");
+
+    });
+
+
+  if (button) {
+
+    button.classList.add("active");
+
+  }
+
+}
+
+
+function openLive() {
+
+  page(
+    "live",
+    document.querySelectorAll(".nav")[1]
+  );
+
+}
+
+
+function openPlaylist() {
+
+  page(
+    "playlist",
+    document.querySelectorAll(".nav")[5]
+  );
+
+}
+
+
+/* =====================================
+   USER MANAGEMENT
+===================================== */
+
+function createUser() {
+
+  if (
+    !currentUser ||
+    currentUser.type !== "Admin"
+  ) {
+
+    alert(
+      "Only administrators can create accounts."
+    );
+
+    return;
+
+  }
+
+
+  const username =
+    document
+    .getElementById("newUsername")
+    .value
+    .trim();
+
+  const contact =
+    document
+    .getElementById("newContact")
+    .value
+    .trim();
+
+  const password =
+    document
+    .getElementById("newPassword")
+    .value;
+
+  const type =
+    document
+    .getElementById("newUserType")
+    .value;
+
+
+  if (
+    !username ||
+    !contact ||
+    !password
+  ) {
+
+    alert(
+      "Please complete all account fields."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    password.length < 8
+  ) {
+
+    alert(
+      "Password must have at least 8 characters."
+    );
+
+    return;
+
+  }
+
+
+  const exists =
+    accounts.some(user =>
+      user.username
+        .toLowerCase() ===
+          username.toLowerCase() ||
+
+      String(user.contact || "")
+        .toLowerCase() ===
+          contact.toLowerCase()
+    );
+
+
+  if (exists) {
+
+    alert(
+      "Username, email or phone number already exists."
+    );
+
+    return;
+
+  }
+
+
+  accounts.push({
+    id: Date.now(),
+    username: username,
+    password: password,
+    contact: contact,
+    type: type,
+    status: "Active"
+  });
+
+
+  saveAccounts();
+
+  document
+    .getElementById("newUsername")
+    .value = "";
+
+  document
+    .getElementById("newContact")
+    .value = "";
+
+  document
+    .getElementById("newPassword")
+    .value = "";
+
+
+  renderUsers();
+
+  refreshApp();
+
+  alert(
+    "Account created successfully!"
+  );
+
+}
+
+
+function renderUsers() {
+
+  const table =
+    document.getElementById(
+      "userTable"
+    );
+
+  if (!table) {
+    return;
+  }
+
+
+  table.innerHTML = "";
+
+
+  accounts.forEach(user => {
+
+    const row =
+      document.createElement("tr");
+
+
+    const actionText =
+      user.status === "Active"
+        ? "Disable"
+        : "Enable";
+
+
+    row.innerHTML = `
+
+      <td>
+        ${escapeHTML(user.username)}
+      </td>
+
+      <td>
+        ${escapeHTML(user.contact || "")}
+      </td>
+
+      <td>
+        ${escapeHTML(user.type)}
+      </td>
+
+      <td class="${
+        user.status === "Active"
+          ? "active-status"
+          : "expired"
+      }">
+
+        ${escapeHTML(user.status)}
+
+      </td>
+
+      <td>
+
+        <button
+          onclick="toggleUserStatus(${user.id})"
+        >
+          ${actionText}
+        </button>
+
+        <button
+          class="danger"
+          onclick="deleteUser(${user.id})"
+        >
+          Delete
+        </button>
+
+      </td>
+
+    `;
+
+
+    table.appendChild(row);
+
+  });
+
+}
+
+
+function toggleUserStatus(id) {
+
+  if (
+    !currentUser ||
+    currentUser.type !== "Admin"
+  ) {
+
+    alert(
+      "Only administrators can manage accounts."
+    );
+
+    return;
+
+  }
+
+
+  const user =
+    accounts.find(
+      user => user.id === id
+    );
+
+
+  if (!user) {
+    return;
+  }
+
+
+  if (
+    user.id === currentUser.id
+  ) {
+
+    alert(
+      "You cannot disable your own account."
+    );
+
+    return;
+
+  }
+
+
+  user.status =
+    user.status === "Active"
+      ? "Disabled"
+      : "Active";
+
+
+  saveAccounts();
+
+  renderUsers();
+
+}
+
+
+function deleteUser(id) {
+
+  if (
+    !currentUser ||
+    currentUser.type !== "Admin"
+  ) {
+
+    alert(
+      "Only administrators can delete accounts."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    currentUser.id === id
+  ) {
+
+    alert(
+      "You cannot delete your own account."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "Delete this user account?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  accounts =
+    accounts.filter(
+      user => user.id !== id
+    );
+
+
+  saveAccounts();
+
+  renderUsers();
+
+  refreshApp();
+
+}
+
+
+/* =====================================
+   CHANGE MY ACCOUNT
+===================================== */
+
+function saveMyAccount() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  const username =
+    document
+    .getElementById("changeUsername")
+    .value
+    .trim();
+
+  const contact =
+    document
+    .getElementById("changeContact")
+    .value
+    .trim();
+
+  const password =
+    document
+    .getElementById("changePassword")
+    .value;
+
+  const confirm =
+    document
+    .getElementById("confirmPassword")
+    .value;
+
+
+  if (
+    password &&
+    password !== confirm
+  ) {
+
+    alert(
+      "Passwords do not match."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    password &&
+    password.length < 8
+  ) {
+
+    alert(
+      "Password must have at least 8 characters."
+    );
+
+    return;
+
+  }
+
+
+  const user =
+    accounts.find(
+      account =>
+        account.id === currentUser.id
+    );
+
+
+  if (!user) {
+    return;
+  }
+
+
+  if (username) {
+
+    const usernameExists =
+      accounts.some(account =>
+        account.id !== user.id &&
+        account.username
+          .toLowerCase() ===
+            username.toLowerCase()
+      );
+
+
+    if (usernameExists) {
+
+      alert(
+        "This username already exists."
+      );
+
+      return;
+
+    }
+
+
+    user.username = username;
+
+  }
+
+
+  if (contact) {
+
+    const contactExists =
+      accounts.some(account =>
+        account.id !== user.id &&
+        String(account.contact || "")
+          .toLowerCase() ===
+            contact.toLowerCase()
+      );
+
+
+    if (contactExists) {
+
+      alert(
+        "This email or phone number already exists."
+      );
+
+      return;
+
+    }
+
+
+    user.contact = contact;
+
+  }
+
+
+  if (password) {
+
+    user.password = password;
+
+  }
+
+
+  currentUser = user;
+
+  saveAccounts();
+
+  document
+    .getElementById("userLabel")
+    .textContent =
+      user.username +
+      " (" +
+      user.type +
+      ")";
+
+
+  alert(
+    "Account updated successfully."
+  );
+
+
+  document
+    .getElementById("changeUsername")
+    .value = "";
+
+  document
+    .getElementById("changeContact")
+    .value = "";
+
+  document
+    .getElementById("changePassword")
+    .value = "";
+
+  document
+    .getElementById("confirmPassword")
+    .value = "";
+
+}
+
+
+/* =====================================
+   GROUPS
+===================================== */
+
+function addGroup() {
+
+  const name =
+    document
+    .getElementById("groupName")
+    .value
+    .trim();
+
+  const category =
+    document
+    .getElementById("groupCategory")
+    .value;
+
+
+  if (!name) {
+
+    alert(
+      "Enter a group name."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    groups.some(group =>
+      group.category === category &&
+      group.name
+        .toLowerCase() ===
+          name.toLowerCase()
+    )
+  ) {
+
+    alert(
+      "This group already exists."
+    );
+
+    return;
+
+  }
+
+
+  groups.push({
+    name: name,
+    category: category
+  });
+
+
+  document
+    .getElementById("groupName")
+    .value = "";
+
+
+  saveData();
+
+  refreshApp();
+
+}
+
+
+function updateGroups() {
+
+  const category =
+    document
+    .getElementById("newCategory")
+    .value;
+
+  const select =
+    document
+    .getElementById("newGroup");
+
+
+  select.innerHTML = "";
+
+
+  groups
+    .filter(
+      group =>
+        group.category === category
+    )
+    .forEach(group => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = group.name;
+      option.textContent = group.name;
+
+      select.appendChild(option);
+
+    });
+
+}
+
+
+function renderGroups() {
+
+  const target =
+    document.getElementById(
+      "groupTable"
+    );
+
+
+  target.innerHTML =
+    ["tv", "movie", "series"]
+    .map(category => {
+
+      const items =
+        groups
+        .map((group, index) => {
+
+          if (
+            group.category !== category
+          ) {
+            return "";
+          }
+
+          return `
+            <tr>
+              <td>
+                ${escapeHTML(group.name)}
+              </td>
+
+              <td>
+                <button
+                  class="danger"
+                  onclick="removeGroup(${index})"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          `;
+
+        })
+        .join("");
+
+
+      return `
+        <div class="panel">
+
+          <h3>
+            ${category.toUpperCase()} GROUPS
+          </h3>
+
+          <table>
+
+            <tr>
+              <th>Group</th>
+              <th>Action</th>
+            </tr>
+
+            ${
+              items ||
+              "<tr><td>No groups</td><td></td></tr>"
+            }
+
+          </table>
+
+        </div>
+      `;
+
+    })
+    .join("");
+
+}
+
+
+function removeGroup(index) {
+
+  const group =
+    groups[index];
+
+
+  if (!group) {
+    return;
+  }
+
+
+  if (
+    channels.some(channel =>
+      channel.category === group.category &&
+      channel.group === group.name
+    )
+  ) {
+
+    alert(
+      "Delete or move the streams in this group first."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !confirm("Delete group?")
+  ) {
+    return;
+  }
+
+
+  groups.splice(
+    index,
+    1
+  );
+
+  saveData();
+
+  refreshApp();
+
+}
+
+
+/* =====================================
+   ADD STREAM
+===================================== */
+
+function addStream() {
+
+  const name =
+    document
+    .getElementById("newName")
+    .value
+    .trim();
+
+  const url =
+    document
+    .getElementById("newURL")
+    .value
+    .trim();
+
+  const logo =
+    document
+    .getElementById("newLogo")
+    .value
+    .trim();
+
+  const category =
+    document
+    .getElementById("newCategory")
+    .value;
+
+  const group =
+    document
+    .getElementById("newGroup")
+    .value;
+
+  const expiry =
+    document
+    .getElementById("newExpiry")
+    .value;
+
+
+  if (
+    !name ||
+    !url
+  ) {
+
+    alert(
+      "Enter a name and stream URL."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !validURL(url)
+  ) {
+
+    alert(
+      "Please enter a valid HTTP or HTTPS URL."
+    );
+
+    return;
+
+  }
+
+
+  if (!group) {
+
+    alert(
+      "Create a group first."
+    );
 
     return;
 
@@ -934,43 +2475,65 @@ function addStream() {
     url: url,
     logo: logo,
     category: category,
-    group: "General"
+    group: group,
+    expiry: expiry
   });
 
 
   saveData();
 
 
-  document.getElementById("streamName").value = "";
-  document.getElementById("streamURL").value = "";
-  document.getElementById("streamLogo").value = "";
+  [
+    "newName",
+    "newURL",
+    "newLogo",
+    "newExpiry"
+  ].forEach(id => {
+
+    document
+      .getElementById(id)
+      .value = "";
+
+  });
 
 
   refreshApp();
 
-  alert("Stream added successfully.");
+  alert(
+    "Stream added successfully!"
+  );
 
 }
 
 
-/* =========================
-   IMPORT M3U
-========================= */
+/* =====================================
+   M3U IMPORT
+===================================== */
 
 function importPlaylist() {
 
   const text =
-    document.getElementById("playlistText")
-      .value.trim();
+    document
+    .getElementById("m3u")
+    .value
+    .trim();
 
   const category =
-    document.getElementById("importCategory")
-      .value;
+    document
+    .getElementById("importCategory")
+    .value;
+
+  const expiry =
+    document
+    .getElementById("importExpiry")
+    .value;
 
 
   if (!text) {
 
-    alert("Please paste your authorized M3U playlist.");
+    alert(
+      "Paste your M3U playlist first."
+    );
 
     return;
 
@@ -981,6 +2544,7 @@ function importPlaylist() {
     text.split(/\r?\n/);
 
   let info = null;
+
   let count = 0;
 
 
@@ -989,18 +2553,21 @@ function importPlaylist() {
     line = line.trim();
 
 
-    if (line.startsWith("#EXTINF:")) {
+    if (
+      line.startsWith("#EXTINF:")
+    ) {
+
+      const commaIndex =
+        line.lastIndexOf(",");
 
       const name =
-        line.substring(
-          line.lastIndexOf(",") + 1
-        ).trim();
-
-
-      const logoMatch =
-        line.match(
-          /tvg-logo="([^"]*)"/i
-        );
+        commaIndex >= 0
+          ? line
+            .substring(
+              commaIndex + 1
+            )
+            .trim()
+          : "Unknown";
 
 
       const groupMatch =
@@ -1008,20 +2575,46 @@ function importPlaylist() {
           /group-title="([^"]*)"/i
         );
 
+      const logoMatch =
+        line.match(
+          /tvg-logo="([^"]*)"/i
+        );
+
 
       info = {
-        name: name || "Unknown Channel",
-        logo:
-          logoMatch ?
-          logoMatch[1] :
-          "",
+
+        name:
+          name || "Unknown",
+
         group:
-          groupMatch ?
-          groupMatch[1] :
-          "General"
+          groupMatch
+            ? groupMatch[1]
+            : "General",
+
+        logo:
+          logoMatch
+            ? logoMatch[1]
+            : ""
+
       };
 
+
+      if (
+        !groups.some(group =>
+          group.category === category &&
+          group.name === info.group
+        )
+      ) {
+
+        groups.push({
+          name: info.group,
+          category: category
+        });
+
+      }
+
     }
+
 
     else if (
       line &&
@@ -1029,19 +2622,25 @@ function importPlaylist() {
       info
     ) {
 
-      if (validURL(line)) {
+      if (
+        validURL(line)
+      ) {
 
         channels.push({
+
           name: info.name,
           url: line,
           logo: info.logo,
+          category: category,
           group: info.group,
-          category: category
+          expiry: expiry
+
         });
 
         count++;
 
       }
+
 
       info = null;
 
@@ -1055,106 +2654,51 @@ function importPlaylist() {
   refreshApp();
 
 
-  if (count > 0) {
-
-    document.getElementById(
-      "playlistText"
-    ).value = "";
-
-
-    /* Hide import area */
-
-    document.getElementById(
-      "importBox"
-    ).classList.add("hidden");
-
-
-    document.getElementById(
-      "toggleImportButton"
-    ).textContent =
-      "Show Import";
-
-
-    localStorage.setItem(
-      "plc_import_hidden",
-      "yes"
-    );
-
-
-    alert(
-      count +
-      " streams imported successfully."
-    );
-
-  }
-
-  else {
-
-    alert(
-      "No valid streams were found."
-    );
-
-  }
+  alert(
+    count +
+    " streams imported successfully."
+  );
 
 }
 
 
-/* =========================
-   HIDE / SHOW PLAYLIST
-========================= */
+/* =====================================
+   LIVE TV
+===================================== */
 
-function toggleImport() {
-
-  const box =
-    document.getElementById("importBox");
-
-  const button =
-    document.getElementById(
-      "toggleImportButton"
-    );
-
-
-  box.classList.toggle("hidden");
-
-
-  if (
-    box.classList.contains("hidden")
-  ) {
-
-    button.textContent =
-      "Show Import";
-
-    localStorage.setItem(
-      "plc_import_hidden",
-      "yes"
-    );
-
-  }
-
-  else {
-
-    button.textContent =
-      "Hide Import";
-
-    localStorage.removeItem(
-      "plc_import_hidden"
-    );
-
-  }
-
-}
-
-
-/* =========================
-   RENDER CHANNELS
-========================= */
-
-function renderChannels() {
+function renderTV() {
 
   const search =
-    document.getElementById(
-      "channelSearch"
-    ).value.toLowerCase();
+    document
+    .getElementById("tvSearch")
+    .value
+    .toLowerCase();
+
+  const selectedGroup =
+    document
+    .getElementById("tvGroup")
+    .value;
+
+
+  const list =
+    channels
+    .map(
+      (channel, index) => ({
+        ...channel,
+        index: index
+      })
+    )
+    .filter(channel =>
+      channel.category === "tv" &&
+      channel.name
+        .toLowerCase()
+        .includes(search) &&
+      (
+        !selectedGroup ||
+        channel.group === selectedGroup
+      ) &&
+      isActive(channel)
+    );
 
 
   const target =
@@ -1162,123 +2706,341 @@ function renderChannels() {
       "channelList"
     );
 
-
   target.innerHTML = "";
 
 
-  channels
-    .map((channel, index) => ({
-      ...channel,
-      index: index
-    }))
+  list.forEach(channel => {
 
-    .filter(channel =>
-      channel.category === "tv" &&
-      channel.name
-        .toLowerCase()
-        .includes(search)
-    )
+    const item =
+      document.createElement("div");
 
-    .forEach(channel => {
-
-      const item =
-        document.createElement("div");
-
-      item.className =
-        "channel" +
-        (
-          currentIndex === channel.index
+    item.className =
+      "channel" +
+      (
+        currentIndex === channel.index
           ? " selected"
           : ""
-        );
+      );
 
 
-      const image =
-        document.createElement("img");
+    const number =
+      document.createElement("span");
+
+    number.className =
+      "channel-number";
+
+    number.textContent =
+      channel.index + 1;
+
+
+    const image =
+      document.createElement("img");
+
+    image.src =
+      channel.logo ||
+      "https://placehold.co/100x100?text=TV";
+
+    image.onerror = function() {
 
       image.src =
-        channel.logo ||
         "https://placehold.co/100x100?text=TV";
 
-      image.onerror = function () {
-        this.src =
-          "https://placehold.co/100x100?text=TV";
-      };
+    };
 
 
-      const details =
-        document.createElement("div");
+    const information =
+      document.createElement("div");
 
 
-      details.innerHTML =
-        "<div class='channel-name'></div>" +
-        "<div class='channel-group'></div>";
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "channel-name";
+
+    name.textContent =
+      channel.name;
 
 
-      details.querySelector(
-        ".channel-name"
-      ).textContent =
-        channel.name;
+    const group =
+      document.createElement("div");
+
+    group.className =
+      "channel-group";
+
+    group.textContent =
+      channel.group;
 
 
-      details.querySelector(
-        ".channel-group"
-      ).textContent =
-        channel.group || "General";
+    information.append(
+      name,
+      group
+    );
 
 
-      item.appendChild(image);
-      item.appendChild(details);
+    item.append(
+      number,
+      image,
+      information
+    );
 
 
-      item.onclick = function () {
-        playStream(channel.index);
-      };
+    item.onclick = function() {
+
+      playStream(
+        channel.index
+      );
+
+    };
 
 
-      target.appendChild(item);
+    target.appendChild(item);
 
-    });
+  });
 
 
-  if (!target.children.length) {
+  if (!list.length) {
 
     target.textContent =
-      "No channels available.";
+      "No available TV channels.";
 
   }
 
 }
 
 
-/* =========================
-   PLAY VIDEO
-========================= */
+/* =====================================
+   MOVIES AND SERIES
+===================================== */
+
+function renderMedia(
+  category,
+  searchId,
+  groupId,
+  targetId
+) {
+
+  const search =
+    document
+    .getElementById(searchId)
+    .value
+    .toLowerCase();
+
+  const selectedGroup =
+    document
+    .getElementById(groupId)
+    .value;
+
+
+  const list =
+    channels
+    .map(
+      (channel, index) => ({
+        ...channel,
+        index: index
+      })
+    )
+    .filter(channel =>
+      channel.category === category &&
+      channel.name
+        .toLowerCase()
+        .includes(search) &&
+      (
+        !selectedGroup ||
+        channel.group === selectedGroup
+      ) &&
+      isActive(channel)
+    );
+
+
+  const target =
+    document.getElementById(
+      targetId
+    );
+
+  target.innerHTML = "";
+
+
+  list.forEach(channel => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "media-card";
+
+
+    const image =
+      document.createElement("img");
+
+    image.src =
+      channel.logo ||
+      "https://placehold.co/300x450?text=IPTV";
+
+    image.alt =
+      channel.name;
+
+
+    const information =
+      document.createElement("div");
+
+    information.className =
+      "media-info";
+
+
+    const title =
+      document.createElement("h3");
+
+    title.textContent =
+      channel.name;
+
+
+    const group =
+      document.createElement("p");
+
+    group.className =
+      "muted";
+
+    group.textContent =
+      channel.group;
+
+
+    const play =
+      document.createElement("button");
+
+    play.textContent =
+      "▶ PLAY";
+
+    play.onclick = function() {
+
+      playStream(
+        channel.index
+      );
+
+      openLive();
+
+    };
+
+
+    information.append(
+      title,
+      group,
+      play
+    );
+
+    card.append(
+      image,
+      information
+    );
+
+    target.appendChild(card);
+
+  });
+
+
+  if (!list.length) {
+
+    target.textContent =
+      "No content available.";
+
+  }
+
+}
+
+
+function renderMovies() {
+
+  renderMedia(
+    "movie",
+    "movieSearch",
+    "movieGroup",
+    "movieList"
+  );
+
+}
+
+
+function renderSeries() {
+
+  renderMedia(
+    "series",
+    "seriesSearch",
+    "seriesGroup",
+    "seriesList"
+  );
+
+}
+
+
+/* =====================================
+   VIDEO PLAYER
+===================================== */
 
 function playStream(index) {
 
   const channel =
     channels[index];
 
-  if (!channel) return;
 
+  if (!channel) {
+    return;
+  }
+
+
+  if (
+    !isActive(channel)
+  ) {
+
+    alert(
+      "This stream has expired."
+    );
+
+    return;
+
+  }
+
+
+  stopPlayer();
 
   currentIndex = index;
 
 
   const video =
     document.getElementById(
-      "videoPlayer"
+      "video"
     );
 
+  video.classList.remove(
+    "hidden"
+  );
 
-  stopPlayer();
+
+  document
+    .getElementById("playingName")
+    .textContent =
+      channel.name;
+
+  document
+    .getElementById("playingGroup")
+    .textContent =
+      channel.group;
 
 
-  document.getElementById(
-    "playingName"
-  ).textContent =
-    channel.name;
+  const logo =
+    document.getElementById(
+      "playingLogo"
+    );
+
+  logo.src =
+    channel.logo ||
+    "https://placehold.co/100x100?text=TV";
+
+
+  document
+    .querySelector(
+      ".player-placeholder"
+    )
+    .style.display = "none";
 
 
   if (
@@ -1286,8 +3048,7 @@ function playStream(index) {
     Hls.isSupported()
   ) {
 
-    hls =
-      new Hls();
+    hls = new Hls();
 
     hls.loadSource(
       channel.url
@@ -1297,17 +3058,38 @@ function playStream(index) {
       video
     );
 
+
     hls.on(
       Hls.Events.MANIFEST_PARSED,
-      function () {
+      function() {
+
+        renderResolutions();
 
         video.play()
-          .catch(() => {});
+          .catch(function() {});
+
+      }
+    );
+
+
+    hls.on(
+      Hls.Events.ERROR,
+      function(event, data) {
+
+        if (data.fatal) {
+
+          console.error(
+            "Stream playback error",
+            data
+          );
+
+        }
 
       }
     );
 
   }
+
 
   else if (
     video.canPlayType(
@@ -1319,9 +3101,10 @@ function playStream(index) {
       channel.url;
 
     video.play()
-      .catch(() => {});
+      .catch(function() {});
 
   }
+
 
   else {
 
@@ -1332,22 +3115,17 @@ function playStream(index) {
   }
 
 
-  renderChannels();
+  renderTV();
 
 }
 
-
-/* =========================
-   STOP PLAYER
-========================= */
 
 function stopPlayer() {
 
   const video =
     document.getElementById(
-      "videoPlayer"
+      "video"
     );
-
 
   video.pause();
 
@@ -1355,38 +3133,42 @@ function stopPlayer() {
   if (hls) {
 
     hls.destroy();
+
     hls = null;
 
   }
 
 
-  video.removeAttribute("src");
+  video.removeAttribute(
+    "src"
+  );
+
   video.load();
 
 }
 
 
-/* =========================
-   CHANGE CHANNEL
-========================= */
-
 function changeChannel(direction) {
 
-  const tvChannels =
+  const list =
     channels
-      .map((channel, index) => ({
+    .map(
+      (channel, index) => ({
         ...channel,
         index: index
-      }))
-      .filter(
-        channel =>
-          channel.category === "tv"
-      );
+      })
+    )
+    .filter(channel =>
+      channel.category === "tv" &&
+      isActive(channel)
+    );
 
 
-  if (!tvChannels.length) {
+  if (!list.length) {
 
-    alert("No Live TV channels.");
+    alert(
+      "No TV channels available."
+    );
 
     return;
 
@@ -1394,46 +3176,134 @@ function changeChannel(direction) {
 
 
   let position =
-    tvChannels.findIndex(
+    list.findIndex(
       channel =>
-        channel.index === currentIndex
+        channel.index ===
+        currentIndex
     );
 
 
-  if (position === -1) {
-
-    position = 0;
-
-  } else {
-
-    position =
-      (
+  position =
+    position === -1
+      ? 0
+      : (
         position +
         direction +
-        tvChannels.length
-      )
-      %
-      tvChannels.length;
-
-  }
+        list.length
+      ) % list.length;
 
 
   playStream(
-    tvChannels[position].index
+    list[position].index
   );
 
 }
 
 
-/* =========================
+function renderResolutions() {
+
+  const select =
+    document.getElementById(
+      "resolution"
+    );
+
+  select.innerHTML =
+    '<option value="-1">Auto</option>';
+
+
+  if (!hls) {
+    return;
+  }
+
+
+  const heights =
+    [
+      ...new Set(
+        hls.levels
+          .map(level => level.height)
+          .filter(Boolean)
+      )
+    ]
+    .sort(
+      (a, b) => b - a
+    );
+
+
+  heights.forEach(height => {
+
+    const index =
+      hls.levels.findIndex(
+        level =>
+          level.height === height
+      );
+
+
+    const option =
+      document.createElement("option");
+
+    option.value =
+      index;
+
+    option.textContent =
+      height + "p";
+
+    select.appendChild(option);
+
+  });
+
+
+  const savedQuality =
+    localStorage.getItem(
+      "plc_quality"
+    ) || "-1";
+
+
+  select.value =
+    savedQuality;
+
+  hls.currentLevel =
+    Number(savedQuality);
+
+}
+
+
+function changeResolution() {
+
+  const value =
+    document
+    .getElementById("resolution")
+    .value;
+
+
+  localStorage.setItem(
+    "plc_quality",
+    value
+  );
+
+
+  if (hls) {
+
+    hls.currentLevel =
+      Number(value);
+
+  }
+
+}
+
+
+/* =====================================
    FAVORITES
-========================= */
+===================================== */
 
 function toggleFavorite() {
 
-  if (currentIndex < 0) {
+  if (
+    currentIndex < 0
+  ) {
 
-    alert("Please select a channel first.");
+    alert(
+      "Select a channel first."
+    );
 
     return;
 
@@ -1454,6 +3324,7 @@ function toggleFavorite() {
 
   }
 
+
   else {
 
     favorites.push(
@@ -1464,14 +3335,15 @@ function toggleFavorite() {
 
 
   saveData();
-  refreshApp();
+
+  renderFavorites();
+
+  alert(
+    "Favorites updated."
+  );
 
 }
 
-
-/* =========================
-   RENDER FAVORITES
-========================= */
 
 function renderFavorites() {
 
@@ -1479,7 +3351,6 @@ function renderFavorites() {
     document.getElementById(
       "favoriteList"
     );
-
 
   target.innerHTML = "";
 
@@ -1489,7 +3360,13 @@ function renderFavorites() {
     const channel =
       channels[index];
 
-    if (!channel) return;
+
+    if (
+      !channel ||
+      !isActive(channel)
+    ) {
+      return;
+    }
 
 
     const card =
@@ -1504,20 +3381,20 @@ function renderFavorites() {
 
     image.src =
       channel.logo ||
-      "https://placehold.co/300x450?text=TV";
+      "https://placehold.co/300x450?text=IPTV";
 
 
-    const info =
+    const information =
       document.createElement("div");
 
-    info.className =
+    information.className =
       "media-info";
 
 
-    const title =
+    const name =
       document.createElement("h3");
 
-    title.textContent =
+    name.textContent =
       channel.name;
 
 
@@ -1528,15 +3405,24 @@ function renderFavorites() {
       "▶ PLAY";
 
     play.onclick =
-      () =>
+      function() {
+
         playStream(index);
 
+        openLive();
 
-    info.appendChild(title);
-    info.appendChild(play);
+      };
 
-    card.appendChild(image);
-    card.appendChild(info);
+
+    information.append(
+      name,
+      play
+    );
+
+    card.append(
+      image,
+      information
+    );
 
     target.appendChild(card);
 
@@ -1553,40 +3439,317 @@ function renderFavorites() {
 }
 
 
-/* =========================
-   MOVIES
-========================= */
+/* =====================================
+   PLAYLIST TABLE
+===================================== */
 
-function renderMovies() {
-
-  const search =
-    document.getElementById(
-      "movieSearch"
-    ).value.toLowerCase();
-
+function renderPlaylist() {
 
   const target =
     document.getElementById(
-      "movieList"
+      "playlistTable"
     );
 
 
-  target.innerHTML = "";
+  target.innerHTML =
+    channels
+    .map(
+      (channel, index) => {
+
+        const active =
+          isActive(channel);
+
+
+        return `
+
+          <tr>
+
+            <td>
+              ${escapeHTML(channel.name)}
+            </td>
+
+            <td>
+              ${escapeHTML(channel.category)}
+            </td>
+
+            <td>
+              ${escapeHTML(channel.group)}
+            </td>
+
+            <td class="${
+              active
+                ? "active-status"
+                : "expired"
+            }">
+
+              ${
+                active
+                  ? "Active"
+                  : "Expired"
+              }
+
+            </td>
+
+            <td>
+
+              <button
+                class="danger"
+                onclick="deleteStream(${index})"
+              >
+                Delete
+              </button>
+
+            </td>
+
+          </tr>
+
+        `;
+
+      }
+    )
+    .join("");
+
+
+  if (!channels.length) {
+
+    target.innerHTML = `
+      <tr>
+        <td colspan="5">
+          No playlist content available.
+        </td>
+      </tr>
+    `;
+
+  }
+
+}
+
+
+function deleteStream(index) {
+
+  if (
+    !confirm(
+      "Delete this stream?"
+    )
+  ) {
+    return;
+  }
+
+
+  if (
+    currentIndex === index
+  ) {
+
+    stopPlayer();
+
+    currentIndex = -1;
+
+  }
+
+
+  channels.splice(
+    index,
+    1
+  );
+
+
+  favorites =
+    favorites
+    .filter(
+      favorite =>
+        favorite !== index
+    )
+    .map(
+      favorite =>
+        favorite > index
+          ? favorite - 1
+          : favorite
+    );
+
+
+  saveData();
+
+  refreshApp();
+
+}
+
+
+/* =====================================
+   SETTINGS
+===================================== */
+
+function saveBackground() {
+
+  const color =
+    document
+    .getElementById(
+      "backgroundColor"
+    )
+    .value;
+
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--bg",
+      color
+    );
+
+
+  localStorage.setItem(
+    "plc_bg",
+    color
+  );
+
+}
+
+
+function resetBackground() {
+
+  localStorage.removeItem(
+    "plc_bg"
+  );
+
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--bg",
+      "#080e1b"
+    );
+
+
+  document
+    .getElementById(
+      "backgroundColor"
+    )
+    .value =
+      "#080e1b";
+
+}
+
+
+/* =====================================
+   REFRESH APPLICATION
+===================================== */
+
+function refreshApp() {
+
+  document
+    .getElementById("countTV")
+    .textContent =
+      channels.filter(
+        channel =>
+          channel.category === "tv"
+      ).length;
+
+
+  document
+    .getElementById("countMovie")
+    .textContent =
+      channels.filter(
+        channel =>
+          channel.category === "movie"
+      ).length;
+
+
+  document
+    .getElementById("countSeries")
+    .textContent =
+      channels.filter(
+        channel =>
+          channel.category === "series"
+      ).length;
+
+
+  document
+    .getElementById("countUsers")
+    .textContent =
+      accounts.length;
+
+
+  ["tv", "movie", "series"]
+  .forEach(category => {
+
+    const id =
+      category === "tv"
+        ? "tvGroup"
+        : (
+          category === "movie"
+            ? "movieGroup"
+            : "seriesGroup"
+        );
+
+
+    const select =
+      document.getElementById(id);
+
+
+    const current =
+      select.value;
+
+
+    select.innerHTML =
+      '<option value="">All Groups</option>';
+
+
+    groups
+      .filter(
+        group =>
+          group.category === category
+      )
+      .forEach(group => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          group.name;
+
+        option.textContent =
+          group.name;
+
+        select.appendChild(option);
+
+      });
+
+
+    select.value =
+      current;
+
+  });
+
+
+  renderTV();
+
+  renderMovies();
+
+  renderSeries();
+
+  renderFavorites();
+
+  renderPlaylist();
+
+  renderGroups();
+
+  renderUsers();
+
+  updateGroups();
+
+
+  const recent =
+    document.getElementById(
+      "recent"
+    );
+
+  recent.innerHTML = "";
 
 
   channels
-    .map((channel, index) => ({
-      ...channel,
-      index: index
-    }))
-
-    .filter(channel =>
-      channel.category === "movie" &&
-      channel.name
-        .toLowerCase()
-        .includes(search)
-    )
-
+    .slice(-6)
+    .reverse()
     .forEach(channel => {
 
       const card =
@@ -1601,13 +3764,13 @@ function renderMovies() {
 
       image.src =
         channel.logo ||
-        "https://placehold.co/300x450?text=MOVIE";
+        "https://placehold.co/300x450?text=IPTV";
 
 
-      const info =
+      const information =
         document.createElement("div");
 
-      info.className =
+      information.className =
         "media-info";
 
 
@@ -1618,106 +3781,136 @@ function renderMovies() {
         channel.name;
 
 
-      const play =
-        document.createElement("button");
+      information.append(
+        title
+      );
 
-      play.textContent =
-        "▶ PLAY";
+      card.append(
+        image,
+        information
+      );
 
-      play.onclick =
-        () =>
-          playStream(
-            channel.index
-          );
-
-
-      info.appendChild(title);
-      info.appendChild(play);
-
-      card.appendChild(image);
-      card.appendChild(info);
-
-      target.appendChild(card);
+      recent.appendChild(card);
 
     });
 
 }
 
 
-/* =========================
-   REFRESH APPLICATION
-========================= */
+/* =====================================
+   KEYBOARD CONTROLS
+===================================== */
 
-function refreshApp() {
+document.addEventListener(
+  "keydown",
+  function(event) {
 
-  document.getElementById(
-    "tvCount"
-  ).textContent =
-    channels.filter(
-      channel =>
-        channel.category === "tv"
-    ).length;
-
-
-  document.getElementById(
-    "movieCount"
-  ).textContent =
-    channels.filter(
-      channel =>
-        channel.category === "movie"
-    ).length;
+    if (
+      document
+      .getElementById("app")
+      .classList
+      .contains("hidden")
+    ) {
+      return;
+    }
 
 
-  document.getElementById(
-    "favoriteCount"
-  ).textContent =
-    favorites.length;
+    const tag =
+      document.activeElement.tagName;
 
 
-  const groups =
-    new Set(
-      channels.map(
-        channel =>
-          channel.group || "General"
-      )
+    if (
+      event.key === "ArrowRight" &&
+      tag !== "INPUT" &&
+      tag !== "TEXTAREA"
+    ) {
+
+      changeChannel(1);
+
+    }
+
+
+    if (
+      event.key === "ArrowLeft" &&
+      tag !== "INPUT" &&
+      tag !== "TEXTAREA"
+    ) {
+
+      changeChannel(-1);
+
+    }
+
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      const video =
+        document.getElementById(
+          "video"
+        );
+
+
+      if (
+        document.fullscreenElement
+      ) {
+
+        document.exitFullscreen();
+
+      }
+
+
+      else if (
+        video.requestFullscreen
+      ) {
+
+        video
+          .requestFullscreen()
+          .catch(function() {});
+
+      }
+
+    }
+
+  }
+);
+
+
+/* =====================================
+   INITIALIZE APPLICATION
+===================================== */
+
+const background =
+  localStorage.getItem(
+    "plc_bg"
+  );
+
+
+if (background) {
+
+  document
+    .documentElement
+    .style
+    .setProperty(
+      "--bg",
+      background
     );
 
 
-  document.getElementById(
-    "groupCount"
-  ).textContent =
-    groups.size;
-
-
-  renderChannels();
-  renderMovies();
-  renderFavorites();
+  document
+    .getElementById(
+      "backgroundColor"
+    )
+    .value =
+      background;
 
 }
 
 
-/* =========================
-   INITIALIZATION
-========================= */
-
-if (
-  localStorage.getItem(
-    "plc_import_hidden"
-  ) === "yes"
-) {
-
-  document.getElementById(
-    "importBox"
-  ).classList.add("hidden");
+updateGroups();
 
 
-  document.getElementById(
-    "toggleImportButton"
-  ).textContent =
-    "Show Import";
-
-}
-
+/* Restore user session */
 
 if (
   sessionStorage.getItem(
@@ -1725,7 +3918,41 @@ if (
   ) === "yes"
 ) {
 
-  openApp();
+  const userId =
+    sessionStorage.getItem(
+      "plc_user_id"
+    );
+
+
+  currentUser =
+    accounts.find(
+      user =>
+        String(user.id) ===
+        String(userId)
+    );
+
+
+  if (
+    currentUser &&
+    currentUser.status === "Active"
+  ) {
+
+    openApp();
+
+  }
+
+
+  else {
+
+    sessionStorage.removeItem(
+      "plc_login"
+    );
+
+    sessionStorage.removeItem(
+      "plc_user_id"
+    );
+
+  }
 
 }
 
