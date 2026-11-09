@@ -109,6 +109,13 @@ video{width:100%;height:100%;object-fit:contain}.now-playing{padding:12px 0;font
   <h2>🎬 ភាពយន្ត</h2>
   <div class="toolbar"><input id="movieSearch" placeholder="ស្វែងរកភាពយន្ត..." oninput="renderMovies()"><select id="movieGroupFilter" onchange="renderMovies()"><option value="">គ្រប់ក្រុមភាពយន្ត</option></select></div>
   <div id="movieList"></div>
+ </div>
+     <div class="video-area">
+     <div class="video-box"><video id="videoPlayer" controls playsinline></video></div>
+     <div class="now-playing"><strong id="playingName">ជ្រើសរើសភាពយន្ត</strong></div>
+    <button onclick="changeMovie(-1)">◀ មុន</button><button onclick="changeMovie(1)">បន្ទាប់ ▶</button><button onclick="toggleFavorite()">⭐ ចំណូលចិត្ត</button>
+    </div>
+  </div>
 </section>
 
 <section id="series" class="page">
