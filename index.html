@@ -1,265 +1,600 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>COSD TV Cambodia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLC Cambodia TV</title>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;500;700&display=swap');
+
+:root {
+  --red:#e51e35;
+  --bg:#080b12;
+  --panel:#141b29;
+  --text:#ffffff;
+  --muted:#aab2c0;
+}
 *{box-sizing:border-box}
-body{
- margin:0;background:#080b12;color:#fff;
- font-family:Arial,sans-serif
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Battambang','Kantumruy Pro',Arial,sans-serif;
 }
-header{
- height:68px;background:#101522;
- display:flex;align-items:center;justify-content:space-between;
- padding:0 5%;position:sticky;top:0;z-index:10
+header {
+  height:70px;
+  background:#101725;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 2px 15px #0008;
 }
-.logo{font-size:25px;font-weight:bold;color:#ff263d}
+.logo {
+  color:var(--red);
+  font-size:25px;
+  font-weight:bold;
+}
 .logo span{color:white}
-nav{display:flex;gap:25px}
-nav a{color:#ddd;text-decoration:none;font-size:14px}
-nav a:hover{color:#ff263d}
-button{cursor:pointer}
-.search input{
- background:#202738;border:0;padding:11px;
- color:white;border-radius:6px;width:160px
+nav{display:flex;gap:23px}
+nav a {
+  color:#ddd;
+  text-decoration:none;
+  font-size:14px;
+  cursor:pointer;
 }
-.hero{
- min-height:330px;padding:55px 7%;
- background:linear-gradient(90deg,#090d17 15%,#101b2d 65%,#45111b);
- display:flex;align-items:center;justify-content:space-between
+nav a:hover{color:var(--red)}
+.header-right{display:flex;gap:10px;align-items:center}
+.lang-btn {
+  background:#252f40;
+  color:white;
+  border:1px solid #445064;
+  padding:9px 12px;
+  border-radius:6px;
+  cursor:pointer;
+  font-family:inherit;
 }
-.hero h1{font-size:42px;margin:0 0 12px}
-.hero h1 span{color:#ff263d}
-.hero p{color:#ccc;line-height:1.8}
-.primary{
- background:#ed2038;color:white;border:0;
- padding:13px 25px;border-radius:5px;font-weight:bold
+.hero {
+  min-height:320px;
+  padding:55px 7%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:
+   linear-gradient(90deg,#080b12 15%,#101b2aee 60%,#5b101d88),
+   url('https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=1500')
+   center/cover;
 }
-.hero-icon{font-size:115px}
-.container{padding:25px 5%;max-width:1500px;margin:auto}
-.section-head{
- display:flex;justify-content:space-between;
- align-items:center;margin:25px 0 16px
+.hero h1{font-size:39px;margin:0 0 12px}
+.hero h1 span{color:var(--red)}
+.hero p{color:#ddd;line-height:1.9}
+.hero button {
+  background:var(--red);
+  border:0;
+  padding:13px 25px;
+  color:white;
+  border-radius:6px;
+  font-size:15px;
+  cursor:pointer;
+  font-family:inherit;
 }
-.section-head h2{font-size:21px}
-.categories{
- display:flex;gap:12px;overflow-x:auto;padding-bottom:10px
+.hero-icon{font-size:95px}
+.container{max-width:1400px;margin:auto;padding:20px 5%}
+.section-title {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:28px 0 15px;
 }
-.cat{
- min-width:120px;background:#171e2c;padding:16px;
- border-radius:8px;text-align:center;cursor:pointer
+.section-title h2{font-size:20px;margin:0}
+.section-title button {
+  background:transparent;
+  border:0;
+  color:var(--red);
+  cursor:pointer;
+  font-family:inherit;
 }
-.cat:hover{background:#a6192e}
-.cat div{font-size:30px;margin-bottom:7px}
-.channels{
- display:grid;grid-template-columns:repeat(5,1fr);gap:15px
+.categories {
+  display:flex;
+  gap:12px;
+  overflow-x:auto;
+  padding:8px 0 15px;
 }
-.card{
- background:#171e2c;border-radius:9px;overflow:hidden;
- cursor:pointer;transition:.2s
+.category {
+  min-width:120px;
+  padding:15px 10px;
+  background:var(--panel);
+  text-align:center;
+  border-radius:8px;
+  cursor:pointer;
+  border:1px solid #242d3b;
 }
-.card:hover{transform:translateY(-4px);background:#252e40}
-.card img{
- width:100%;height:135px;object-fit:cover;
- background:#252b38
+.category:hover,.category.active {
+  background:#651b2a;
+  border-color:var(--red);
+}
+.category .emoji{font-size:30px}
+.category p{margin:5px 0 0;font-size:13px}
+.search {
+  width:100%;
+  max-width:400px;
+  padding:12px;
+  background:#192232;
+  border:1px solid #303a4c;
+  color:white;
+  border-radius:7px;
+  outline:none;
+  font-family:inherit;
+}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:15px;
+}
+.card {
+  background:var(--panel);
+  border-radius:9px;
+  overflow:hidden;
+  border:1px solid #252d3c;
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover{transform:translateY(-4px);border-color:var(--red)}
+.card img {
+  width:100%;
+  height:125px;
+  object-fit:cover;
+  background:#252d3c;
 }
 .card-info{padding:12px}
-.card-info h3{font-size:14px;margin:0 0 8px}
-.tag{font-size:11px;color:#ff5366}
-.play{
- background:#e9233b;border:0;color:white;
- padding:8px 13px;border-radius:4px;width:100%;margin-top:8px
+.card h3{font-size:14px;margin:0 0 7px}
+.card p{font-size:12px;color:var(--muted);margin:0}
+.play-btn {
+  width:100%;
+  background:var(--red);
+  color:white;
+  border:0;
+  padding:9px;
+  margin-top:10px;
+  border-radius:5px;
+  cursor:pointer;
+  font-family:inherit;
 }
-#player{
- display:none;background:#121a28;padding:18px;
- border-radius:10px;margin:20px 0
+.player-box {
+  display:none;
+  background:#111a28;
+  border:1px solid #303a4c;
+  padding:15px;
+  border-radius:10px;
+  margin:25px 0;
 }
-video{width:100%;max-height:500px;background:black}
-.close{
- float:right;background:#e9233b;color:white;
- border:0;padding:7px 13px;border-radius:4px
+.player-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:12px;
 }
-footer{
- margin-top:50px;background:#111725;
- padding:35px 5%;text-align:center;color:#aaa
+.player-top h2{font-size:18px}
+.close-btn {
+  background:var(--red);
+  color:white;
+  border:0;
+  border-radius:5px;
+  padding:8px 14px;
+  cursor:pointer;
 }
-@media(max-width:900px){
- .channels{grid-template-columns:repeat(3,1fr)}
+video {
+  width:100%;
+  max-height:500px;
+  background:black;
+  border-radius:6px;
+}
+.message{color:#ffb7c0;font-size:13px}
+.tabs{display:flex;gap:10px;flex-wrap:wrap}
+.tab {
+  padding:9px 17px;
+  background:#192232;
+  color:white;
+  border:1px solid #303a4c;
+  border-radius:5px;
+  cursor:pointer;
+  font-family:inherit;
+}
+.tab.active{background:var(--red);border-color:var(--red)}
+.empty {
+  grid-column:1/-1;
+  padding:30px;
+  background:var(--panel);
+  text-align:center;
+  border-radius:8px;
+  color:var(--muted);
+}
+footer {
+  background:#101725;
+  text-align:center;
+  padding:35px 15px;
+  margin-top:50px;
+  color:#aaa;
+}
+footer h2{color:var(--red)}
+@media(max-width:1000px){
+ .grid{grid-template-columns:repeat(3,1fr)}
  nav{gap:12px}
- .hero h1{font-size:30px}
 }
-@media(max-width:600px){
- header{padding:0 12px}
- nav{display:none}
- .search input{width:115px}
- .hero{padding:35px 20px;min-height:250px}
- .hero-icon{font-size:55px}
- .hero h1{font-size:25px}
- .channels{grid-template-columns:repeat(2,1fr)}
+@media(max-width:650px){
+ header{padding:0 12px;height:auto;min-height:65px;flex-wrap:wrap}
+ nav{order:3;width:100%;overflow-x:auto;padding:12px 0}
+ .hero{min-height:250px;padding:30px 20px}
+ .hero h1{font-size:26px}
+ .hero-icon{font-size:50px}
+ .grid{grid-template-columns:repeat(2,1fr);gap:10px}
  .container{padding:15px}
+ .card img{height:105px}
 }
 </style>
 </head>
+
 <body>
 
 <header>
- <div class="logo">COSD <span>TV</span></div>
- <nav>
-  <a href="#home">Home</a>
-  <a href="#live">Live TV</a>
-  <a href="#movies">Movies</a>
-  <a href="#series">Series</a>
- </nav>
- <div class="search">
-  <input id="search" placeholder="Search..."
-  oninput="searchContent()">
- </div>
+  <div class="logo">PLC <span>CAMBODIA TV</span></div>
+
+  <nav>
+    <a href="#home" data-t="home">ទំព័រដើម</a>
+    <a href="#live" data-t="live">ទូរទស្សន៍ផ្ទាល់</a>
+    <a href="#movies" data-t="movies">ភាពយន្ត</a>
+    <a href="#series" data-t="series">រឿងភាគ</a>
+  </nav>
+
+  <div class="header-right">
+    <button class="lang-btn" onclick="toggleLanguage()" id="language">
+      🇬🇧 English
+    </button>
+  </div>
 </header>
 
 <section class="hero" id="home">
- <div>
-  <h1>WELCOME TO <span>COSD TV</span></h1>
-  <p>Watch Live TV, Movies and TV Series.<br>
-  Entertainment Anytime, Anywhere.</p>
-  <button class="primary"
-  onclick="document.getElementById('live').scrollIntoView()">
-  ▶ WATCH NOW
-  </button>
- </div>
- <div class="hero-icon">📺</div>
+  <div>
+    <h1>PLC <span>CAMBODIA TV</span></h1>
+    <p data-t="heroText">
+      ទស្សនាទូរទស្សន៍ ភាពយន្ត និងរឿងភាគគ្រប់ពេលវេលា
+    </p>
+    <button onclick="document.getElementById('live').scrollIntoView()"
+      data-t="watch">
+      ▶ ទស្សនាឥឡូវនេះ
+    </button>
+  </div>
+  <div class="hero-icon">📺</div>
 </section>
 
-<div class="container">
+<main class="container">
 
- <section id="player">
-  <button class="close" onclick="closePlayer()">✕ Close</button>
-  <h2 id="playingTitle">Now Playing</h2>
-  <video id="video" controls autoplay playsinline></video>
-  <p id="playerMessage"></p>
- </section>
+  <section class="player-box" id="playerBox">
+    <div class="player-top">
+      <h2 id="playerTitle">Now Playing</h2>
+      <button class="close-btn" onclick="closePlayer()">✕</button>
+    </div>
+    <video id="video" controls autoplay playsinline></video>
+    <p class="message" id="playerMessage"></p>
+  </section>
 
- <div class="section-head">
-  <h2>📂 Categories</h2>
- </div>
+  <div class="section-title">
+    <h2 data-t="categories">📂 ប្រភេទមាតិកា</h2>
+  </div>
 
- <div class="categories">
-  <div class="cat" onclick="showCategory('Live TV')">
-   <div>📺</div>Live TV
+  <div class="categories">
+    <div class="category active" onclick="filterType('all',this)">
+      <div class="emoji">🌐</div>
+      <p data-t="all">ទាំងអស់</p>
+    </div>
+    <div class="category" onclick="filterType('live',this)">
+      <div class="emoji">📺</div>
+      <p data-t="live">ទូរទស្សន៍ផ្ទាល់</p>
+    </div>
+    <div class="category" onclick="filterType('khmer',this)">
+      <div class="emoji">🇰🇭</div>
+      <p data-t="khmer">ទូរទស្សន៍ខ្មែរ</p>
+    </div>
+    <div class="category" onclick="filterType('movies',this)">
+      <div class="emoji">🎬</div>
+      <p data-t="movies">ភាពយន្ត</p>
+    </div>
+    <div class="category" onclick="filterType('series',this)">
+      <div class="emoji">📽️</div>
+      <p data-t="series">រឿងភាគ</p>
+    </div>
+    <div class="category" onclick="filterType('sports',this)">
+      <div class="emoji">⚽</div>
+      <p data-t="sports">កីឡា</p>
+    </div>
   </div>
-  <div class="cat" onclick="showCategory('Khmer TV')">
-   <div>🇰🇭</div>Khmer TV
-  </div>
-  <div class="cat" onclick="showCategory('Movies')">
-   <div>🎬</div>Movies
-  </div>
-  <div class="cat" onclick="showCategory('Series')">
-   <div>📽️</div>TV Series
-  </div>
-  <div class="cat" onclick="showCategory('Sports')">
-   <div>⚽</div>Sports
-  </div>
- </div>
 
- <section id="live">
-  <div class="section-head">
-   <h2>🔴 Live TV Channels</h2>
+  <div class="section-title" id="live">
+    <h2 data-t="liveTitle">🔴 ទូរទស្សន៍កំពុងផ្សាយ</h2>
+    <input class="search" id="search"
+      placeholder="ស្វែងរកប៉ុស្តិ៍..."
+      oninput="searchItems()">
   </div>
-  <div class="channels" id="channelList"></div>
- </section>
 
- <section id="movies">
-  <div class="section-head">
-   <h2>🎬 Movies</h2>
-  </div>
-  <div class="channels" id="movieList"></div>
- </section>
+  <div class="grid" id="contentGrid"></div>
 
- <section id="series">
-  <div class="section-head">
-   <h2>📽️ TV Series</h2>
-  </div>
-  <div class="channels" id="seriesList"></div>
- </section>
+  <section id="movies">
+    <div class="section-title">
+      <h2 data-t="movieTitle">🎬 ភាពយន្ត</h2>
+      <button onclick="filterType('movies')"
+        data-t="viewAll">មើលទាំងអស់ →</button>
+    </div>
+    <div class="grid" id="movieGrid"></div>
+  </section>
 
-</div>
+  <section id="series">
+    <div class="section-title">
+      <h2 data-t="seriesTitle">📽️ រឿងភាគ</h2>
+      <button onclick="filterType('series')"
+        data-t="viewAll">មើលទាំងអស់ →</button>
+    </div>
+    <div class="grid" id="seriesGrid"></div>
+  </section>
+
+</main>
 
 <footer>
- <h2 style="color:#ed2038">COSD TV CAMBODIA</h2>
- <p>Live Television | Movies | TV Series</p>
- <p>© 2026 COSD TV Cambodia. All Rights Reserved.</p>
+  <h2>PLC CAMBODIA TV</h2>
+  <p data-t="footerText">
+    សូមស្វាគមន៍មកកាន់ PLC Cambodia TV
+  </p>
+  <p>© 2026 PLC Cambodia TV. All Rights Reserved.</p>
 </footer>
 
 <script>
-// Replace these demo entries with your authorized stream URLs.
 
-const channels = [
- {name:"TVK",category:"Khmer TV",image:"https://placehold.co/400x220/171e2c/ffffff?text=TVK",url:""},
- {name:"TV5 Cambodia",category:"Khmer TV",image:"https://placehold.co/400x220/171e2c/ffffff?text=TV5",url:""},
- {name:"Bayon TV",category:"Khmer TV",image:"https://placehold.co/400x220/171e2c/ffffff?text=BAYON",url:""},
- {name:"BTV",category:"Khmer TV",image:"https://placehold.co/400x220/171e2c/ffffff?text=BTV",url:""},
- {name:"CCTV",category:"Live TV",image:"https://placehold.co/400x220/171e2c/ffffff?text=CCTV",url:""},
- {name:"Sports TV",category:"Sports",image:"https://placehold.co/400x220/171e2c/ffffff?text=SPORTS",url:""}
+// --------------------------------
+// LANGUAGE SYSTEM
+// --------------------------------
+
+let lang = "km";
+
+const translations = {
+ km:{
+  home:"ទំព័រដើម",
+  live:"ទូរទស្សន៍ផ្ទាល់",
+  movies:"ភាពយន្ត",
+  series:"រឿងភាគ",
+  heroText:"ទស្សនាទូរទស្សន៍ ភាពយន្ត និងរឿងភាគគ្រប់ពេលវេលា",
+  watch:"▶ ទស្សនាឥឡូវនេះ",
+  categories:"📂 ប្រភេទមាតិកា",
+  all:"ទាំងអស់",
+  khmer:"ទូរទស្សន៍ខ្មែរ",
+  sports:"កីឡា",
+  liveTitle:"🔴 ទូរទស្សន៍កំពុងផ្សាយ",
+  movieTitle:"🎬 ភាពយន្ត",
+  seriesTitle:"📽️ រឿងភាគ",
+  viewAll:"មើលទាំងអស់ →",
+  play:"▶ ទស្សនា",
+  search:"ស្វែងរកប៉ុស្តិ៍...",
+  footerText:"សូមស្វាគមន៍មកកាន់ PLC Cambodia TV"
+ },
+ en:{
+  home:"Home",
+  live:"Live TV",
+  movies:"Movies",
+  series:"Series",
+  heroText:"Watch Live TV, Movies and Series Anytime, Anywhere.",
+  watch:"▶ WATCH NOW",
+  categories:"📂 Categories",
+  all:"All",
+  khmer:"Khmer TV",
+  sports:"Sports",
+  liveTitle:"🔴 Live Television",
+  movieTitle:"🎬 Movies",
+  seriesTitle:"📽️ TV Series",
+  viewAll:"View All →",
+  play:"▶ WATCH",
+  search:"Search channels...",
+  footerText:"Welcome to PLC Cambodia TV"
+ }
+};
+
+function toggleLanguage(){
+ lang=lang==="km"?"en":"km";
+ document.documentElement.lang=lang;
+
+ document.querySelectorAll("[data-t]").forEach(el=>{
+  const key=el.dataset.t;
+  el.textContent=translations[lang][key]||key;
+ });
+
+ document.getElementById("language").textContent=
+  lang==="km"?"🇬🇧 English":"🇰🇭 ភាសាខ្មែរ";
+
+ document.getElementById("search").placeholder=
+  translations[lang].search;
+
+ renderAll();
+}
+
+// --------------------------------
+// CHANNEL DATABASE
+// Add your authorized stream URLs
+// --------------------------------
+
+const items=[
+
+ {name:"TVK",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=TVK",url:""},
+
+ {name:"TV5 Cambodia",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=TV5",url:""},
+
+ {name:"Bayon TV",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=BAYON",url:""},
+
+ {name:"BTV",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=BTV",url:""},
+
+ {name:"PNN TV",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=PNN",url:""},
+
+ {name:"CNC TV",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=CNC",url:""},
+
+ {name:"CTV8",type:"live",category:"Khmer TV",
+  image:"https://placehold.co/400x220/17263d/fff?text=CTV8",url:""},
+
+ {name:"CCTV",type:"live",category:"International",
+  image:"https://placehold.co/400x220/17263d/fff?text=CCTV",url:""},
+
+ {name:"Sports Channel",type:"live",category:"Sports",
+  image:"https://placehold.co/400x220/17263d/fff?text=SPORTS",url:""},
+
+ {name:"Hollywood Movies",type:"movies",
+  category:"Movies",
+  image:"https://placehold.co/400x220/302033/fff?text=HOLLYWOOD",url:""},
+
+ {name:"Khmer Movies",type:"movies",
+  category:"Movies",
+  image:"https://placehold.co/400x220/302033/fff?text=KHMER+MOVIES",url:""},
+
+ {name:"Action Movies",type:"movies",
+  category:"Movies",
+  image:"https://placehold.co/400x220/302033/fff?text=ACTION",url:""},
+
+ {name:"Khmer Drama",type:"series",
+  category:"Series",
+  image:"https://placehold.co/400x220/302033/fff?text=KHMER+DRAMA",url:""},
+
+ {name:"Chinese Series",type:"series",
+  category:"Series",
+  image:"https://placehold.co/400x220/302033/fff?text=CHINESE",url:""},
+
+ {name:"Korean Series",type:"series",
+  category:"Series",
+  image:"https://placehold.co/400x220/302033/fff?text=KOREAN",url:""}
+
 ];
 
-const movies = [
- {name:"Hollywood Movies",category:"Movies",image:"https://placehold.co/400x220/301b27/ffffff?text=HOLLYWOOD",url:""},
- {name:"Khmer Movies",category:"Movies",image:"https://placehold.co/400x220/301b27/ffffff?text=KHMER+MOVIES",url:""},
- {name:"Action Movies",category:"Movies",image:"https://placehold.co/400x220/301b27/ffffff?text=ACTION",url:""},
- {name:"Drama Movies",category:"Movies",image:"https://placehold.co/400x220/301b27/ffffff?text=DRAMA",url:""}
-];
+// --------------------------------
+// RENDER CONTENT
+// --------------------------------
 
-const series = [
- {name:"Khmer Drama",category:"Series",image:"https://placehold.co/400x220/25203a/ffffff?text=KHMER+DRAMA",url:""},
- {name:"Chinese Series",category:"Series",image:"https://placehold.co/400x220/25203a/ffffff?text=CHINESE",url:""},
- {name:"Korean Series",category:"Series",image:"https://placehold.co/400x220/25203a/ffffff?text=KOREAN",url:""},
- {name:"TVB Series",category:"Series",image:"https://placehold.co/400x220/25203a/ffffff?text=TVB",url:""}
-];
-
-function makeCard(item){
+function card(item){
+ const index=items.indexOf(item);
  return `
  <div class="card">
   <img src="${item.image}" alt="${item.name}">
   <div class="card-info">
    <h3>${item.name}</h3>
-   <div class="tag">${item.category}</div>
-   <button class="play" onclick="playContent('${item.name.replace(/'/g,"\\'")}','${item.url}')">
-    ▶ PLAY
+   <p>${item.category}</p>
+   <button class="play-btn" onclick="playItem(${index})">
+    ${translations[lang].play}
    </button>
   </div>
  </div>`;
 }
 
-function render(){
- document.getElementById("channelList").innerHTML=channels.map(makeCard).join("");
- document.getElementById("movieList").innerHTML=movies.map(makeCard).join("");
- document.getElementById("seriesList").innerHTML=series.map(makeCard).join("");
+function renderAll(){
+ const live=items.filter(x=>x.type==="live");
+ const movies=items.filter(x=>x.type==="movies");
+ const series=items.filter(x=>x.type==="series");
+
+ document.getElementById("contentGrid").innerHTML=
+  live.map(card).join("");
+
+ document.getElementById("movieGrid").innerHTML=
+  movies.map(card).join("");
+
+ document.getElementById("seriesGrid").innerHTML=
+  series.map(card).join("");
 }
 
-function playContent(name,url){
- const player=document.getElementById("player");
- const video=document.getElementById("video");
- document.getElementById("playingTitle").textContent=name;
- player.style.display="block";
- player.scrollIntoView({behavior:"smooth"});
+function filterType(type,element){
+ document.querySelectorAll(".category")
+  .forEach(x=>x.classList.remove("active"));
 
- if(!url){
-  document.getElementById("playerMessage").textContent=
-   "Please add an authorized M3U or video stream URL to play this channel.";
-  video.pause();
-  video.removeAttribute("src");
-  video.load();
+ if(element) element.classList.add("active");
+
+ const result=type==="all"?items:
+  type==="khmer"?items.filter(x=>x.category==="Khmer TV"):
+  type==="sports"?items.filter(x=>x.category==="Sports"):
+  items.filter(x=>x.type===type);
+
+ document.getElementById("contentGrid").innerHTML=
+  result.map(card).join("") ||
+  `<div class="empty">No content found</div>`;
+
+ document.getElementById("live").scrollIntoView();
+}
+
+function searchItems(){
+ const q=document.getElementById("search").value.toLowerCase();
+
+ const result=items.filter(x=>
+  x.name.toLowerCase().includes(q)||
+  x.category.toLowerCase().includes(q)
+ );
+
+ document.getElementById("contentGrid").innerHTML=
+  result.map(card).join("") ||
+  `<div class="empty">No channels found</div>`;
+}
+
+// --------------------------------
+// VIDEO PLAYER
+// Supports native video and HLS
+// --------------------------------
+
+let hls=null;
+
+function playItem(index){
+ const item=items[index];
+ const box=document.getElementById("playerBox");
+ const video=document.getElementById("video");
+ const message=document.getElementById("playerMessage");
+
+ box.style.display="block";
+ document.getElementById("playerTitle").textContent=item.name;
+ box.scrollIntoView({behavior:"smooth"});
+
+ if(hls){
+  hls.destroy();
+  hls=null;
+ }
+
+ video.pause();
+ video.removeAttribute("src");
+ video.load();
+
+ if(!item.url){
+  message.textContent=
+   "Please add an authorized stream URL for this channel.";
   return;
  }
 
- document.getElementById("playerMessage").textContent="";
- video.src=url;
- video.play().catch(()=> {
-  document.getElementById("playerMessage").textContent=
-   "Playback unavailable. Check the stream URL and format.";
- });
+ message.textContent="";
+
+ if(item.url.includes(".m3u8") && Hls.isSupported()){
+  hls=new Hls();
+  hls.loadSource(item.url);
+  hls.attachMedia(video);
+  hls.on(Hls.Events.MANIFEST_PARSED,()=>{
+   video.play().catch(()=>{});
+  });
+ }else if(video.canPlayType("application/vnd.apple.mpegurl")){
+  video.src=item.url;
+  video.play().catch(()=>{});
+ }else{
+  video.src=item.url;
+  video.play().catch(()=>{
+   message.textContent="Unable to play this video stream.";
+  });
+ }
 }
 
 function closePlayer(){
@@ -267,33 +602,18 @@ function closePlayer(){
  video.pause();
  video.removeAttribute("src");
  video.load();
- document.getElementById("player").style.display="none";
+
+ if(hls){
+  hls.destroy();
+  hls=null;
+ }
+
+ document.getElementById("playerBox").style.display="none";
 }
 
-function showCategory(category){
- const all=[...channels,...movies,...series];
- const filtered=all.filter(x=>
-  x.category===category ||
-  (category==="Live TV" && x.category==="Khmer TV")
- );
- document.getElementById("channelList").innerHTML=
-  filtered.map(makeCard).join("");
- document.getElementById("live").scrollIntoView();
-}
+renderAll();
 
-function searchContent(){
- const q=document.getElementById("search").value.toLowerCase();
- const all=[...channels,...movies,...series];
- const filtered=all.filter(x=>
-  x.name.toLowerCase().includes(q) ||
-  x.category.toLowerCase().includes(q)
- );
- document.getElementById("channelList").innerHTML=
-  filtered.map(makeCard).join("");
- document.getElementById("live").scrollIntoView();
-}
-
-render();
 </script>
+
 </body>
 </html>
