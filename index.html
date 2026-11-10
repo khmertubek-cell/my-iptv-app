@@ -6,7 +6,216 @@
 <title>SR CAMBODIA TV</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17">
+/* ===== Requested upgrades: saved-link lock, update action, full-HD layout,
+   live clock, editable category artwork, and season/episode navigation. ===== */
+let activeSeriesEpisodes = [];
+let activeEpisodeIndex = -1;
+let activeSeriesTitle = '';
+
+function updateClock(){
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const date = now.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  if($('clockNow')) $('clockNow').textContent = time;
+  if($('hubTime')) $('hubTime').textContent = time;
+  if($('hubDate')) $('hubDate').textContent = date;
+}
+
+function showConnectionUpdate(){
+  if(!requireContentRight()) return;
+  $('savedConnectionDetails').classList.add('hide');
+  showView('settings');
+  $('m3uUrl').focus();
+  toast('Enter the new M3U URL or Xtream details, then import/connect.');
+}
+function unlockConnectionDetails(){
+  if(!currentUser) return;
+  $('connectionUnlockPassword').value='';
+  $('connectionLockModal').classList.add('open');
+  $('connectionUnlockPassword').focus();
+}
+function closeConnectionLock(){$('connectionLockModal').classList.remove('open')}
+function verifyConnectionUnlock(){
+  const pass=$('connectionUnlockPassword').value;
+  const account=users.find(x=>x.username===currentUser?.username);
+  if(!account || account.password!==pass){toast('Incorrect account password');return}
+  closeConnectionLock();
+  const xt=settings.xtream||{};
+  $('savedM3UDisplay').value=settings.m3uUrl||'No M3U URL saved';
+  $('savedXtServerDisplay').value=xt.server||'No Xtream server saved';
+  $('savedXtUserDisplay').value=xt.u||'';
+  $('savedXtPassDisplay').value=xt.p||'';
+  $('savedConnectionDetails').classList.remove('hide');
+  toast('Saved connection details unlocked');
+}
+function toggleSavedXtreamPassword(){
+  const el=$('savedXtPassDisplay');
+  el.type=el.type==='password'?'text':'password';
+}
+
+/* Save the M3U URL only after a successful URL import. */
+const importM3UUrlOriginal = importM3UUrl;
+importM3UUrl = async function(){
+  const url=$('m3uUrl').value.trim();
+  await importM3UUrlOriginal();
+  if(url && db.live.length+db.movie.length+db.series.length>0){
+    settings.m3uUrl=url; persist();
+  }
+};
+
+/* Series items from Xtream must load get_series_info: a series is not itself
+   an episode stream. Build an episode list from the provider's season data. */
+async function openSeriesEpisodes(seriesIndex){
+  const series=db.series[seriesIndex];
+  if(!series) return;
+  activeSeriesTitle=series.name;
+  activeSeriesEpisodes=[];
+  if(series.provider==='xtream' && settings.xtream?.server && series.seriesId){
+    const x=settings.xtream;
+    const api=x.server.replace(/\/+$/,'')+'/player_api.php?username='+encodeURIComponent(x.u)+'&password='+encodeURIComponent(x.p)+'&action=get_series_info&series_id='+encodeURIComponent(series.seriesId);
+    try{
+      const response=await fetch(api);
+      if(!response.ok) throw new Error('Provider request failed');
+      const data=await response.json();
+      const seasons=data.episodes||{};
+      Object.keys(seasons).sort((a,b)=>Number(a)-Number(b)).forEach(season=>{
+        (seasons[season]||[]).forEach(ep=>{
+          const ext=ep.container_extension||'mp4';
+          activeSeriesEpisodes.push({
+            name:ep.title||('Episode '+(ep.episode_num||activeSeriesEpisodes.length+1)),
+            season:ep.season??season,
+            episode:ep.episode_num??activeSeriesEpisodes.length+1,
+            url:x.server.replace(/\/+$/,'')+'/series/'+encodeURIComponent(x.u)+'/'+encodeURIComponent(x.p)+'/'+ep.id+'.'+ext
+          });
+        });
+      });
+    }catch(err){
+      toast('Could not load episode list. Check provider connection / browser CORS.');
+      return;
+    }
+  }else if(series.url){
+    activeSeriesEpisodes=[{name:series.name,season:1,episode:1,url:series.url}];
+  }
+  if(!activeSeriesEpisodes.length){
+    toast('No episodes were returned for this series.');
+    return;
+  }
+  $('episodeModalTitle').textContent=series.name;
+  const seasons=[...new Set(activeSeriesEpisodes.map(e=>String(e.season??1)))];
+  $('episodeSeasonHint').textContent=activeSeriesEpisodes.length+' episodes · '+seasons.length+' season(s)';
+  let lastSeason=null;
+  $('episodeList').innerHTML=activeSeriesEpisodes.map((ep,i)=>{
+    const season=String(ep.season??1);
+    let heading='';
+    if(season!==lastSeason){heading='<div class="episode-season">Season '+esc(season)+'</div>';lastSeason=season}
+    return heading+`<div class="channel-row" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div style="flex:1"><div class="name">Episode ${esc(ep.episode)} · ${esc(ep.name)}</div><div class="sub">Season ${esc(season)}</div></div><button class="mini">Play</button></div>`;
+  }).join('');
+  $('episodeModal').classList.add('open');
+}
+function closeEpisodeModal(){$('episodeModal').classList.remove('open')}
+function playSeriesEpisode(index){
+  const ep=activeSeriesEpisodes[index];
+  if(!ep) return;
+  activeEpisodeIndex=index;
+  closeEpisodeModal();
+  currentType='series';
+  const video=$('seriesVideo');
+  activeVideo=video;
+  if(hls){hls.destroy();hls=null}
+  video.pause();video.removeAttribute('src');video.load();
+  if(ep.url.includes('.m3u8') && window.Hls && Hls.isSupported()){
+    hls=new Hls();hls.loadSource(ep.url);hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+  }else{video.src=ep.url;video.play().catch(()=>{})}
+  $('seriesPlayer').classList.add('open');
+  $('seriesNowPlaying').textContent=activeSeriesTitle+' · S'+ep.season+' E'+ep.episode+' · '+ep.name;
+  $('seriesPlayer').scrollIntoView({behavior:'smooth',block:'start'});
+  renderEpisodeQueue();
+}
+function renderEpisodeQueue(){
+  $('seriesQueue').innerHTML=activeSeriesEpisodes.map((ep,i)=>
+    `<div class="channel-row ${i===activeEpisodeIndex?'selected':''}" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div><div class="name">S${esc(ep.season)} E${esc(ep.episode)}</div><div class="sub">${esc(ep.name)}</div></div></div>`
+  ).join('');
+}
+function changeSeriesEpisode(direction){
+  if(!activeSeriesEpisodes.length) return toast('Choose a series first');
+  const next=activeEpisodeIndex+direction;
+  if(next<0 || next>=activeSeriesEpisodes.length) return toast(direction>0?'This is the last episode.':'This is the first episode.');
+  playSeriesEpisode(next);
+}
+
+/* Intercept series-card clicks and keep movie/TV playback behavior intact. */
+const playItemBeforeEpisodeUpgrade=playItem;
+playItem=function(type,index){
+  if(type==='series'){openSeriesEpisodes(index);return}
+  return playItemBeforeEpisodeUpgrade(type,index);
+};
+/* Series player buttons now navigate within the selected season/series episode list. */
+function changeItem(dir){
+  if(currentType==='series'){changeSeriesEpisode(dir);return}
+  const arr=db[currentType];
+  if(!arr?.length)return;
+  const next=(currentIndex+dir+arr.length)%arr.length;
+  playItemBeforeEpisodeUpgrade(currentType,next);
+}
+
+/* Persist connection data safely in local storage (local-only demo protection). */
+const loginXtreamOriginal=loginXtream;
+loginXtream=async function(){
+  const server=$('xtServer').value.trim().replace(/\/+$/,'');
+  const username=$('xtUser').value.trim();
+  const password=$('xtPass').value;
+  await loginXtreamOriginal();
+  if(server && username && password && db.series.some(x=>x.provider==='xtream')){
+    settings.xtream={server,u:username,p:password};
+    persist();
+  }
+};
+
+/* Let category logo images render consistently in the TV group tiles. */
+const renderTVOriginal=renderTV;
+renderTV=function(){
+  if(currentGroup!==null)return;
+  const gs=groups();
+  $('groupGrid').innerHTML=gs.length?gs.map(g=>{
+    const meta=getCategoryMeta('live',g);
+    const art=meta.logo?`<img src="${esc(meta.logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.remove()">`:'📺';
+    return `<div class="item" onclick="openGroup('${encodeURIComponent(g)}')"><div class="item-art">${art}</div><div class="item-body"><div class="item-title">${esc(g)}</div><div class="item-sub">${db.live.filter(x=>(x.group||'Uncategorized')===g).length} channels</div></div></div>`;
+  }).join(''):'<div class="empty">Import an M3U playlist or connect Xtream in Settings to see TV groups.</div>';
+};
+
+/* Apply category artwork to Movie and Series cards as well. */
+const mediaCardOriginal=mediaCard;
+mediaCard=function(x,type){
+  const i=db[type].indexOf(x);
+  const meta=getCategoryMeta(type,x.group||'Uncategorized');
+  const logo=x.logo||meta.logo;
+  const art=logo?`<img src="${esc(logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`:type==='movie'?'🎬':'📚';
+  const label=type==='series'?'Open episodes':'▶ Play';
+  return `<div class="item"><div class="item-art">${art}</div><div class="item-body"><div class="item-title" title="${esc(x.name)}">${type==='series'?(i+1)+'. ':''}${esc(x.name)}</div><div class="item-sub">${esc(x.group||type)}</div><div class="item-actions"><button class="mini" onclick="playItem('${type}',${i})">${label}</button><button class="mini" onclick="moveItem('${type}',${i},-1)">↑</button><button class="mini" onclick="moveItem('${type}',${i},1)">↓</button></div></div></div>`;
+};
+
+/* On successful M3U file import, no private URL exists to reveal. */
+const originalImportFile=importFile;
+importFile=function(file){
+  originalImportFile(file);
+};
+
+/* Restore saved link metadata on load; credentials remain masked in the UI. */
+function refreshConnectionStatus(){
+  const count=Number(!!settings.m3uUrl)+Number(!!settings.xtream?.server);
+  $('savedConnectionPanel')?.querySelector('p.hint')?.replaceChildren(
+    document.createTextNode(count?'A saved connection is available. Details are password-locked.':'No saved URL or Xtream account is stored yet.')
+  );
+}
+refreshConnectionStatus();
+const persistOriginal=persist;
+persist=function(){persistOriginal();refreshConnectionStatus()};
+updateClock();
+setInterval(updateClock,1000);
+
+</script>
 <style>
 :root{--bg:#090b16;--panel:#121629;--panel2:#1a2038;--line:#29314d;--text:#f5f6ff;--muted:#9da7c3;--accent:#7667ff;--accent2:#19c5c1;--font:16px}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#28205b 0,transparent 40%),var(--bg);color:var(--text);font:var(--font) Inter,Arial,sans-serif}
@@ -17,6 +226,25 @@ body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42
 .import-progress{position:fixed;inset:0;z-index:250;background:#000b;display:none;place-items:center;padding:18px}.import-progress.open{display:grid}.import-progress-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;text-align:center;box-shadow:0 20px 70px #0009}.progress-title{font-size:1.15em;font-weight:800;margin-bottom:12px}.progress-percent{font-size:2.3em;font-weight:800;color:var(--accent2);margin:8px}.progress-bar{height:13px;background:#080b16;border:1px solid var(--line);border-radius:20px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}.progress-message{margin-top:12px;color:var(--muted)}
 
 </style>
+
+<style>
+/* Full-HD layout: fills a 1920x1080 display while remaining responsive. */
+.app{width:100%;max-width:none;min-height:100vh;margin:0;padding:clamp(14px,1.25vw,26px)}
+body{min-height:100vh}
+.view{width:100%}
+#hub{min-height:calc(100vh - 150px)}
+.hub-tiles{min-height:min(62vh,680px)}
+.hub-tile{min-height:clamp(220px,30vh,420px)}
+.player-layout{grid-template-columns:minmax(0,1fr) minmax(300px,25vw)}
+.player-box video,#remoteVideo,#movieVideo,#seriesVideo{width:100%;aspect-ratio:16/9;max-height:calc(100vh - 210px);object-fit:contain;background:#000}
+.player-box:fullscreen,.player-box:-webkit-full-screen{width:100vw;height:100vh;border:0;border-radius:0;background:#000;display:grid;place-items:center}
+.player-box:fullscreen video,.player-box:-webkit-full-screen video{width:100vw;height:100vh;max-height:100vh;aspect-ratio:auto;object-fit:contain}
+#episodeList .channel-row{border-bottom:1px solid var(--line)}
+.episode-season{font-weight:800;color:var(--accent2);padding:12px 8px 5px}
+@media(max-width:900px){.player-layout,.remote-layout{grid-template-columns:1fr}.player-side,.remote-list{max-height:38vh}.hub-tiles{grid-template-columns:1fr;min-height:0}.hub-tile{min-height:190px}}
+@media(min-width:1600px){.app{padding:28px 38px}.top{margin-bottom:30px}.nav{margin-bottom:28px}.grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:18px}.item-art{height:145px}}
+</style>
+
 </head>
 <body>
 <div class="login-screen" id="loginScreen"><div class="login-card"><div class="brand"><div class="brand-mark">▶</div><span>MY IPTV</span></div><h1 style="margin-top:22px">Sign in</h1><p class="muted">Enter your account to continue.</p><form onsubmit="event.preventDefault();loginUser()"><div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" required></div><div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn primary" style="width:100%;margin-top:18px" type="submit">Login</button></form><label class="remember-row"><input id="rememberLogin" type="checkbox"> Remember username and password on this device</label></div></div>
@@ -116,12 +344,50 @@ body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42
   <div class="field full"><button class="btn primary" onclick="saveSettings()">Save settings</button></div>
  </div></div>
  <div class="panel" id="userAdminPanel"><h3>Dashboard · User accounts</h3><div class="form-grid"><div class="field"><label>New username</label><input id="newUsername"></div><div class="field"><label>New password</label><input id="newUserPassword" type="password"></div><div class="field"><label>Role</label><select id="newUserRole"><option value="normal">Normal User</option><option value="manager">Manager</option><option value="admin">Administrator</option></select></div><div class="field"><label>Create account</label><button class="btn primary" onclick="addUser()">Create user</button></div></div><div id="userList" style="margin-top:12px"></div></div>
-<div class="panel"><h3>Categories</h3><p class="hint">Edit category names and logos. Moving an item to another category is available from Edit.</p><div class="row-tools"><select id="categoryType" class="search" onchange="renderCategories()"><option value="live">TV</option><option value="movie">Movies</option><option value="series">Series</option></select><button class="btn primary" onclick="openCategoryModal()">＋ Create category</button></div><div id="categoryList" style="margin-top:12px"></div></div>
+
+  <div class="panel" id="savedConnectionPanel">
+    <h3>Saved playlist connection</h3>
+    <p class="hint">Previously imported connection details stay hidden until you unlock them with your current account password.</p>
+    <div class="row-tools">
+      <button class="btn" type="button" onclick="unlockConnectionDetails()">🔒 Unlock saved details</button>
+      <button class="btn primary" type="button" onclick="showConnectionUpdate()">Update link / Xtream account</button>
+    </div>
+    <div id="savedConnectionDetails" class="hide" style="margin-top:14px">
+      <div class="field"><label>Saved M3U URL</label><input id="savedM3UDisplay" type="text" readonly></div>
+      <div class="field" style="margin-top:10px"><label>Saved Xtream server</label><input id="savedXtServerDisplay" readonly></div>
+      <div class="field" style="margin-top:10px"><label>Saved Xtream username</label><input id="savedXtUserDisplay" readonly></div>
+      <div class="field" style="margin-top:10px"><label>Saved Xtream password</label><input id="savedXtPassDisplay" type="password" readonly></div>
+      <button class="mini" type="button" onclick="toggleSavedXtreamPassword()">Show / hide Xtream password</button>
+    </div>
+  </div>
+
+  <div class="panel"><h3>Categories</h3><p class="hint">Edit category names and logos. Moving an item to another category is available from Edit.</p><div class="row-tools"><select id="categoryType" class="search" onchange="renderCategories()"><option value="live">TV</option><option value="movie">Movies</option><option value="series">Series</option></select><button class="btn primary" onclick="openCategoryModal()">＋ Create category</button></div><div id="categoryList" style="margin-top:12px"></div></div>
 <div class="panel" id="appearanceSettingsPanel"><h3>Template & background</h3><div class="form-grid"><div class="field"><label>Template</label><select id="templateStyle" onchange="previewTemplate()"><option value="default">Default dark</option><option value="gradient">Color gradient</option><option value="light">Light</option></select></div><div class="field"><label>Background image</label><input id="bgImage" type="file" accept="image/*" onchange="loadBackground(event)"></div><div class="field full"><label>Background image URL (optional)</label><input id="bgImageUrl" placeholder="https://..."></div><div class="field full"><button class="btn primary" onclick="saveAppearance()">Save template</button><button class="btn" onclick="clearBackground()">Remove background image</button></div></div></div>
 <div class="panel"><h3>Manage channels, movies & series</h3><p class="hint">Edit a title, category, channel number or logo; delete unwanted entries. Use the up/down buttons to change order. Changes are stored in this browser.</p><div class="row-tools"><select id="manageType" class="search" onchange="renderManage()"><option value="live">TV channels</option><option value="movie">Movies</option><option value="series">Series</option></select><input class="search" id="manageSearch" placeholder="Search..." oninput="renderManage()"></div><div id="manageList" style="margin-top:12px"></div></div>
  <div class="panel"><h3>Data</h3><div class="row-tools"><button class="btn danger-btn" onclick="deleteAllType('live')">Delete all TV channels</button><button class="btn danger-btn" onclick="deleteAllType('movie')">Delete all movies</button><button class="btn danger-btn" onclick="deleteAllType('series')">Delete all series</button><button class="btn" onclick="exportData()">Export playlist backup</button><button class="btn" onclick="document.getElementById('backupFile').click()">Import backup</button><input id="backupFile" class="hide" type="file" accept=".json" onchange="importBackup(event)"><button class="btn" onclick="clearPlaylist()">Delete all imported data</button></div></div>
 </section>
 <p class="footer-note">Demo login security note: accounts are stored in this browser and are not secure authentication. For production or internet hosting, use a server-side authentication/database and enforce roles on the server. This is a standalone demo player interface. It does not provide TV channels, movies, series, subscriptions or stream links. Playback depends on your lawful playlist/provider and browser codec support. HLS quality selection works when the stream exposes multiple HLS levels.</p>
+</div>
+
+
+<div class="modal" id="connectionLockModal">
+  <div class="modal-card">
+    <h3>Unlock saved connection details</h3>
+    <p class="hint">Enter the password for your currently signed-in app account.</p>
+    <div class="field"><label>Account password</label><input id="connectionUnlockPassword" type="password" autocomplete="current-password"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeConnectionLock()">Cancel</button>
+      <button class="btn primary" onclick="verifyConnectionUnlock()">Unlock</button>
+    </div>
+  </div>
+</div>
+<div class="modal" id="episodeModal">
+  <div class="modal-card" style="width:min(760px,100%);max-height:85vh;overflow:auto">
+    <h3 id="episodeModalTitle">Choose an episode</h3>
+    <p class="hint" id="episodeSeasonHint">Select an episode to play.</p>
+    <div id="episodeList"></div>
+    <div class="modal-actions"><button class="btn" onclick="closeEpisodeModal()">Close</button></div>
+  </div>
 </div>
 
 <div class="modal" id="editModal"><div class="modal-card"><h3 id="editHeading">Edit item</h3><div class="form-grid">
@@ -174,7 +440,7 @@ function mergeItems(items){items.forEach(x=>{let type=x.type||'live';if(!db[type
 function importFile(file){if(!requireContentRight()||!file)return;showImportProgress('Importing M3U file');let r=new FileReader();r.onload=()=>{try{updateImportProgress(55,'Parsing playlist...');let items=parseM3U(r.result);if(!items.length)throw Error('No channels found');updateImportProgress(85,'Saving '+items.length+' items...');mergeItems(items);updateImportProgress(100,'Import successful');setTimeout(hideImportProgress,650)}catch(e){hideImportProgress();toast('M3U file import failed: '+e.message)}};r.onerror=()=>{hideImportProgress();toast('Could not read M3U file')};r.readAsText(file)}
 $('m3uFile').addEventListener('change',e=>importFile(e.target.files[0]));
 async function importM3UUrl(){if(!requireContentRight())return;let url=$('m3uUrl').value.trim();if(!url)return toast('Enter an M3U URL');showImportProgress('Importing M3U playlist');try{updateImportProgress(10,'Connecting to playlist...');let res=await fetch(url);if(!res.ok)throw Error('HTTP '+res.status);updateImportProgress(45,'Downloading playlist...');let items=parseM3U(await res.text());if(!items.length)throw Error('No playlist items found');updateImportProgress(80,'Saving '+items.length+' items...');mergeItems(items);$('m3uUrl').value='';updateImportProgress(100,'Import successful');setTimeout(hideImportProgress,650)}catch(e){hideImportProgress();toast('Could not fetch URL: '+e.message+' (CORS or network). Try importing the M3U file.')}}
-async function loginXtream(){if(!requireContentRight())return;let server=$('xtServer').value.trim().replace(/\/+$/,''),u=$('xtUser').value.trim(),p=$('xtPass').value;if(!server||!u||!p)return toast('Enter server, username and password');showImportProgress('Connecting Xtream account');let base=server+'/player_api.php?username='+encodeURIComponent(u)+'&password='+encodeURIComponent(p);try{updateImportProgress(8,'Verifying account...');let auth=await fetch(base).then(r=>r.json());if(!auth.user_info)throw Error('Login failed');updateImportProgress(20,'Loading live TV, movies and series...');let actions=['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'];let results=[];for(let i=0;i<actions.length;i++){let response=await fetch(base+'&action='+actions[i]);if(!response.ok)throw Error('Provider request failed: '+actions[i]);results.push(await response.json());updateImportProgress(25+(i+1)*10,'Loading '+actions[i].replaceAll('_',' ')+'...')}let [lc,ls,mc,ms,sc,ss]=results;let items=[];(ls||[]).forEach(x=>items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));(ms||[]).forEach(x=>items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));(ss||[]).forEach(x=>items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',url:server+'/series/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.series_id+'.mp4'}));updateImportProgress(92,'Saving '+items.length+' items...');mergeItems(items);settings.xtream={server,u,p};persist();$('xtServer').value='';$('xtUser').value='';$('xtPass').value='';updateImportProgress(100,'Xtream import successful');setTimeout(hideImportProgress,700);toast('Xtream connected: '+items.length+' items imported')}catch(e){hideImportProgress();toast('Xtream connection failed: '+e.message+' (check CORS/provider API)')}}
+async function loginXtream(){if(!requireContentRight())return;let server=$('xtServer').value.trim().replace(/\/+$/,''),u=$('xtUser').value.trim(),p=$('xtPass').value;if(!server||!u||!p)return toast('Enter server, username and password');showImportProgress('Connecting Xtream account');let base=server+'/player_api.php?username='+encodeURIComponent(u)+'&password='+encodeURIComponent(p);try{updateImportProgress(8,'Verifying account...');let auth=await fetch(base).then(r=>r.json());if(!auth.user_info)throw Error('Login failed');updateImportProgress(20,'Loading live TV, movies and series...');let actions=['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'];let results=[];for(let i=0;i<actions.length;i++){let response=await fetch(base+'&action='+actions[i]);if(!response.ok)throw Error('Provider request failed: '+actions[i]);results.push(await response.json());updateImportProgress(25+(i+1)*10,'Loading '+actions[i].replaceAll('_',' ')+'...')}let [lc,ls,mc,ms,sc,ss]=results;let items=[];(ls||[]).forEach(x=>items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));(ms||[]).forEach(x=>items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));(ss||[]).forEach(x=>items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',seriesId:x.series_id,url:'',provider:'xtream'}));updateImportProgress(92,'Saving '+items.length+' items...');mergeItems(items);settings.xtream={server,u,p};persist();$('xtServer').value='';$('xtUser').value='';$('xtPass').value='';updateImportProgress(100,'Xtream import successful');setTimeout(hideImportProgress,700);toast('Xtream connected: '+items.length+' items imported')}catch(e){hideImportProgress();toast('Xtream connection failed: '+e.message+' (check CORS/provider API)')}}
 function groups(){return [...new Set(db.live.map(x=>x.group||'Uncategorized'))]}
 function renderTV(){if(currentGroup!==null)return;let gs=groups();$('groupGrid').innerHTML=gs.length?gs.map(g=>`<div class="item" onclick="openGroup('${encodeURIComponent(g)}')"><div class="item-art">📺</div><div class="item-body"><div class="item-title">${esc(g)}</div><div class="item-sub">${db.live.filter(x=>(x.group||'Uncategorized')===g).length} channels</div></div></div>`).join(''):'<div class="empty">Import an M3U playlist or connect Xtream in Settings to see TV groups.</div>'}
 function openGroup(encoded){currentGroup=decodeURIComponent(encoded);$('groupGrid').classList.add('hide');$('channelArea').classList.remove('hide');$('groupTitle').textContent=currentGroup;renderChannels()}
@@ -215,6 +481,215 @@ function clearBackground(){delete settings.bgImage;persist();document.body.style
 function applyAppearance(){let t=settings.template||'default';if($('templateStyle'))$('templateStyle').value=t;document.body.classList.remove('tpl-gradient','tpl-light');if(t==='gradient')document.body.classList.add('tpl-gradient');if(t==='light')document.body.classList.add('tpl-light');if(settings.bgImage)document.body.style.backgroundImage=`linear-gradient(#090b16cc,#090b16cc),url(${settings.bgImage})`}
 
 applySettings();applyAppearance();updateCounts();updateClock();setInterval(updateClock,1000);renderTV();renderManage();renderUsers();setInterval(updateExpiry,60000);
+
+/* ===== Requested upgrades: saved-link lock, update action, full-HD layout,
+   live clock, editable category artwork, and season/episode navigation. ===== */
+let activeSeriesEpisodes = [];
+let activeEpisodeIndex = -1;
+let activeSeriesTitle = '';
+
+function updateClock(){
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const date = now.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  if($('clockNow')) $('clockNow').textContent = time;
+  if($('hubTime')) $('hubTime').textContent = time;
+  if($('hubDate')) $('hubDate').textContent = date;
+}
+
+function showConnectionUpdate(){
+  if(!requireContentRight()) return;
+  $('savedConnectionDetails').classList.add('hide');
+  showView('settings');
+  $('m3uUrl').focus();
+  toast('Enter the new M3U URL or Xtream details, then import/connect.');
+}
+function unlockConnectionDetails(){
+  if(!currentUser) return;
+  $('connectionUnlockPassword').value='';
+  $('connectionLockModal').classList.add('open');
+  $('connectionUnlockPassword').focus();
+}
+function closeConnectionLock(){$('connectionLockModal').classList.remove('open')}
+function verifyConnectionUnlock(){
+  const pass=$('connectionUnlockPassword').value;
+  const account=users.find(x=>x.username===currentUser?.username);
+  if(!account || account.password!==pass){toast('Incorrect account password');return}
+  closeConnectionLock();
+  const xt=settings.xtream||{};
+  $('savedM3UDisplay').value=settings.m3uUrl||'No M3U URL saved';
+  $('savedXtServerDisplay').value=xt.server||'No Xtream server saved';
+  $('savedXtUserDisplay').value=xt.u||'';
+  $('savedXtPassDisplay').value=xt.p||'';
+  $('savedConnectionDetails').classList.remove('hide');
+  toast('Saved connection details unlocked');
+}
+function toggleSavedXtreamPassword(){
+  const el=$('savedXtPassDisplay');
+  el.type=el.type==='password'?'text':'password';
+}
+
+/* Save the M3U URL only after a successful URL import. */
+const importM3UUrlOriginal = importM3UUrl;
+importM3UUrl = async function(){
+  const url=$('m3uUrl').value.trim();
+  await importM3UUrlOriginal();
+  if(url && db.live.length+db.movie.length+db.series.length>0){
+    settings.m3uUrl=url; persist();
+  }
+};
+
+/* Series items from Xtream must load get_series_info: a series is not itself
+   an episode stream. Build an episode list from the provider's season data. */
+async function openSeriesEpisodes(seriesIndex){
+  const series=db.series[seriesIndex];
+  if(!series) return;
+  activeSeriesTitle=series.name;
+  activeSeriesEpisodes=[];
+  if(series.provider==='xtream' && settings.xtream?.server && series.seriesId){
+    const x=settings.xtream;
+    const api=x.server.replace(/\/+$/,'')+'/player_api.php?username='+encodeURIComponent(x.u)+'&password='+encodeURIComponent(x.p)+'&action=get_series_info&series_id='+encodeURIComponent(series.seriesId);
+    try{
+      const response=await fetch(api);
+      if(!response.ok) throw new Error('Provider request failed');
+      const data=await response.json();
+      const seasons=data.episodes||{};
+      Object.keys(seasons).sort((a,b)=>Number(a)-Number(b)).forEach(season=>{
+        (seasons[season]||[]).forEach(ep=>{
+          const ext=ep.container_extension||'mp4';
+          activeSeriesEpisodes.push({
+            name:ep.title||('Episode '+(ep.episode_num||activeSeriesEpisodes.length+1)),
+            season:ep.season??season,
+            episode:ep.episode_num??activeSeriesEpisodes.length+1,
+            url:x.server.replace(/\/+$/,'')+'/series/'+encodeURIComponent(x.u)+'/'+encodeURIComponent(x.p)+'/'+ep.id+'.'+ext
+          });
+        });
+      });
+    }catch(err){
+      toast('Could not load episode list. Check provider connection / browser CORS.');
+      return;
+    }
+  }else if(series.url){
+    activeSeriesEpisodes=[{name:series.name,season:1,episode:1,url:series.url}];
+  }
+  if(!activeSeriesEpisodes.length){
+    toast('No episodes were returned for this series.');
+    return;
+  }
+  $('episodeModalTitle').textContent=series.name;
+  const seasons=[...new Set(activeSeriesEpisodes.map(e=>String(e.season??1)))];
+  $('episodeSeasonHint').textContent=activeSeriesEpisodes.length+' episodes · '+seasons.length+' season(s)';
+  let lastSeason=null;
+  $('episodeList').innerHTML=activeSeriesEpisodes.map((ep,i)=>{
+    const season=String(ep.season??1);
+    let heading='';
+    if(season!==lastSeason){heading='<div class="episode-season">Season '+esc(season)+'</div>';lastSeason=season}
+    return heading+`<div class="channel-row" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div style="flex:1"><div class="name">Episode ${esc(ep.episode)} · ${esc(ep.name)}</div><div class="sub">Season ${esc(season)}</div></div><button class="mini">Play</button></div>`;
+  }).join('');
+  $('episodeModal').classList.add('open');
+}
+function closeEpisodeModal(){$('episodeModal').classList.remove('open')}
+function playSeriesEpisode(index){
+  const ep=activeSeriesEpisodes[index];
+  if(!ep) return;
+  activeEpisodeIndex=index;
+  closeEpisodeModal();
+  currentType='series';
+  const video=$('seriesVideo');
+  activeVideo=video;
+  if(hls){hls.destroy();hls=null}
+  video.pause();video.removeAttribute('src');video.load();
+  if(ep.url.includes('.m3u8') && window.Hls && Hls.isSupported()){
+    hls=new Hls();hls.loadSource(ep.url);hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+  }else{video.src=ep.url;video.play().catch(()=>{})}
+  $('seriesPlayer').classList.add('open');
+  $('seriesNowPlaying').textContent=activeSeriesTitle+' · S'+ep.season+' E'+ep.episode+' · '+ep.name;
+  $('seriesPlayer').scrollIntoView({behavior:'smooth',block:'start'});
+  renderEpisodeQueue();
+}
+function renderEpisodeQueue(){
+  $('seriesQueue').innerHTML=activeSeriesEpisodes.map((ep,i)=>
+    `<div class="channel-row ${i===activeEpisodeIndex?'selected':''}" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div><div class="name">S${esc(ep.season)} E${esc(ep.episode)}</div><div class="sub">${esc(ep.name)}</div></div></div>`
+  ).join('');
+}
+function changeSeriesEpisode(direction){
+  if(!activeSeriesEpisodes.length) return toast('Choose a series first');
+  const next=activeEpisodeIndex+direction;
+  if(next<0 || next>=activeSeriesEpisodes.length) return toast(direction>0?'This is the last episode.':'This is the first episode.');
+  playSeriesEpisode(next);
+}
+
+/* Intercept series-card clicks and keep movie/TV playback behavior intact. */
+const playItemBeforeEpisodeUpgrade=playItem;
+playItem=function(type,index){
+  if(type==='series'){openSeriesEpisodes(index);return}
+  return playItemBeforeEpisodeUpgrade(type,index);
+};
+/* Series player buttons now navigate within the selected season/series episode list. */
+function changeItem(dir){
+  if(currentType==='series'){changeSeriesEpisode(dir);return}
+  const arr=db[currentType];
+  if(!arr?.length)return;
+  const next=(currentIndex+dir+arr.length)%arr.length;
+  playItemBeforeEpisodeUpgrade(currentType,next);
+}
+
+/* Persist connection data safely in local storage (local-only demo protection). */
+const loginXtreamOriginal=loginXtream;
+loginXtream=async function(){
+  const server=$('xtServer').value.trim().replace(/\/+$/,'');
+  const username=$('xtUser').value.trim();
+  const password=$('xtPass').value;
+  await loginXtreamOriginal();
+  if(server && username && password && db.series.some(x=>x.provider==='xtream')){
+    settings.xtream={server,u:username,p:password};
+    persist();
+  }
+};
+
+/* Let category logo images render consistently in the TV group tiles. */
+const renderTVOriginal=renderTV;
+renderTV=function(){
+  if(currentGroup!==null)return;
+  const gs=groups();
+  $('groupGrid').innerHTML=gs.length?gs.map(g=>{
+    const meta=getCategoryMeta('live',g);
+    const art=meta.logo?`<img src="${esc(meta.logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.remove()">`:'📺';
+    return `<div class="item" onclick="openGroup('${encodeURIComponent(g)}')"><div class="item-art">${art}</div><div class="item-body"><div class="item-title">${esc(g)}</div><div class="item-sub">${db.live.filter(x=>(x.group||'Uncategorized')===g).length} channels</div></div></div>`;
+  }).join(''):'<div class="empty">Import an M3U playlist or connect Xtream in Settings to see TV groups.</div>';
+};
+
+/* Apply category artwork to Movie and Series cards as well. */
+const mediaCardOriginal=mediaCard;
+mediaCard=function(x,type){
+  const i=db[type].indexOf(x);
+  const meta=getCategoryMeta(type,x.group||'Uncategorized');
+  const logo=x.logo||meta.logo;
+  const art=logo?`<img src="${esc(logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`:type==='movie'?'🎬':'📚';
+  const label=type==='series'?'Open episodes':'▶ Play';
+  return `<div class="item"><div class="item-art">${art}</div><div class="item-body"><div class="item-title" title="${esc(x.name)}">${type==='series'?(i+1)+'. ':''}${esc(x.name)}</div><div class="item-sub">${esc(x.group||type)}</div><div class="item-actions"><button class="mini" onclick="playItem('${type}',${i})">${label}</button><button class="mini" onclick="moveItem('${type}',${i},-1)">↑</button><button class="mini" onclick="moveItem('${type}',${i},1)">↓</button></div></div></div>`;
+};
+
+/* On successful M3U file import, no private URL exists to reveal. */
+const originalImportFile=importFile;
+importFile=function(file){
+  originalImportFile(file);
+};
+
+/* Restore saved link metadata on load; credentials remain masked in the UI. */
+function refreshConnectionStatus(){
+  const count=Number(!!settings.m3uUrl)+Number(!!settings.xtream?.server);
+  $('savedConnectionPanel')?.querySelector('p.hint')?.replaceChildren(
+    document.createTextNode(count?'A saved connection is available. Details are password-locked.':'No saved URL or Xtream account is stored yet.')
+  );
+}
+refreshConnectionStatus();
+const persistOriginal=persist;
+persist=function(){persistOriginal();refreshConnectionStatus()};
+updateClock();
+setInterval(updateClock,1000);
+
 </script>
 
 <style>
@@ -587,6 +1062,215 @@ function restoreRememberedLogin(){
 }
 restoreRememberedLogin();
 enablePlayerWheelScrolling();
+
+
+/* ===== Requested upgrades: saved-link lock, update action, full-HD layout,
+   live clock, editable category artwork, and season/episode navigation. ===== */
+let activeSeriesEpisodes = [];
+let activeEpisodeIndex = -1;
+let activeSeriesTitle = '';
+
+function updateClock(){
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const date = now.toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  if($('clockNow')) $('clockNow').textContent = time;
+  if($('hubTime')) $('hubTime').textContent = time;
+  if($('hubDate')) $('hubDate').textContent = date;
+}
+
+function showConnectionUpdate(){
+  if(!requireContentRight()) return;
+  $('savedConnectionDetails').classList.add('hide');
+  showView('settings');
+  $('m3uUrl').focus();
+  toast('Enter the new M3U URL or Xtream details, then import/connect.');
+}
+function unlockConnectionDetails(){
+  if(!currentUser) return;
+  $('connectionUnlockPassword').value='';
+  $('connectionLockModal').classList.add('open');
+  $('connectionUnlockPassword').focus();
+}
+function closeConnectionLock(){$('connectionLockModal').classList.remove('open')}
+function verifyConnectionUnlock(){
+  const pass=$('connectionUnlockPassword').value;
+  const account=users.find(x=>x.username===currentUser?.username);
+  if(!account || account.password!==pass){toast('Incorrect account password');return}
+  closeConnectionLock();
+  const xt=settings.xtream||{};
+  $('savedM3UDisplay').value=settings.m3uUrl||'No M3U URL saved';
+  $('savedXtServerDisplay').value=xt.server||'No Xtream server saved';
+  $('savedXtUserDisplay').value=xt.u||'';
+  $('savedXtPassDisplay').value=xt.p||'';
+  $('savedConnectionDetails').classList.remove('hide');
+  toast('Saved connection details unlocked');
+}
+function toggleSavedXtreamPassword(){
+  const el=$('savedXtPassDisplay');
+  el.type=el.type==='password'?'text':'password';
+}
+
+/* Save the M3U URL only after a successful URL import. */
+const importM3UUrlOriginal = importM3UUrl;
+importM3UUrl = async function(){
+  const url=$('m3uUrl').value.trim();
+  await importM3UUrlOriginal();
+  if(url && db.live.length+db.movie.length+db.series.length>0){
+    settings.m3uUrl=url; persist();
+  }
+};
+
+/* Series items from Xtream must load get_series_info: a series is not itself
+   an episode stream. Build an episode list from the provider's season data. */
+async function openSeriesEpisodes(seriesIndex){
+  const series=db.series[seriesIndex];
+  if(!series) return;
+  activeSeriesTitle=series.name;
+  activeSeriesEpisodes=[];
+  if(series.provider==='xtream' && settings.xtream?.server && series.seriesId){
+    const x=settings.xtream;
+    const api=x.server.replace(/\/+$/,'')+'/player_api.php?username='+encodeURIComponent(x.u)+'&password='+encodeURIComponent(x.p)+'&action=get_series_info&series_id='+encodeURIComponent(series.seriesId);
+    try{
+      const response=await fetch(api);
+      if(!response.ok) throw new Error('Provider request failed');
+      const data=await response.json();
+      const seasons=data.episodes||{};
+      Object.keys(seasons).sort((a,b)=>Number(a)-Number(b)).forEach(season=>{
+        (seasons[season]||[]).forEach(ep=>{
+          const ext=ep.container_extension||'mp4';
+          activeSeriesEpisodes.push({
+            name:ep.title||('Episode '+(ep.episode_num||activeSeriesEpisodes.length+1)),
+            season:ep.season??season,
+            episode:ep.episode_num??activeSeriesEpisodes.length+1,
+            url:x.server.replace(/\/+$/,'')+'/series/'+encodeURIComponent(x.u)+'/'+encodeURIComponent(x.p)+'/'+ep.id+'.'+ext
+          });
+        });
+      });
+    }catch(err){
+      toast('Could not load episode list. Check provider connection / browser CORS.');
+      return;
+    }
+  }else if(series.url){
+    activeSeriesEpisodes=[{name:series.name,season:1,episode:1,url:series.url}];
+  }
+  if(!activeSeriesEpisodes.length){
+    toast('No episodes were returned for this series.');
+    return;
+  }
+  $('episodeModalTitle').textContent=series.name;
+  const seasons=[...new Set(activeSeriesEpisodes.map(e=>String(e.season??1)))];
+  $('episodeSeasonHint').textContent=activeSeriesEpisodes.length+' episodes · '+seasons.length+' season(s)';
+  let lastSeason=null;
+  $('episodeList').innerHTML=activeSeriesEpisodes.map((ep,i)=>{
+    const season=String(ep.season??1);
+    let heading='';
+    if(season!==lastSeason){heading='<div class="episode-season">Season '+esc(season)+'</div>';lastSeason=season}
+    return heading+`<div class="channel-row" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div style="flex:1"><div class="name">Episode ${esc(ep.episode)} · ${esc(ep.name)}</div><div class="sub">Season ${esc(season)}</div></div><button class="mini">Play</button></div>`;
+  }).join('');
+  $('episodeModal').classList.add('open');
+}
+function closeEpisodeModal(){$('episodeModal').classList.remove('open')}
+function playSeriesEpisode(index){
+  const ep=activeSeriesEpisodes[index];
+  if(!ep) return;
+  activeEpisodeIndex=index;
+  closeEpisodeModal();
+  currentType='series';
+  const video=$('seriesVideo');
+  activeVideo=video;
+  if(hls){hls.destroy();hls=null}
+  video.pause();video.removeAttribute('src');video.load();
+  if(ep.url.includes('.m3u8') && window.Hls && Hls.isSupported()){
+    hls=new Hls();hls.loadSource(ep.url);hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));
+  }else{video.src=ep.url;video.play().catch(()=>{})}
+  $('seriesPlayer').classList.add('open');
+  $('seriesNowPlaying').textContent=activeSeriesTitle+' · S'+ep.season+' E'+ep.episode+' · '+ep.name;
+  $('seriesPlayer').scrollIntoView({behavior:'smooth',block:'start'});
+  renderEpisodeQueue();
+}
+function renderEpisodeQueue(){
+  $('seriesQueue').innerHTML=activeSeriesEpisodes.map((ep,i)=>
+    `<div class="channel-row ${i===activeEpisodeIndex?'selected':''}" onclick="playSeriesEpisode(${i})"><div class="channel-logo">▶</div><div><div class="name">S${esc(ep.season)} E${esc(ep.episode)}</div><div class="sub">${esc(ep.name)}</div></div></div>`
+  ).join('');
+}
+function changeSeriesEpisode(direction){
+  if(!activeSeriesEpisodes.length) return toast('Choose a series first');
+  const next=activeEpisodeIndex+direction;
+  if(next<0 || next>=activeSeriesEpisodes.length) return toast(direction>0?'This is the last episode.':'This is the first episode.');
+  playSeriesEpisode(next);
+}
+
+/* Intercept series-card clicks and keep movie/TV playback behavior intact. */
+const playItemBeforeEpisodeUpgrade=playItem;
+playItem=function(type,index){
+  if(type==='series'){openSeriesEpisodes(index);return}
+  return playItemBeforeEpisodeUpgrade(type,index);
+};
+/* Series player buttons now navigate within the selected season/series episode list. */
+function changeItem(dir){
+  if(currentType==='series'){changeSeriesEpisode(dir);return}
+  const arr=db[currentType];
+  if(!arr?.length)return;
+  const next=(currentIndex+dir+arr.length)%arr.length;
+  playItemBeforeEpisodeUpgrade(currentType,next);
+}
+
+/* Persist connection data safely in local storage (local-only demo protection). */
+const loginXtreamOriginal=loginXtream;
+loginXtream=async function(){
+  const server=$('xtServer').value.trim().replace(/\/+$/,'');
+  const username=$('xtUser').value.trim();
+  const password=$('xtPass').value;
+  await loginXtreamOriginal();
+  if(server && username && password && db.series.some(x=>x.provider==='xtream')){
+    settings.xtream={server,u:username,p:password};
+    persist();
+  }
+};
+
+/* Let category logo images render consistently in the TV group tiles. */
+const renderTVOriginal=renderTV;
+renderTV=function(){
+  if(currentGroup!==null)return;
+  const gs=groups();
+  $('groupGrid').innerHTML=gs.length?gs.map(g=>{
+    const meta=getCategoryMeta('live',g);
+    const art=meta.logo?`<img src="${esc(meta.logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.remove()">`:'📺';
+    return `<div class="item" onclick="openGroup('${encodeURIComponent(g)}')"><div class="item-art">${art}</div><div class="item-body"><div class="item-title">${esc(g)}</div><div class="item-sub">${db.live.filter(x=>(x.group||'Uncategorized')===g).length} channels</div></div></div>`;
+  }).join(''):'<div class="empty">Import an M3U playlist or connect Xtream in Settings to see TV groups.</div>';
+};
+
+/* Apply category artwork to Movie and Series cards as well. */
+const mediaCardOriginal=mediaCard;
+mediaCard=function(x,type){
+  const i=db[type].indexOf(x);
+  const meta=getCategoryMeta(type,x.group||'Uncategorized');
+  const logo=x.logo||meta.logo;
+  const art=logo?`<img src="${esc(logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`:type==='movie'?'🎬':'📚';
+  const label=type==='series'?'Open episodes':'▶ Play';
+  return `<div class="item"><div class="item-art">${art}</div><div class="item-body"><div class="item-title" title="${esc(x.name)}">${type==='series'?(i+1)+'. ':''}${esc(x.name)}</div><div class="item-sub">${esc(x.group||type)}</div><div class="item-actions"><button class="mini" onclick="playItem('${type}',${i})">${label}</button><button class="mini" onclick="moveItem('${type}',${i},-1)">↑</button><button class="mini" onclick="moveItem('${type}',${i},1)">↓</button></div></div></div>`;
+};
+
+/* On successful M3U file import, no private URL exists to reveal. */
+const originalImportFile=importFile;
+importFile=function(file){
+  originalImportFile(file);
+};
+
+/* Restore saved link metadata on load; credentials remain masked in the UI. */
+function refreshConnectionStatus(){
+  const count=Number(!!settings.m3uUrl)+Number(!!settings.xtream?.server);
+  $('savedConnectionPanel')?.querySelector('p.hint')?.replaceChildren(
+    document.createTextNode(count?'A saved connection is available. Details are password-locked.':'No saved URL or Xtream account is stored yet.')
+  );
+}
+refreshConnectionStatus();
+const persistOriginal=persist;
+persist=function(){persistOriginal();refreshConnectionStatus()};
+updateClock();
+setInterval(updateClock,1000);
 
 </script>
 
