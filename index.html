@@ -2,423 +2,1716 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SR CAMBODIA TV</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
-<style>
-:root{--bg:#090b16;--panel:#121629;--panel2:#1a2038;--line:#29314d;--text:#f5f6ff;--muted:#9da7c3;--accent:#7667ff;--accent2:#19c5c1;--font:16px}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% -20%,#28205b 0,transparent 40%),var(--bg);color:var(--text);font:var(--font) Inter,Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer;border:0;color:inherit}.app{max-width:1500px;margin:auto;padding:22px}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.25em}.brand-mark{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--accent),#e34c9b);display:grid;place-items:center;font-size:22px}.top-right{display:flex;gap:9px;align-items:center}.pill,.btn{border:1px solid var(--line);background:var(--panel);padding:10px 14px;border-radius:11px}.btn.primary{background:var(--accent);border-color:var(--accent);font-weight:700}.btn:hover,.pill:hover{filter:brightness(1.18)}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}.nav button{background:transparent;color:var(--muted);padding:11px 17px;border-radius:10px}.nav button.active,.nav button:hover{background:var(--panel2);color:white}.view{display:none}.view.active{display:block}.hero{display:grid;grid-template-columns:1fr 280px;gap:16px;margin-bottom:20px}.welcome{padding:24px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(110deg,#24204b,#171b30 65%)}.welcome h1{margin:0 0 8px;font-size:clamp(24px,4vw,38px)}.muted{color:var(--muted)}.expiry{padding:20px;border:1px solid var(--line);border-radius:18px;background:var(--panel);display:flex;flex-direction:column;justify-content:center}.expiry strong{font-size:1.45em;color:#ffd36b;margin:6px 0}.big-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.tile{position:relative;min-height:205px;border:1px solid var(--line);border-radius:19px;overflow:hidden;padding:20px;text-align:left;background:linear-gradient(135deg,#202a50,#14182b);transition:.2s}.tile:hover{transform:translateY(-3px);border-color:var(--accent)}.tile:nth-child(2){background:linear-gradient(135deg,#512b55,#1c1b35)}.tile:nth-child(3){background:linear-gradient(135deg,#174c55,#171b34)}.tile .symbol{font-size:52px;display:block;margin-bottom:14px}.tile b{font-size:1.55em;display:block}.tile small{color:#c4cbe0}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:24px 0 14px}.section-head h2{margin:0}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:13px}.item{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;min-width:0}.item-art{height:105px;background:linear-gradient(135deg,#343d70,#242044);display:grid;place-items:center;font-size:36px;color:#dce1ff}.item-body{padding:11px}.item-title{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.item-sub{font-size:.82em;color:var(--muted);margin-top:5px}.item-actions{display:flex;gap:5px;margin-top:9px}.mini{font-size:.8em;padding:6px 8px;border-radius:7px;background:var(--panel2)}.mini.danger{color:#ff9b9b}.row-tools{display:flex;gap:8px;flex-wrap:wrap}.search{min-width:180px;background:var(--panel);border:1px solid var(--line);color:white;padding:10px 12px;border-radius:10px}.player-layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(250px,.8fr);gap:16px}.player-box{background:#000;border:1px solid var(--line);border-radius:16px;overflow:hidden}.player-box video{width:100%;aspect-ratio:16/9;display:block;background:#000}.player-controls{display:flex;align-items:center;gap:8px;padding:10px;background:var(--panel)}.player-side{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px;max-height:510px;overflow:auto}.channel-row{display:flex;gap:10px;align-items:center;padding:10px;border-radius:10px;cursor:pointer}.channel-row:hover,.channel-row.selected{background:var(--panel2)}.channel-logo{width:38px;height:38px;border-radius:9px;background:#252c49;display:grid;place-items:center;flex:none;overflow:hidden}.channel-logo img{width:100%;height:100%;object-fit:contain}.channel-row .name{font-weight:600}.channel-row .sub{font-size:.78em;color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:15px}.panel h3{margin:0 0 14px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:.86em;color:var(--muted)}.field input,.field select{width:100%;background:#0d1121;color:white;border:1px solid var(--line);padding:11px;border-radius:9px}.hint{font-size:.82em;color:var(--muted);line-height:1.5}.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}.hide{display:none!important}.secret-row{display:flex;gap:7px}.secret-row input{flex:1}.danger-btn{color:#ff9b9b;border-color:#7b3c4a}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#202944;padding:12px 18px;border:1px solid var(--line);border-radius:10px;z-index:10}.modal{position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:15px;z-index:20}.modal.open{display:grid}.modal-card{width:min(520px,100%);background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:20px}.modal-card h3{margin-top:0}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.footer-note{margin-top:25px;color:var(--muted);font-size:.8em;line-height:1.5}
-.login-screen{position:fixed;inset:0;background:radial-gradient(ellipse at 70% -20%,#28205b 0,transparent 45%),#090b16;z-index:100;display:grid;place-items:center;padding:18px}.login-card{width:min(420px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:0 20px 70px #0008}.login-card h1{margin:0 0 8px}.login-card .field{margin-top:14px}.login-card input{width:100%;background:#0d1121;color:white;border:1px solid var(--line);padding:12px;border-radius:9px}.user-chip{color:var(--muted);font-size:.85em}.role-tag{display:inline-block;padding:3px 8px;border-radius:20px;background:#29234f;color:#d8d2ff;font-size:.75em;margin-left:6px}.media-player{display:none;margin-bottom:18px}.media-player.open{display:block}.media-player .player-layout{grid-template-columns:minmax(0,1.7fr) minmax(220px,.8fr)}.media-player .player-side{max-height:320px}
-@media(max-width:760px){.app{padding:14px}.hero{grid-template-columns:1fr}.big-tiles{grid-template-columns:1fr}.tile{min-height:145px}.player-layout{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.top{align-items:flex-start}.top-right{flex-wrap:wrap;justify-content:flex-end}.expiry{min-height:120px}}
-body.tpl-gradient{--bg:#140c2d;background:linear-gradient(135deg,#140c2d,#092b42,#0d1727)}body.tpl-light{--bg:#eef1f7;--panel:#fff;--panel2:#e6eaf3;--line:#cbd2df;--text:#151925;--muted:#596275}body.tpl-light input,body.tpl-light select{background:#fff;color:#151925}
-.import-progress{position:fixed;inset:0;z-index:250;background:#000b;display:none;place-items:center;padding:18px}.import-progress.open{display:grid}.import-progress-card{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;text-align:center;box-shadow:0 20px 70px #0009}.progress-title{font-size:1.15em;font-weight:800;margin-bottom:12px}.progress-percent{font-size:2.3em;font-weight:800;color:var(--accent2);margin:8px}.progress-bar{height:13px;background:#080b16;border:1px solid var(--line);border-radius:20px;overflow:hidden}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .2s}.progress-message{margin-top:12px;color:var(--muted)}
 
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17"></script>
+
+<style>
+:root{
+  --bg:#080b16;
+  --panel:#12172a;
+  --panel2:#1b2240;
+  --line:#303a61;
+  --text:#f4f6ff;
+  --muted:#9ca7c6;
+  --accent:#7667ff;
+  --accent2:#16c7bd;
+  --danger:#ff6677;
+}
+
+*{box-sizing:border-box}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 80% 0%,#29215c 0,transparent 35%),
+    var(--bg);
+  color:var(--text);
+  font-family:Arial,Helvetica,sans-serif;
+  min-height:100vh;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hide{
+  display:none!important;
+}
+
+/* LOGIN */
+
+.login-screen{
+  position:fixed;
+  inset:0;
+  z-index:1000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:
+    radial-gradient(circle at 70% 0%,#30256c 0,transparent 40%),
+    #080b16;
+}
+
+.login-card{
+  width:min(420px,100%);
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 25px 80px #000a;
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:22px;
+  font-weight:800;
+}
+
+.logo-icon{
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),#d94b9a);
+  font-size:22px;
+}
+
+.login-card h1{
+  margin:25px 0 8px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  margin-top:16px;
+}
+
+.field label{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.field input,
+.field select{
+  width:100%;
+  padding:13px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#0b1020;
+  color:white;
+}
+
+.remember{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:16px;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.btn{
+  border:1px solid var(--line);
+  background:var(--panel2);
+  color:white;
+  padding:10px 15px;
+  border-radius:10px;
+}
+
+.btn:hover{
+  filter:brightness(1.2);
+}
+
+.btn.primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  font-weight:bold;
+}
+
+.login-btn{
+  width:100%;
+  margin-top:20px;
+  padding:13px;
+}
+
+/* APP */
+
+.app{
+  max-width:1550px;
+  margin:auto;
+  padding:20px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.top-actions{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+
+.clock{
+  padding:10px 14px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  color:var(--accent2);
+}
+
+.nav{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:25px;
+  padding-bottom:15px;
+  border-bottom:1px solid var(--line);
+}
+
+.nav button{
+  background:transparent;
+  border:0;
+  color:var(--muted);
+  padding:11px 17px;
+  border-radius:10px;
+}
+
+.nav button:hover,
+.nav button.active{
+  color:white;
+  background:var(--panel2);
+}
+
+.view{
+  display:none;
+}
+
+.view.active{
+  display:block;
+}
+
+/* HOME */
+
+.hero{
+  padding:45px 25px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:linear-gradient(135deg,#252055,#141b34);
+  text-align:center;
+}
+
+.hero h1{
+  margin:0 0 10px;
+  font-size:clamp(30px,6vw,55px);
+}
+
+.hero p{
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+/* CARDS */
+
+.media-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:15px;
+}
+
+.media-card{
+  overflow:hidden;
+  border-radius:15px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  transition:.2s;
+}
+
+.media-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+}
+
+.poster{
+  height:180px;
+  display:grid;
+  place-items:center;
+  font-size:50px;
+  background:linear-gradient(135deg,#354173,#202442);
+}
+
+.card-info{
+  padding:12px;
+}
+
+.card-title{
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.card-sub{
+  color:var(--muted);
+  font-size:13px;
+  margin:5px 0 10px;
+}
+
+/* PLAYER */
+
+.player-section{
+  margin-bottom:25px;
+}
+
+.player-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 300px;
+  gap:16px;
+}
+
+.player-container{
+  background:#000;
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  width:100%;
+}
+
+.player-container video{
+  display:block;
+  width:100%;
+  aspect-ratio:16 / 9;
+  background:#000;
+  object-fit:contain;
+}
+
+.player-toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:12px;
+  background:var(--panel);
+  border-top:1px solid var(--line);
+}
+
+.player-info{
+  padding:12px 15px;
+  background:#0c1020;
+  border-top:1px solid var(--line);
+}
+
+.player-info b{
+  display:block;
+}
+
+.player-info span{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.channel-list{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:10px;
+  max-height:620px;
+  overflow-y:auto;
+}
+
+.list-title{
+  padding:10px;
+  font-weight:bold;
+  border-bottom:1px solid var(--line);
+  margin-bottom:6px;
+}
+
+.channel{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.channel:hover,
+.channel.active{
+  background:var(--panel2);
+}
+
+.channel-number{
+  width:38px;
+  height:38px;
+  flex:none;
+  display:grid;
+  place-items:center;
+  border-radius:9px;
+  background:#242c4c;
+  font-weight:bold;
+}
+
+.channel-name{
+  min-width:0;
+}
+
+.channel-name b{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.channel-name small{
+  color:var(--muted);
+}
+
+/* IMPORT */
+
+.panel{
+  padding:20px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  margin-bottom:18px;
+}
+
+.panel h2{
+  margin-top:0;
+}
+
+.import-row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.import-row input{
+  flex:1;
+  min-width:220px;
+}
+
+/* SCROLL BUTTONS */
+
+.scroll-controls{
+  position:fixed;
+  right:20px;
+  bottom:20px;
+  z-index:50;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.scroll-btn{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--accent);
+  color:white;
+  font-size:20px;
+  box-shadow:0 5px 20px #0008;
+}
+
+/* FULLSCREEN */
+
+.player-container:fullscreen{
+  width:100vw;
+  height:100vh;
+  border:0;
+  border-radius:0;
+  background:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.player-container:fullscreen video{
+  width:100%;
+  height:100%;
+  max-width:100vw;
+  max-height:100vh;
+  aspect-ratio:16/9;
+}
+
+.player-container:fullscreen .player-toolbar,
+.player-container:fullscreen .player-info{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  opacity:.15;
+  transition:.3s;
+}
+
+.player-container:fullscreen:hover .player-toolbar,
+.player-container:fullscreen:hover .player-info{
+  opacity:1;
+}
+
+.empty{
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+}
+
+.toast{
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:#252d4d;
+  border:1px solid var(--line);
+  padding:12px 18px;
+  border-radius:10px;
+  z-index:2000;
+}
+
+@media(max-width:900px){
+  .player-layout{
+    grid-template-columns:1fr;
+  }
+
+  .channel-list{
+    max-height:300px;
+  }
+}
+
+@media(max-width:600px){
+  .app{
+    padding:12px;
+  }
+
+  .topbar{
+    align-items:flex-start;
+  }
+
+  .top-actions{
+    width:100%;
+  }
+
+  .scroll-controls{
+    right:12px;
+    bottom:12px;
+  }
+}
 </style>
 </head>
+
 <body>
-<div class="login-screen" id="loginScreen"><div class="login-card"><div class="brand"><div class="brand-mark">▶</div><span>MY IPTV</span></div><h1 style="margin-top:22px">Sign in</h1><p class="muted">Enter your account to continue.</p><form onsubmit="event.preventDefault();loginUser()"><div class="field"><label>Username</label><input id="loginUsername" autocomplete="username" required></div><div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div><button class="btn primary" style="width:100%;margin-top:18px" type="submit">Login</button></form><label class="remember-row"><input id="rememberLogin" type="checkbox"> Remember username</label></div></div>
-<div class="app" id="mainApp" style="display:none">
-<header class="top">
- <div class="brand"><div class="brand-mark">▶</div><span id="appTitle">SR CAMBODIA TV</span></div>
- <div class="top-right"><span class="pill" id="clockNow">--:--:--</span><span class="pill" id="statusPill">Playlist not loaded</span><span class="user-chip" id="currentUserLabel"></span><button class="btn" id="settingsNavBtn" onclick="showView('settings')">⚙ <span data-i18n="settings">Settings</span></button><button class="btn" onclick="logoutUser()">Logout</button></div>
-</header>
-<nav class="nav">
- <button class="active" data-view="home" onclick="showView('home')" data-i18n="home">Home</button>
- <button data-view="tv" onclick="showView('tv')" data-i18n="tv">TV</button>
- <button data-view="movies" onclick="showView('movies')" data-i18n="movies">Movies</button>
- <button data-view="series" onclick="showView('series')" data-i18n="series">Series</button>
- <button data-view="settings" onclick="showView('settings')" data-i18n="settings">Settings</button>
-</nav>
 
-<section class="view active" id="home">
-  <div class="sr-welcome">
-    <div class="sr-emblem">SR</div>
-    <div class="sr-khmer">សូមស្វាគមន៍មកកាន់កម្មវិធីកម្សាន្ត</div>
-    <h1>SR CAMBODIA TV</h1>
-    <p>ទូរទស្សន៍ផ្សាយផ្ទាល់ • ភាពយន្ត • ភាគបន្ត</p>
-    <button class="btn primary sr-enter" onclick="showView('hub')">ចូលកម្មវិធី / ENTER</button>
-  </div>
-</section>
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
 
-<section class="view" id="hub">
-  <div class="hub-top">
-    <div class="hub-brand" onclick="showView('home')"><span class="hub-mark">SR</span><span>SR CAMBODIA TV</span></div>
-    <div class="hub-datetime"><strong id="hubTime">--:--:--</strong><span id="hubDate">dddd-mmmm-yyyy</span></div>
-  </div>
-  <div class="hub-tiles">
-    <button class="hub-tile tv-tile" onclick="openTVExperience()"><span class="hub-logo">📺</span><b>LIVE TV</b><small>ទូរទស្សន៍ផ្សាយផ្ទាល់</small></button>
-    <button class="hub-tile movie-tile" onclick="showView('movies')"><span class="hub-logo">🎬</span><b>MOVIES</b><small>ភាពយន្តទាំងអស់</small></button>
-    <button class="hub-tile series-tile" onclick="showView('series')"><span class="hub-logo">📚</span><b>SERIES</b><small>រឿងភាគ និងវគ្គ</small></button>
-  </div>
-  <div class="hub-footer">សូមរីករាយជាមួយ SR CAMBODIA TV</div>
-</section>
-
-<section class="view" id="tvRemote">
-  <div class="remote-heading">
-    <button class="btn" onclick="showView('hub')">← HOME</button>
-    <div><b>SR CAMBODIA TV · LIVE</b><span id="remoteChannelName">ជ្រើសរើសប៉ុស្តិ៍ទូរទស្សន៍</span></div>
-    <button class="btn" onclick="showView('settings')">⚙</button>
-  </div>
-  <div class="remote-layout">
-    <div class="remote-screen">
-      <div class="player-box"><video id="remoteVideo" controls playsinline></video></div>
-      <div class="remote-controls">
-        <button class="btn" onclick="changeRemoteChannel(-1)">▲ CH</button>
-        <button class="btn" onclick="changeRemoteChannel(1)">▼ CH</button>
-        <button class="btn" onclick="toggleFavorite()">☆ Favorite</button>
-        <select id="remoteQuality" class="search" onchange="setRemoteQuality()"><option value="-1">Auto</option><option value="0">SD</option><option value="1">HD</option><option value="2">2K</option><option value="3">4K</option></select>
-        <select id="screenRatio" class="search" onchange="setScreenRatio()"><option value="16/9">16:9</option><option value="4/3">4:3</option><option value="1/1">1:1</option><option value="fit">Fit Screen</option><option value="fill">Fill Screen</option><option value="zoom1">Zoom 1</option><option value="zoom2">Zoom 2</option></select>
-        <button class="btn" onclick="toggleRemoteFullscreen()">⛶</button>
-      </div>
-      <div class="remote-controls number-pad">
-        <input id="channelNumberInput" class="search" type="number" min="1" placeholder="Channel number">
-        <button class="btn primary" onclick="playChannelNumber()">GO</button>
-        <button class="btn" onclick="showView('settings')">Settings / Import</button>
-      </div>
+    <div class="logo">
+      <div class="logo-icon">▶</div>
+      <span>SR CAMBODIA TV</span>
     </div>
-    <aside class="remote-list">
-      <div class="remote-list-head"><b id="remoteListTitle">Channel list</b><button class="mini" onclick="toggleRemoteList()">Hide / Show</button></div>
-      <div id="remoteChannelList"></div>
-    </aside>
+
+    <h1>Welcome Back</h1>
+    <p class="muted">Login to enjoy TV, Movies and Series.</p>
+
+    <form id="loginForm">
+
+      <div class="field">
+        <label>Username</label>
+        <input id="username" type="text" autocomplete="username" required>
+      </div>
+
+      <div class="field">
+        <label>Password</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+      </div>
+
+      <label class="remember">
+        <input id="remember" type="checkbox">
+        Remember username and password
+      </label>
+
+      <button class="btn primary login-btn" type="submit">
+        LOGIN
+      </button>
+
+    </form>
+
+    <p class="muted" style="font-size:12px;margin-top:18px">
+      Demo account: admin / 1234
+    </p>
+
   </div>
-  <div class="remote-hint">← បង្ហាញបញ្ជីប៉ុស្តិ៍ · → បន្ថែម Favorite · ↑/↓ ប្តូរប៉ុស្តិ៍ · លេខ ដើម្បីជ្រើសប៉ុស្តិ៍</div>
-</section>
-
-<section class="view" id="tv">
- <div class="section-head"><h2 data-i18n="tvGroups">TV groups</h2><div class="row-tools"><input class="search" id="tvSearch" placeholder="Search channels..." oninput="renderTV()"><button class="btn" onclick="showView('settings')">＋ Import</button></div></div>
- <div id="groupGrid" class="grid"></div>
- <div id="channelArea" class="hide"><div class="section-head"><h2 id="groupTitle">Channels</h2><button class="btn" onclick="backToGroups()">← Groups</button></div><div class="player-layout"><div><div class="player-box"><video id="video" controls playsinline></video><div class="player-controls"><button class="btn" onclick="changeItem(-1)">↑ <span data-i18n="previous">Previous</span></button><button class="btn" onclick="changeItem(1)">↓ <span data-i18n="next">Next</span></button><span class="muted" id="nowPlaying">Select a channel</span><select id="quality" class="search" onchange="setQuality()"><option value="-1">Auto</option><option value="0">SD / lowest</option><option value="1">HD</option><option value="2">2K</option><option value="3">4K</option></select></div></div></div><div class="player-side"><h3 data-i18n="channels">Channels</h3><div id="channelList"></div></div></div></div>
-</section>
-
-<section class="view" id="movies"><div class="media-player" id="moviePlayer"><div class="player-layout"><div><div class="player-box"><video id="movieVideo" controls playsinline></video><div class="player-controls"><button class="btn" onclick="changeItem(-1)">← Previous</button><button class="btn" onclick="changeItem(1)">Next →</button><button class="btn" onclick="stopMedia('movie')">■ Stop</button><span class="muted" id="movieNowPlaying">Select a movie</span><select id="movieQuality" class="search" onchange="setMediaQuality('movie')"><option value="-1">Auto</option><option value="0">SD</option><option value="1">HD</option><option value="2">2K</option><option value="3">4K</option></select><button class="btn" onclick="mediaFullscreen('movieVideo')">⛶</button></div></div></div><div class="player-side"><h3>Movie player</h3><div id="movieQueue"></div></div></div></div><div class="section-head"><h2 data-i18n="allMovies">All movies</h2><div class="row-tools"><input class="search" id="movieSearch" placeholder="Search movies..." oninput="renderMedia('movie')"></div></div><div id="movieGrid" class="grid"></div></section>
-<section class="view" id="series"><div class="media-player" id="seriesPlayer"><div class="player-layout"><div><div class="player-box"><video id="seriesVideo" controls playsinline></video><div class="player-controls"><button class="btn" onclick="changeItem(-1)">← Episode</button><button class="btn" onclick="changeItem(1)">Episode →</button><button class="btn" onclick="stopMedia('series')">■ Stop</button><span class="muted" id="seriesNowPlaying">Select an episode</span><select id="seriesQuality" class="search" onchange="setMediaQuality('series')"><option value="-1">Auto</option><option value="0">SD</option><option value="1">HD</option><option value="2">2K</option><option value="3">4K</option></select><button class="btn" onclick="mediaFullscreen('seriesVideo')">⛶</button></div></div></div><div class="player-side"><h3>Series player</h3><div id="seriesQueue"></div></div></div></div><div class="section-head"><h2 data-i18n="allSeries">All series</h2><div class="row-tools"><input class="search" id="seriesSearch" placeholder="Search series..." oninput="renderMedia('series')"></div></div><div id="seriesGrid" class="grid"></div></section>
-
-<section class="view" id="settings">
- <div class="section-head"><h2 data-i18n="settings">Settings</h2></div>
- <div class="panel"><h3>Playlist import</h3><div class="form-grid">
-  <div class="field full"><label>M3U playlist URL <small class="muted">(hidden)</small></label><div class="secret-row"><input id="m3uUrl" type="password" placeholder="https://example.com/playlist.m3u"><button class="mini" type="button" onclick="toggleSecret('m3uUrl',this)">Show</button></div></div>
-  <div class="field"><label>Import from URL</label><button class="btn primary" onclick="importM3UUrl()">Import M3U URL</button></div>
-  <div class="field"><label>Import M3U file</label><input id="m3uFile" type="file" accept=".m3u,.m3u8,text/plain"></div>
- </div><p class="hint">Only import playlists and streams you are authorized to access. Some playlist hosts block browser requests (CORS); in that case download the M3U file and import it here.</p></div>
- <div class="panel"><h3>Xtream Codes login</h3><div class="form-grid">
-  <div class="field full"><label>Server URL (with http:// or https://)</label><input id="xtServer" placeholder="https://provider.example:8080"></div>
-  <div class="field"><label>Username (hidden)</label><div class="secret-row"><input id="xtUser" type="password" autocomplete="username"><button class="mini" type="button" onclick="toggleSecret('xtUser',this)">Show</button></div></div><div class="field"><label>Password (hidden)</label><div class="secret-row"><input id="xtPass" type="password" autocomplete="current-password"><button class="mini" type="button" onclick="toggleSecret('xtPass',this)">Show</button></div></div>
-  <div class="field full"><button class="btn primary" onclick="loginXtream()">Connect Xtream account</button></div>
- </div><p class="hint">Xtream access depends on provider support and browser CORS settings. Credentials are saved only in this browser's local storage; do not use a shared/public device.</p></div>
- <div class="panel" id="displaySettingsPanel"><h3>Subscription & display</h3><div class="form-grid">
-  <div class="field"><label>IPTV expiry date</label><input id="expiryInput" type="date"></div>
-  <div class="field"><label>Language</label><select id="language" onchange="setLanguage(this.value)"><option value="en">English</option><option value="km">ខ្មែរ (Khmer)</option><option value="zh">中文 (Chinese)</option></select></div>
-  <div class="field"><label>Font size</label><select id="fontSize" onchange="setFont(this.value)"><option value="14">Small</option><option value="16" selected>Medium</option><option value="19">Large</option><option value="22">Extra large</option></select></div>
-  <div class="field"><label>App name</label><input id="appName" value="MY IPTV" onchange="saveSettings()"></div>
-  <div class="field full"><button class="btn primary" onclick="saveSettings()">Save settings</button></div>
- </div></div>
- <div class="panel" id="userAdminPanel"><h3>Dashboard · User accounts</h3><div class="form-grid"><div class="field"><label>New username</label><input id="newUsername"></div><div class="field"><label>New password</label><input id="newUserPassword" type="password"></div><div class="field"><label>Role</label><select id="newUserRole"><option value="normal">Normal User</option><option value="manager">Manager</option><option value="admin">Administrator</option></select></div><div class="field"><label>Create account</label><button class="btn primary" onclick="addUser()">Create user</button></div></div><div id="userList" style="margin-top:12px"></div></div>
-<div class="panel"><h3>Categories</h3><p class="hint">Edit category names and logos. Moving an item to another category is available from Edit.</p><div class="row-tools"><select id="categoryType" class="search" onchange="renderCategories()"><option value="live">TV</option><option value="movie">Movies</option><option value="series">Series</option></select><button class="btn primary" onclick="openCategoryModal()">＋ Create category</button></div><div id="categoryList" style="margin-top:12px"></div></div>
-<div class="panel" id="appearanceSettingsPanel"><h3>Template & background</h3><div class="form-grid"><div class="field"><label>Template</label><select id="templateStyle" onchange="previewTemplate()"><option value="default">Default dark</option><option value="gradient">Color gradient</option><option value="light">Light</option></select></div><div class="field"><label>Background image</label><input id="bgImage" type="file" accept="image/*" onchange="loadBackground(event)"></div><div class="field full"><label>Background image URL (optional)</label><input id="bgImageUrl" placeholder="https://..."></div><div class="field full"><button class="btn primary" onclick="saveAppearance()">Save template</button><button class="btn" onclick="clearBackground()">Remove background image</button></div></div></div>
-<div class="panel"><h3>Manage channels, movies & series</h3><p class="hint">Edit a title, category, channel number or logo; delete unwanted entries. Use the up/down buttons to change order. Changes are stored in this browser.</p><div class="row-tools"><select id="manageType" class="search" onchange="renderManage()"><option value="live">TV channels</option><option value="movie">Movies</option><option value="series">Series</option></select><input class="search" id="manageSearch" placeholder="Search..." oninput="renderManage()"></div><div id="manageList" style="margin-top:12px"></div></div>
- <div class="panel"><h3>Data</h3><div class="row-tools"><button class="btn danger-btn" onclick="deleteAllType('live')">Delete all TV channels</button><button class="btn danger-btn" onclick="deleteAllType('movie')">Delete all movies</button><button class="btn danger-btn" onclick="deleteAllType('series')">Delete all series</button><button class="btn" onclick="exportData()">Export playlist backup</button><button class="btn" onclick="document.getElementById('backupFile').click()">Import backup</button><input id="backupFile" class="hide" type="file" accept=".json" onchange="importBackup(event)"><button class="btn" onclick="clearPlaylist()">Delete all imported data</button></div></div>
-</section>
-<p class="footer-note">Demo login security note: accounts are stored in this browser and are not secure authentication. For production or internet hosting, use a server-side authentication/database and enforce roles on the server. This is a standalone demo player interface. It does not provide TV channels, movies, series, subscriptions or stream links. Playback depends on your lawful playlist/provider and browser codec support. HLS quality selection works when the stream exposes multiple HLS levels.</p>
 </div>
 
-<div class="modal" id="editModal"><div class="modal-card"><h3 id="editHeading">Edit item</h3><div class="form-grid">
- <div class="field full"><label>Name / title</label><input id="editName"></div><div class="field"><label>Category / group</label><input id="editGroup"></div><div class="field"><label>Channel number</label><input id="editNumber" type="number"></div><div class="field full"><label>Logo image URL (optional)</label><input id="editLogo" placeholder="https://..."></div><div class="field full"><label>Stream URL</label><input id="editUrl"></div>
- </div><div class="modal-actions"><button class="btn" onclick="closeEdit()">Cancel</button><button class="btn primary" onclick="saveEdit()">Save changes</button></div></div></div>
-<div class="modal" id="categoryModal"><div class="modal-card"><h3 id="categoryHeading">Category</h3><div class="form-grid"><div class="field full"><label>Category name</label><input id="categoryName"></div><div class="field full"><label>Category logo URL</label><input id="categoryLogo" placeholder="https://..."></div></div><div class="modal-actions"><button class="btn" onclick="closeCategoryModal()">Cancel</button><button class="btn primary" onclick="saveCategory()">Save category</button></div></div></div><div class="import-progress" id="importProgress"><div class="import-progress-card"><div class="progress-title" id="progressTitle">Importing playlist</div><div class="progress-percent" id="progressPercent">0%</div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="progress-message" id="progressMessage">Please wait...</div></div></div>
-<div id="toast" class="toast hide"></div>
+<!-- APP -->
+<div class="app hide" id="app">
+
+  <header class="topbar">
+
+    <div class="logo">
+      <div class="logo-icon">▶</div>
+      <span>SR CAMBODIA TV</span>
+    </div>
+
+    <div class="top-actions">
+      <div class="clock" id="clock">--:--:--</div>
+      <button class="btn" onclick="logout()">Logout</button>
+    </div>
+
+  </header>
+
+  <nav class="nav">
+    <button class="active" data-view="home" onclick="showView('home')">🏠 Home</button>
+    <button data-view="tv" onclick="showView('tv')">📺 Live TV</button>
+    <button data-view="movies" onclick="showView('movies')">🎬 Movies</button>
+    <button data-view="series" onclick="showView('series')">📚 Series</button>
+    <button data-view="settings" onclick="showView('settings')">⚙ Settings</button>
+  </nav>
+
+  <!-- HOME -->
+  <section class="view active" id="home">
+
+    <div class="hero">
+      <div style="font-size:65px">SR</div>
+      <h1>SR CAMBODIA TV</h1>
+      <p>Live Television • Movies • Series</p>
+
+      <button class="btn primary" onclick="showView('tv')">
+        ENTER IPTV
+      </button>
+    </div>
+
+  </section>
+
+  <!-- TV -->
+  <section class="view" id="tv">
+
+    <div class="player-section">
+
+      <div class="player-layout">
+
+        <div class="player-container" id="tvPlayerBox">
+
+          <video id="tvVideo" controls playsinline></video>
+
+          <div class="player-info">
+            <b id="tvTitle">Select a TV Channel</b>
+            <span>16:9 Live TV Player</span>
+          </div>
+
+          <div class="player-toolbar">
+            <button class="btn" onclick="previousChannel()">▲ Channel</button>
+            <button class="btn" onclick="nextChannel()">▼ Channel</button>
+            <button class="btn primary" onclick="fullscreenPlayer('tvPlayerBox')">⛶ Full Screen</button>
+          </div>
+
+        </div>
+
+        <div class="channel-list">
+
+          <div class="list-title">
+            TV CHANNELS
+          </div>
+
+          <div id="tvChannels">
+            <div class="empty">
+              Import your authorized M3U playlist in Settings.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- MOVIES -->
+  <section class="view" id="movies">
+
+    <div class="player-section">
+
+      <div class="player-container" id="moviePlayerBox">
+
+        <video id="movieVideo" controls playsinline></video>
+
+        <div class="player-info">
+          <b id="movieTitle">Select a Movie</b>
+          <span>Movie Player • 16:9</span>
+        </div>
+
+        <div class="player-toolbar">
+          <button class="btn" onclick="scrollToCards('movieGrid')">Browse Movies</button>
+          <button class="btn primary" onclick="fullscreenPlayer('moviePlayerBox')">⛶ Full Screen 16:9</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <h2>Movies</h2>
+
+    <div class="media-grid" id="movieGrid">
+      <div class="empty">Movies will appear here after playlist import.</div>
+    </div>
+
+  </section>
+
+  <!-- SERIES -->
+  <section class="view" id="series">
+
+    <div class="player-section">
+
+      <div class="player-container" id="seriesPlayerBox">
+
+        <video id="seriesVideo" controls playsinline></video>
+
+        <div class="player-info">
+          <b id="seriesTitle">Select a Series Episode</b>
+          <span>Series Player • 16:9</span>
+        </div>
+
+        <div class="player-toolbar">
+          <button class="btn" onclick="scrollToCards('seriesGrid')">Browse Series</button>
+          <button class="btn primary" onclick="fullscreenPlayer('seriesPlayerBox')">⛶ Full Screen 16:9</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <h2>Series</h2>
+
+    <div class="media-grid" id="seriesGrid">
+      <div class="empty">Series will appear here after playlist import.</div>
+    </div>
+
+  </section>
+
+  <!-- SETTINGS -->
+  <section class="view" id="settings">
+
+    <div class="panel">
+
+      <h2>Import Authorized M3U Playlist</h2>
+
+      <p class="muted">
+        Add an M3U URL that you are authorized to access.
+      </p>
+
+      <div class="import-row">
+
+        <input
+          type="url"
+          id="m3uUrl"
+          placeholder="https://example.com/playlist.m3u">
+
+        <button class="btn primary" onclick="importM3U()">
+          Import Playlist
+        </button>
+
+      </div>
+
+      <p class="muted" id="importStatus"></p>
+
+    </div>
+
+    <div class="panel">
+
+      <h2>Player Settings</h2>
+
+      <div class="field">
+        <label>Default Screen Ratio</label>
+
+        <select onchange="changeAllRatio(this.value)">
+          <option value="16 / 9">16:9</option>
+          <option value="4 / 3">4:3</option>
+          <option value="1 / 1">1:1</option>
+        </select>
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+<!-- SCROLL CONTROLS -->
+<div class="scroll-controls" id="scrollControls">
+  <button class="scroll-btn" onclick="scrollPage(-1)" title="Scroll Up">▲</button>
+  <button class="scroll-btn" onclick="scrollPage(1)" title="Scroll Down">▼</button>
+</div>
 
 <script>
-const $=id=>document.getElementById(id);
-let db=JSON.parse(localStorage.getItem('iptv_db')||'{"live":[],"movie":[],"series":[]}');
-let settings=JSON.parse(localStorage.getItem('iptv_settings')||'{}');
-let currentGroup=null,currentType='live',currentIndex=-1,hls=null,editing=null,currentUser=null,activeVideo=null;
-const DEFAULT_USERS=[{username:'admin',password:'admin123',role:'admin'},{username:'manager',password:'manager123',role:'manager'},{username:'user',password:'user123',role:'normal'}];
-let users=JSON.parse(localStorage.getItem('iptv_users')||'null')||DEFAULT_USERS;
-function saveUsers(){localStorage.setItem('iptv_users',JSON.stringify(users))}
-function roleName(r){return r==='admin'?'Administrator':r==='manager'?'Manager':'Normal User'}
-function canManageContent(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='manager')}
-function requireContentRight(){if(!canManageContent()){toast('Permission denied: Manager or Administrator only');return false}return true}
-function loginUser(){let u=$('loginUsername').value.trim(),p=$('loginPassword').value;let found=users.find(x=>x.username===u&&x.password===p);if(!found){toast('Incorrect username or password');return}currentUser={username:found.username,role:found.role};$('loginScreen').style.display='none';$('mainApp').style.display='block';$('currentUserLabel').innerHTML=esc(found.username)+' <span class="role-tag">'+roleName(found.role)+'</span>';applyRolePermissions();renderUsers();toast('Welcome '+found.username)}
-function logoutUser(){if(activeVideo){activeVideo.pause();activeVideo.removeAttribute('src');activeVideo.load()}if(hls){hls.destroy();hls=null}currentUser=null;$('mainApp').style.display='none';$('loginScreen').style.display='grid';$('loginPassword').value=''}
-function applyRolePermissions(){let normal=currentUser.role==='normal';$('settingsNavBtn').classList.toggle('hide',normal);document.querySelectorAll('.nav button[data-view="settings"]').forEach(b=>b.classList.toggle('hide',normal));$('userAdminPanel').classList.toggle('hide',currentUser.role!=='admin');$('dataPanel').classList.toggle('hide',currentUser.role!=='admin');document.querySelectorAll('#settings .panel').forEach((panel,i)=>{if(currentUser.role==='manager'&&panel.id==='displaySettingsPanel')panel.classList.add('hide')});document.querySelectorAll('#settings .panel').forEach((panel,i)=>{if(currentUser.role==='manager'&&panel.id!=='userAdminPanel'&&panel.id!=='dataPanel'&&i===2)panel.classList.add('hide')});renderManage();}
-function addUser(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let username=$('newUsername').value.trim(),password=$('newUserPassword').value,role=$('newUserRole').value;if(!username||!password)return toast('Enter username and password');if(users.some(x=>x.username.toLowerCase()===username.toLowerCase()))return toast('Username already exists');users.push({username,password,role});saveUsers();$('newUsername').value='';$('newUserPassword').value='';renderUsers();toast('User created')}
-function renderUsers(){if(!currentUser||currentUser.role!=='admin')return;$('userList').innerHTML=users.map((u,i)=>`<div class="channel-row"><div style="flex:1"><b>${esc(u.username)}</b><div class="sub">${roleName(u.role)}</div></div><button class="mini" onclick="changeUserRole(${i})">Change role</button><button class="mini danger" onclick="deleteUser(${i})" ${u.username===currentUser.username?'disabled':''}>Delete</button></div>`).join('')}
-function changeUserRole(i){if(!currentUser||currentUser.role!=='admin')return;if(users[i].username===currentUser.username)return toast('You cannot change your own active role');let role=prompt('Enter role: admin, manager, or normal',users[i].role);if(!['admin','manager','normal'].includes(role))return toast('Invalid role');users[i].role=role;saveUsers();renderUsers();toast('Role updated')}
-function deleteUser(i){if(!currentUser||currentUser.role!=='admin')return;if(users[i].username===currentUser.username)return toast('You cannot delete your active account');if(!confirm('Delete this user?'))return;users.splice(i,1);saveUsers();renderUsers();toast('User deleted')}
-if(!localStorage.getItem('iptv_users'))saveUsers();
-const translations={
- en:{home:'Home',tv:'TV',movies:'Movies',series:'Series',settings:'Settings',welcome:'Welcome to your entertainment',homeDesc:'Live TV, movies and series in one place.',subscription:'IPTV subscription expires',recent:'Recently added',tvGroups:'TV groups',previous:'Previous',next:'Next',channels:'Channels',allMovies:'All movies',allSeries:'All series'},
- km:{home:'ទំព័រដើម',tv:'ទូរទស្សន៍',movies:'ភាពយន្ត',series:'ស៊េរី',settings:'ការកំណត់',welcome:'សូមស្វាគមន៍មកកាន់កម្មវិធីកម្សាន្ត',homeDesc:'ទូរទស្សន៍ ភាពយន្ត និងស៊េរី នៅកន្លែងតែមួយ។',subscription:'ថ្ងៃផុតកំណត់ IPTV',recent:'បានបន្ថែមថ្មីៗ',tvGroups:'ក្រុមទូរទស្សន៍',previous:'មុន',next:'បន្ទាប់',channels:'ប៉ុស្តិ៍',allMovies:'ភាពយន្តទាំងអស់',allSeries:'ស៊េរីទាំងអស់'},
- zh:{home:'首页',tv:'电视',movies:'电影',series:'剧集',settings:'设置',welcome:'欢迎使用娱乐中心',homeDesc:'直播电视、电影和剧集，一站畅看。',subscription:'IPTV 到期时间',recent:'最近添加',tvGroups:'电视频道分组',previous:'上一个',next:'下一个',channels:'频道',allMovies:'全部电影',allSeries:'全部剧集'}
-};
-function persist(){localStorage.setItem('iptv_db',JSON.stringify(db));localStorage.setItem('iptv_settings',JSON.stringify(settings));updateCounts()}
-function toast(s){$('toast').textContent=s;$('toast').classList.remove('hide');setTimeout(()=>$('toast').classList.add('hide'),2600)}
-function showView(v){if(v==='settings'&&currentUser?.role==='normal')return toast('Normal User cannot open Settings');document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='tv')renderTV();if(v==='movies')renderMedia('movie');if(v==='series')renderMedia('series');if(v==='settings'){renderManage();renderUsers();renderCategories()}}
-function backToGroups(){$('channelArea').classList.add('hide');$('groupGrid').classList.remove('hide');currentGroup=null}
-function setLanguage(lang){settings.lang=lang;persist();applyLanguage()}
-function applyLanguage(){let lang=settings.lang||'en';document.documentElement.lang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{let k=el.dataset.i18n;if(translations[lang]?.[k])el.textContent=translations[lang][k]})}
-function setFont(v){document.documentElement.style.setProperty('--font',v+'px');settings.font=v;persist()}
-function saveSettings(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');settings.expiry=$('expiryInput').value;settings.appName=$('appName').value||'MY IPTV';settings.lang=$('language').value;settings.font=$('fontSize').value;persist();applySettings();toast('Settings saved')}
-function applySettings(){if(settings.expiry)$('expiryInput').value=settings.expiry;if(settings.lang)$('language').value=settings.lang;if(settings.font){$('fontSize').value=settings.font;setFont(settings.font)}if(settings.appName){$('appName').value=settings.appName;$('appTitle').textContent=settings.appName}applyLanguage();updateExpiry()}
-function updateExpiry(){if(!settings.expiry){$('countdown').textContent='Not set';$('expireDate').textContent='Set an expiry date in Settings';return}let end=new Date(settings.expiry+'T23:59:59'),ms=end-Date.now(),days=Math.ceil(ms/86400000);$('countdown').textContent=ms<0?'Expired':days+' day'+(days===1?'':'s')+' left';$('expireDate').textContent='Expiry: '+end.toLocaleDateString()}
-function updateCounts(){$('tvCount').textContent=db.live.length+' channels';$('movieCount').textContent=db.movie.length+' movies';$('seriesCount').textContent=db.series.length+' series';$('statusPill').textContent=(db.live.length+db.movie.length+db.series.length)+' items loaded';renderRecent()}
-function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function showImportProgress(title){$('progressTitle').textContent=title;$('progressPercent').textContent='0%';$('progressFill').style.width='0%';$('progressMessage').textContent='Preparing import...';$('importProgress').classList.add('open')}
-function updateImportProgress(percent,message){percent=Math.max(0,Math.min(100,Math.round(percent)));$('progressPercent').textContent=percent+'%';$('progressFill').style.width=percent+'%';if(message)$('progressMessage').textContent=message}
-function hideImportProgress(){ $('importProgress').classList.remove('open') }
-function parseM3U(text){let lines=text.replace(/^\uFEFF/,'').split(/\r?\n/),out=[],meta=null;for(let line of lines){line=line.trim();if(line.startsWith('#EXTINF')){let name=(line.split(',').slice(1).join(',')||'Untitled').trim(),attr=k=>(line.match(new RegExp(k+'="([^"]*)"','i'))||[])[1]||'';meta={name,logo:attr('tvg-logo'),group:attr('group-title')||'Uncategorized',number:attr('tvg-chno'),type:/movie|vod|film/i.test(attr('group-title'))?'movie':/series|tv show/i.test(attr('group-title'))?'series':'live'};}else if(line&&!line.startsWith('#')&&meta){out.push({...meta,url:line,id:crypto.randomUUID?.()||String(Date.now()+Math.random())});meta=null}}return out}
-function mergeItems(items){items.forEach(x=>{let type=x.type||'live';if(!db[type])type='live';db[type].push({...x,type,id:x.id||String(Date.now()+Math.random())})});persist();toast('Imported '+items.length+' items')}
-function importFile(file){if(!requireContentRight()||!file)return;showImportProgress('Importing M3U file');let r=new FileReader();r.onload=()=>{try{updateImportProgress(55,'Parsing playlist...');let items=parseM3U(r.result);if(!items.length)throw Error('No channels found');updateImportProgress(85,'Saving '+items.length+' items...');mergeItems(items);updateImportProgress(100,'Import successful');setTimeout(hideImportProgress,650)}catch(e){hideImportProgress();toast('M3U file import failed: '+e.message)}};r.onerror=()=>{hideImportProgress();toast('Could not read M3U file')};r.readAsText(file)}
-$('m3uFile').addEventListener('change',e=>importFile(e.target.files[0]));
-async function importM3UUrl(){if(!requireContentRight())return;let url=$('m3uUrl').value.trim();if(!url)return toast('Enter an M3U URL');showImportProgress('Importing M3U playlist');try{updateImportProgress(10,'Connecting to playlist...');let res=await fetch(url);if(!res.ok)throw Error('HTTP '+res.status);updateImportProgress(45,'Downloading playlist...');let items=parseM3U(await res.text());if(!items.length)throw Error('No playlist items found');updateImportProgress(80,'Saving '+items.length+' items...');mergeItems(items);$('m3uUrl').value='';updateImportProgress(100,'Import successful');setTimeout(hideImportProgress,650)}catch(e){hideImportProgress();toast('Could not fetch URL: '+e.message+' (CORS or network). Try importing the M3U file.')}}
-async function loginXtream(){if(!requireContentRight())return;let server=$('xtServer').value.trim().replace(/\/+$/,''),u=$('xtUser').value.trim(),p=$('xtPass').value;if(!server||!u||!p)return toast('Enter server, username and password');showImportProgress('Connecting Xtream account');let base=server+'/player_api.php?username='+encodeURIComponent(u)+'&password='+encodeURIComponent(p);try{updateImportProgress(8,'Verifying account...');let auth=await fetch(base).then(r=>r.json());if(!auth.user_info)throw Error('Login failed');updateImportProgress(20,'Loading live TV, movies and series...');let actions=['get_live_categories','get_live_streams','get_vod_categories','get_vod_streams','get_series_categories','get_series'];let results=[];for(let i=0;i<actions.length;i++){let response=await fetch(base+'&action='+actions[i]);if(!response.ok)throw Error('Provider request failed: '+actions[i]);results.push(await response.json());updateImportProgress(25+(i+1)*10,'Loading '+actions[i].replaceAll('_',' ')+'...')}let [lc,ls,mc,ms,sc,ss]=results;let items=[];(ls||[]).forEach(x=>items.push({type:'live',name:x.name,logo:x.stream_icon,group:(lc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Live TV',number:x.num,url:server+'/live/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'m3u8')}));(ms||[]).forEach(x=>items.push({type:'movie',name:x.name,logo:x.stream_icon,group:(mc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Movies',url:server+'/movie/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.stream_id+'.'+(x.container_extension||'mp4')}));(ss||[]).forEach(x=>items.push({type:'series',name:x.name,logo:x.cover,group:(sc||[]).find(c=>String(c.category_id)===String(x.category_id))?.category_name||'Series',url:server+'/series/'+encodeURIComponent(u)+'/'+encodeURIComponent(p)+'/'+x.series_id+'.mp4'}));updateImportProgress(92,'Saving '+items.length+' items...');mergeItems(items);settings.xtream={server,u,p};persist();$('xtServer').value='';$('xtUser').value='';$('xtPass').value='';updateImportProgress(100,'Xtream import successful');setTimeout(hideImportProgress,700);toast('Xtream connected: '+items.length+' items imported')}catch(e){hideImportProgress();toast('Xtream connection failed: '+e.message+' (check CORS/provider API)')}}
-function groups(){return [...new Set(db.live.map(x=>x.group||'Uncategorized'))]}
-function renderTV(){if(currentGroup!==null)return;let gs=groups();$('groupGrid').innerHTML=gs.length?gs.map(g=>`<div class="item" onclick="openGroup('${encodeURIComponent(g)}')"><div class="item-art">📺</div><div class="item-body"><div class="item-title">${esc(g)}</div><div class="item-sub">${db.live.filter(x=>(x.group||'Uncategorized')===g).length} channels</div></div></div>`).join(''):'<div class="empty">Import an M3U playlist or connect Xtream in Settings to see TV groups.</div>'}
-function openGroup(encoded){currentGroup=decodeURIComponent(encoded);$('groupGrid').classList.add('hide');$('channelArea').classList.remove('hide');$('groupTitle').textContent=currentGroup;renderChannels()}
-function renderChannels(){let arr=db.live.filter(x=>(x.group||'Uncategorized')===currentGroup),q=$('tvSearch').value.toLowerCase();$('channelList').innerHTML=arr.filter(x=>x.name.toLowerCase().includes(q)).map(x=>{let i=db.live.indexOf(x);return `<div class="channel-row ${i===currentIndex?'selected':''}" onclick="playItem('live',${i})"><div class="channel-logo">${x.logo?`<img src="${esc(x.logo)}" onerror="this.remove()">`:'📺'}</div><div><div class="name">${esc(x.number?x.number+'. ':'')}${esc(x.name)}</div><div class="sub">${esc(x.group||'')}</div></div></div>`}).join('')||'<div class="empty">No channels in this group.</div>'}
-function renderMedia(type){let q=$(type==='movie'?'movieSearch':'seriesSearch').value.toLowerCase(),arr=db[type].filter(x=>x.name.toLowerCase().includes(q));$(type==='movie'?'movieGrid':'seriesGrid').innerHTML=arr.length?arr.map(x=>mediaCard(x,type)).join(''):'<div class="empty">No '+(type==='movie'?'movies':'series')+' imported yet.</div>'}
-function mediaCard(x,type){let i=db[type].indexOf(x);let episodeLabel=type==='series'?`<span class="item-sub">Series #${i+1}</span>`:'';return `<div class="item"><div class="item-art">${x.logo?`<img src="${esc(x.logo)}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`:type==='movie'?'🎬':'📚'}</div><div class="item-body"><div class="item-title" title="${esc(x.name)}">${type==='series'?(i+1)+'. ':''}${esc(x.name)}</div>${episodeLabel}<div class="item-sub">${esc(x.group||type)}</div><div class="item-actions"><button class="mini" onclick="playItem('${type}',${i})">▶ Play</button><button class="mini" onclick="moveItem('${type}',${i},-1)">↑</button><button class="mini" onclick="moveItem('${type}',${i},1)">↓</button></div></div></div>`}
-function renderRecent(){let items=[...db.live.slice(-3),...db.movie.slice(-3),...db.series.slice(-3)].slice(-6);$('recentGrid').innerHTML=items.length?items.map(x=>`<div class="item"><div class="item-art">${x.type==='live'?'📺':x.type==='movie'?'🎬':'📚'}</div><div class="item-body"><div class="item-title">${esc(x.name)}</div><div class="item-sub">${esc(x.group||x.type)}</div></div></div>`).join(''):'<div class="empty">Your imported content will appear here.</div>'}
-function playItem(type,index){let item=db[type][index];if(!item)return;if(!item.url)return toast('No stream URL for this item');currentType=type;currentIndex=index;let video=type==='movie'?$('movieVideo'):type==='series'?$('seriesVideo'):$('video');activeVideo=video;if(hls){hls.destroy();hls=null}document.querySelectorAll('video').forEach(v=>{if(v!==video){v.pause();v.removeAttribute('src');v.load()}});video.pause();video.removeAttribute('src');video.load();if(item.url.includes('.m3u8')&&Hls.isSupported()){hls=new Hls();hls.loadSource(item.url);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,()=>video.play().catch(()=>{}));}else{video.src=item.url;video.play().catch(()=>{})}if(type==='live'){$('nowPlaying').textContent=item.name;renderChannels()}else{showView(type==='movie'?'movies':'series');let player=$(type==='movie'?'moviePlayer':'seriesPlayer');player.classList.add('open');$(type==='movie'?'movieNowPlaying':'seriesNowPlaying').textContent=item.name;renderMediaQueue(type)}}
-function renderMediaQueue(type){let target=$(type==='movie'?'movieQueue':'seriesQueue');target.innerHTML=db[type].map((x,i)=>`<div class="channel-row ${i===currentIndex?'selected':''}" onclick="playItem('${type}',${i})"><div class="channel-logo">${type==='movie'?'🎬':'📚'}</div><div class="name">${esc(x.name)}</div></div>`).join('')}
-function changeItem(dir){let arr=db[currentType];if(!arr.length)return;let next=(currentIndex+dir+arr.length)%arr.length;playItem(currentType,next)}
-function setQuality(){if(!hls||!hls.levels.length)return toast('Quality selection is available for multi-quality HLS streams');let v=Number($('quality').value);if(v<0)hls.currentLevel=-1;else{let sorted=hls.levels.map((x,i)=>({i,h:x.height||0})).sort((a,b)=>a.h-b.h);let targets=[0,720,1440,2160],pick=sorted.filter(x=>x.h<=targets[v]||v===0).pop()||sorted[0];hls.currentLevel=pick.i}}
-function moveItem(type,i,dir){if(!requireContentRight())return;let j=i+dir;if(j<0||j>=db[type].length)return;[db[type][i],db[type][j]]=[db[type][j],db[type][i]];persist();renderManage();if(type==='movie'||type==='series')renderMedia(type);if(type==='live')renderTV()}
-function renderManage(){if(!canManageContent()){$('manageList').innerHTML='<div class="empty">Manager or Administrator permission required.</div>';return}let type=$('manageType').value,q=$('manageSearch').value.toLowerCase();$('manageList').innerHTML=db[type].map((x,i)=>({...x,i})).filter(x=>x.name.toLowerCase().includes(q)).map(x=>`<div class="channel-row"><div class="channel-logo">${x.logo?`<img src="${esc(x.logo)}" onerror="this.remove()">`:'•'}</div><div style="flex:1;min-width:0"><div class="name">${esc(x.number?x.number+'. ':'')}${esc(x.name)}</div><div class="sub">${esc(x.group||'')} · ${esc(x.url||'').slice(0,45)}</div></div><button class="mini" onclick="moveItem('${type}',${x.i},-1)">↑</button><button class="mini" onclick="moveItem('${type}',${x.i},1)">↓</button><button class="mini" onclick="editItem('${type}',${x.i})">Edit</button><button class="mini danger" onclick="deleteItem('${type}',${x.i})">Delete</button></div>`).join('')||'<div class="empty">No items found.</div>'}
-function editItem(type,i){if(!requireContentRight())return;editing={type,i};let x=db[type][i];$('editHeading').textContent='Edit '+type;$('editName').value=x.name||'';$('editGroup').value=x.group||'';$('editNumber').value=x.number||'';$('editLogo').value=x.logo||'';$('editUrl').value=x.url||'';$('editModal').classList.add('open')}
-function closeEdit(){$('editModal').classList.remove('open');editing=null}
-function saveEdit(){if(!requireContentRight())return;if(!editing)return;let x=db[editing.type][editing.i];Object.assign(x,{name:$('editName').value.trim()||x.name,group:$('editGroup').value.trim()||'Uncategorized',number:$('editNumber').value,logo:$('editLogo').value.trim(),url:$('editUrl').value.trim()});persist();closeEdit();renderManage();renderTV();renderMedia('movie');renderMedia('series');toast('Item updated')}
-function deleteItem(type,i){if(!requireContentRight())return;if(!confirm('Delete this item?'))return;db[type].splice(i,1);persist();renderManage();renderTV();renderMedia(type);toast('Item deleted')}
-function exportData(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let blob=new Blob([JSON.stringify({db,settings},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='iptv-backup.json';a.click();URL.revokeObjectURL(a.href)}
-function importBackup(e){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);db=d.db||d;settings=d.settings||settings;persist();applySettings();renderManage();toast('Backup imported')}catch{toast('Invalid backup file')}};r.readAsText(f)}
-function clearPlaylist(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');if(!confirm('Delete all imported channels, movies and series?'))return;db={live:[],movie:[],series:[]};persist();renderManage();renderTV();renderMedia('movie');renderMedia('series');toast('Imported data cleared')}
 
-function updateClock(){let d=new Date();$('clockNow').textContent=d.toLocaleTimeString()}
-function toggleSecret(id,b){let el=$(id);el.type=el.type==='password'?'text':'password';b.textContent=el.type==='password'?'Show':'Hide'}
-function categoryKey(type,name){return 'cat_'+type+'_'+name}
-function getCategoryMeta(type,name){return (settings.categories||{})[categoryKey(type,name)]||{}}
-function renderCategories(){let type=$('categoryType').value, names=[...new Set(db[type].map(x=>x.group||'Uncategorized'))];$('categoryList').innerHTML=names.length?names.map(n=>{let m=getCategoryMeta(type,n),count=db[type].filter(x=>(x.group||'Uncategorized')===n).length;return `<div class="channel-row"><div class="channel-logo">${m.logo?`<img src="${esc(m.logo)}">`:'📁'}</div><div style="flex:1"><b>${esc(n)}</b><div class="sub">${count} items</div></div><button class="mini" onclick="editCategory('${type}',${JSON.stringify(n)})">Edit</button><button class="mini danger" onclick="deleteCategory('${type}',${JSON.stringify(n)})">Delete</button></div>`}).join(''):'<div class="empty">No categories yet.</div>'}
-let categoryEditing=null;
-function openCategoryModal(){categoryEditing=null;$('categoryHeading').textContent='Create category';$('categoryName').value='';$('categoryLogo').value='';$('categoryModal').classList.add('open')}
-function editCategory(type,name){categoryEditing={type,name};let m=getCategoryMeta(type,name);$('categoryHeading').textContent='Edit category';$('categoryName').value=name;$('categoryLogo').value=m.logo||'';$('categoryModal').classList.add('open')}
-function closeCategoryModal(){$('categoryModal').classList.remove('open')}
-function saveCategory(){let type=categoryEditing?.type||$('categoryType').value, old=categoryEditing?.name, name=$('categoryName').value.trim();if(!name)return toast('Enter category name');settings.categories=settings.categories||{};if(old&&old!==name)db[type].forEach(x=>{if((x.group||'Uncategorized')===old)x.group=name});if(categoryEditing)delete settings.categories[categoryKey(type,old)];settings.categories[categoryKey(type,name)]={logo:$('categoryLogo').value.trim()};persist();closeCategoryModal();renderCategories();renderTV();renderMedia(type);toast('Category saved')}
-function deleteCategory(type,name){if(!confirm('Delete category? Items will move to Uncategorized.'))return;db[type].forEach(x=>{if((x.group||'Uncategorized')===name)x.group='Uncategorized'});if(settings.categories)delete settings.categories[categoryKey(type,name)];persist();renderCategories();renderTV();renderMedia(type)}
-function deleteAllType(type){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');let label=type==='live'?'TV channels':type==='movie'?'movies':'series';if(!confirm('Delete ALL '+label+'? This cannot be undone.'))return;db[type]=[];persist();renderManage();renderTV();renderMedia(type);renderCategories();toast('All '+label+' deleted')}
-function previewTemplate(){let t=$('templateStyle').value;document.body.classList.remove('tpl-gradient','tpl-light');if(t==='gradient')document.body.classList.add('tpl-gradient');if(t==='light')document.body.classList.add('tpl-light')}
-function loadBackground(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{settings.bgImage=r.result;document.body.style.backgroundImage=`linear-gradient(#090b16cc,#090b16cc),url(${r.result})`;toast('Background image ready')};r.readAsDataURL(f)}
-function saveAppearance(){if(!currentUser||currentUser.role!=='admin')return toast('Administrator only');settings.template=$('templateStyle').value;let url=$('bgImageUrl').value.trim();if(url)settings.bgImage=url;persist();applyAppearance();toast('Template saved')}
-function clearBackground(){delete settings.bgImage;persist();document.body.style.backgroundImage='';$('bgImageUrl').value='';toast('Background removed')}
-function applyAppearance(){let t=settings.template||'default';if($('templateStyle'))$('templateStyle').value=t;document.body.classList.remove('tpl-gradient','tpl-light');if(t==='gradient')document.body.classList.add('tpl-gradient');if(t==='light')document.body.classList.add('tpl-light');if(settings.bgImage)document.body.style.backgroundImage=`linear-gradient(#090b16cc,#090b16cc),url(${settings.bgImage})`}
+/* =====================================
+   SR CAMBODIA TV - SINGLE FILE APP
+===================================== */
 
-applySettings();applyAppearance();updateCounts();updateClock();setInterval(updateClock,1000);renderTV();renderManage();renderUsers();setInterval(updateExpiry,60000);
-</script>
-
-<style>
-.remember-row{display:flex;align-items:center;gap:9px;margin-top:14px;color:var(--muted);font-size:.9em}
-.remember-row input{width:auto!important}
-.sr-welcome{min-height:calc(100vh - 170px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:35px 18px;border:1px solid var(--line);border-radius:28px;background:radial-gradient(circle at 50% 30%,#43378c 0,#1a1d3b 38%,#090b16 78%);overflow:hidden}
-.sr-emblem,.hub-mark{display:grid;place-items:center;font-weight:1000;letter-spacing:-5px;color:#fff;background:linear-gradient(135deg,#e8c76a,#9c63ff 55%,#e74c9a);box-shadow:0 15px 50px #8c65ff55}
-.sr-emblem{width:clamp(130px,24vw,230px);height:clamp(130px,24vw,230px);border-radius:34%;font-size:clamp(60px,12vw,112px);margin-bottom:25px}
-.sr-khmer{font-size:clamp(22px,4vw,42px);font-weight:900;color:#fff;line-height:1.55}
-.sr-welcome h1{font-size:clamp(32px,6vw,66px);margin:8px 0;color:#f7d77a;letter-spacing:2px}
-.sr-welcome p{color:#c9cce3;font-size:clamp(15px,2vw,21px)}
-.sr-enter{margin-top:24px;padding:15px 28px;font-size:1.1em}
-#hub{min-height:calc(100vh - 130px)}
-.hub-top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin:4px 0 38px}
-.hub-brand{display:flex;align-items:center;gap:12px;font-size:clamp(17px,2vw,25px);font-weight:900;cursor:pointer}
-.hub-mark{width:62px;height:62px;border-radius:17px;font-size:26px;letter-spacing:-2px}
-.hub-datetime{display:flex;flex-direction:column;align-items:flex-end;gap:4px;color:#e8e9f4}
-.hub-datetime strong{font-size:clamp(20px,3vw,32px);font-variant-numeric:tabular-nums}
-.hub-datetime span{color:var(--muted);font-size:clamp(12px,1.5vw,16px)}
-.hub-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,2vw,25px);min-height:55vh}
-.hub-tile{border:1px solid #ffffff30;border-radius:28px;color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:15px;min-height:300px;cursor:pointer;transition:.2s;box-shadow:0 20px 55px #0005}
-.hub-tile:hover{transform:translateY(-7px) scale(1.015);border-color:#fff}
-.tv-tile{background:linear-gradient(145deg,#174d79,#141c3d 70%)}
-.movie-tile{background:linear-gradient(145deg,#762d4d,#291a3e 70%)}
-.series-tile{background:linear-gradient(145deg,#17645f,#142b3b 70%)}
-.hub-logo{font-size:clamp(70px,10vw,125px);filter:drop-shadow(0 12px 12px #0006)}
-.hub-tile b{font-size:clamp(24px,3vw,38px);letter-spacing:2px}
-.hub-tile small{font-size:clamp(13px,1.5vw,18px);color:#e1e4f4}
-.hub-footer{text-align:center;color:var(--muted);padding:24px;font-size:1.05em}
-.remote-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
-.remote-heading>div{display:flex;flex-direction:column;text-align:center;gap:5px}
-.remote-heading>div span{font-size:.85em;color:var(--muted)}
-.remote-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,330px);gap:14px}
-.remote-screen{min-width:0}
-.remote-screen .player-box{border-radius:12px}
-#remoteVideo{width:100%;aspect-ratio:16/9;object-fit:contain;background:#000;display:block}
-.remote-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--panel);padding:10px;border:1px solid var(--line);border-radius:12px;margin-top:8px}
-.remote-controls .search{min-width:105px;max-width:160px}
-.remote-list{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;max-height:75vh;overflow:auto}
-.remote-list-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-.remote-hint{color:var(--muted);text-align:center;padding:15px;font-size:.85em}
-#tv,#movies,#series{min-height:70vh}
-#movies .item,#series .item{cursor:pointer}
-#movies .item-art,#series .item-art{height:160px}
-#movieVideo,#seriesVideo{width:100%;aspect-ratio:16/9;object-fit:contain}
-.player-box video.ratio-fit{object-fit:contain}
-.player-box video.ratio-fill{object-fit:cover}
-.player-box video.ratio-zoom1{object-fit:cover;transform:scale(1.15)}
-.player-box video.ratio-zoom2{object-fit:cover;transform:scale(1.4)}
-.player-box video.ratio-4-3{aspect-ratio:4/3}
-.player-box video.ratio-1-1{aspect-ratio:1/1}
-@media(max-width:800px){.hub-tiles{grid-template-columns:1fr;min-height:auto}.hub-tile{min-height:190px}.hub-logo{font-size:68px}.remote-layout{grid-template-columns:1fr}.remote-list{max-height:330px}.hub-top{margin-bottom:20px}.remote-heading{flex-wrap:wrap}}
-</style>
-<script>
-/* SR CAMBODIA TV interface enhancements */
-let remoteHls=null, remoteCurrentIndex=-1, remoteListVisible=true;
-let favoriteChannels=JSON.parse(localStorage.getItem('sr_favorites')||'[]');
-
-function loginUser(){
-  const u=$('loginUsername').value.trim(), p=$('loginPassword').value;
-  const found=users.find(x=>x.username===u&&x.password===p);
-  if(!found){toast('Incorrect username or password');return}
-  currentUser={username:found.username,role:found.role};
-  if($('rememberLogin')?.checked)localStorage.setItem('sr_remember_user',u);
-  else localStorage.removeItem('sr_remember_user');
-  $('loginScreen').style.display='none';$('mainApp').style.display='block';
-  $('currentUserLabel').innerHTML=esc(found.username)+' <span class="role-tag">'+roleName(found.role)+'</span>';
-  applyRolePermissions();renderUsers();showView('home');toast('សូមស្វាគមន៍ '+found.username);
-}
-function showView(v){
-  if(v==='settings'&&currentUser?.role==='normal')return toast('Normal User cannot open Settings');
-  document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===v));
-  document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));
-  if(v==='tv')renderTV();
-  if(v==='movies')renderMedia('movie');
-  if(v==='series')renderMedia('series');
-  if(v==='settings'){renderManage();renderUsers();renderCategories()}
-  if(v==='hub')updateHubClock();
-}
-function applyRolePermissions(){
-  let normal=currentUser.role==='normal';
-  $('settingsNavBtn').classList.toggle('hide',normal);
-  document.querySelectorAll('.nav button[data-view="settings"]').forEach(b=>b.classList.toggle('hide',normal));
-  $('userAdminPanel').classList.toggle('hide',currentUser.role!=='admin');
-  const dataPanel=$('dataPanel'); if(dataPanel)dataPanel.classList.toggle('hide',currentUser.role!=='admin');
-  renderManage();
-}
-function updateHubClock(){
-  const d=new Date();
-  if($('hubTime'))$('hubTime').textContent=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  if($('hubDate'))$('hubDate').textContent=d.toLocaleDateString('en-GB',{weekday:'long',month:'long',day:'2-digit',year:'numeric'});
-}
-setInterval(updateHubClock,1000);
-
-function openTVExperience(){
-  showView('tvRemote');
-  remoteCurrentIndex=currentIndex>=0?currentIndex:0;
-  renderRemoteChannels();
-  if(db.live.length&&remoteCurrentIndex>=0)playRemoteChannel(remoteCurrentIndex);
-}
-function renderRemoteChannels(){
-  const list=$('remoteChannelList'); if(!list)return;
-  const ordered=db.live.map((x,i)=>({...x,_index:i}));
-  list.innerHTML=ordered.map(x=>`<div class="channel-row ${x._index===remoteCurrentIndex?'selected':''}" onclick="playRemoteChannel(${x._index})"><div class="channel-logo">${x.logo?`<img src="${esc(x.logo)}" onerror="this.remove()">`:'📺'}</div><div style="min-width:0"><div class="name">${esc(x.number?x.number+'. ':'')}${esc(x.name)}</div><div class="sub">${esc(x.group||'')}</div></div><button class="mini" onclick="event.stopPropagation();toggleFavorite(${x._index})">${favoriteChannels.includes(x.id)?'★':'☆'}</button></div>`).join('')||'<div class="empty">No TV channels. Import an M3U or Xtream playlist in Settings.</div>';
-  $('remoteListTitle').textContent='Channels · '+db.live.length;
-}
-function playRemoteChannel(i){
-  const item=db.live[i];if(!item)return toast('No channel at this number');
-  if(!item.url)return toast('This channel has no stream URL');
-  remoteCurrentIndex=i;currentType='live';currentIndex=i;
-  const v=$('remoteVideo');
-  if(remoteHls){remoteHls.destroy();remoteHls=null}
-  if(hls){hls.destroy();hls=null}
-  v.pause();v.removeAttribute('src');v.load();
-  if(item.url.includes('.m3u8')&&window.Hls&&Hls.isSupported()){
-    remoteHls=new Hls();remoteHls.loadSource(item.url);remoteHls.attachMedia(v);
-    remoteHls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
-  }else{v.src=item.url;v.play().catch(()=>{})}
-  $('remoteChannelName').textContent=(item.number?item.number+' · ':'')+item.name;
-  renderRemoteChannels();
-}
-function changeRemoteChannel(dir){
-  if(!db.live.length)return toast('No TV channels loaded');
-  const next=(remoteCurrentIndex+dir+db.live.length)%db.live.length;playRemoteChannel(next);
-}
-function playChannelNumber(){
-  const n=Number($('channelNumberInput').value);
-  if(!n)return toast('Enter a channel number');
-  let i=db.live.findIndex((x,idx)=>Number(x.number)===n);
-  if(i<0)i=n-1;
-  if(i<0||i>=db.live.length)return toast('Channel number not found');
-  playRemoteChannel(i);
-}
-function toggleFavorite(i=remoteCurrentIndex){
-  if(i<0||!db.live[i])return toast('Select a channel first');
-  const id=db.live[i].id;
-  favoriteChannels=favoriteChannels.includes(id)?favoriteChannels.filter(x=>x!==id):[...favoriteChannels,id];
-  localStorage.setItem('sr_favorites',JSON.stringify(favoriteChannels));renderRemoteChannels();
-  toast(favoriteChannels.includes(id)?'Added to favorites':'Removed from favorites');
-}
-function toggleRemoteList(){
-  remoteListVisible=!remoteListVisible;
-  $('remoteChannelList').classList.toggle('hide',!remoteListVisible);
-}
-function setRemoteQuality(){
-  if(!remoteHls||!remoteHls.levels.length)return toast('This stream does not provide selectable HLS qualities');
-  const v=Number($('remoteQuality').value);
-  if(v<0){remoteHls.currentLevel=-1;return}
-  const target=[480,1080,1440,2160][v];
-  const levels=remoteHls.levels.map((x,i)=>({i,h:x.height||0})).sort((a,b)=>a.h-b.h);
-  remoteHls.currentLevel=(levels.filter(x=>x.h<=target).pop()||levels[0]).i;
-}
-function setScreenRatio(){
-  const v=$('remoteVideo'),mode=$('screenRatio').value;
-  v.classList.remove('ratio-fit','ratio-fill','ratio-zoom1','ratio-zoom2','ratio-4-3','ratio-1-1');
-  v.style.aspectRatio='16/9';v.style.objectFit='contain';v.style.transform='';
-  if(mode==='4/3'){v.style.aspectRatio='4/3'}
-  if(mode==='1/1'){v.style.aspectRatio='1/1'}
-  if(mode==='fill'){v.classList.add('ratio-fill')}
-  if(mode==='zoom1'){v.classList.add('ratio-zoom1')}
-  if(mode==='zoom2'){v.classList.add('ratio-zoom2')}
-}
-function toggleRemoteFullscreen(){
-  const el=$('remoteVideo').parentElement;
-  if(document.fullscreenElement)document.exitFullscreen?.();else el.requestFullscreen?.();
-}
-function mediaFullscreen(id){const v=$(id);(v.parentElement.requestFullscreen||v.requestFullscreen).call(v.parentElement)}
-function stopMedia(type){const v=$(type==='movie'?'movieVideo':'seriesVideo');v.pause();v.removeAttribute('src');v.load();if(hls){hls.destroy();hls=null}if(type==='movie')$('movieNowPlaying').textContent='Stopped';else $('seriesNowPlaying').textContent='Stopped'}
-function setMediaQuality(type){
-  if(!hls||!hls.levels.length)return toast('Quality selection requires a multi-quality HLS stream');
-  const val=Number($(type+'Quality').value);
-  if(val<0){hls.currentLevel=-1;return}
-  const target=[480,1080,1440,2160][val],levels=hls.levels.map((x,i)=>({i,h:x.height||0})).sort((a,b)=>a.h-b.h);
-  hls.currentLevel=(levels.filter(x=>x.h<=target).pop()||levels[0]).i;
-}
-
-/* Make a selected movie or series card open its player prominently. */
-const originalPlayItem=playItem;
-playItem=function(type,index){
-  originalPlayItem(type,index);
-  if(type==='movie'){$('moviePlayer').classList.add('open');$('moviePlayer').scrollIntoView({behavior:'smooth',block:'start'})}
-  if(type==='series'){$('seriesPlayer').classList.add('open');$('seriesPlayer').scrollIntoView({behavior:'smooth',block:'start'})}
+const demoAccount = {
+  username: "admin",
+  password: "1234"
 };
 
-/* Remote-control keyboard: arrows navigate, Enter selects, number keys tune channels. */
-document.addEventListener('keydown',e=>{
-  if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;
-  const active=document.querySelector('.view.active')?.id;
-  if(active==='tvRemote'){
-    if(e.key==='ArrowUp'){e.preventDefault();changeRemoteChannel(-1)}
-    if(e.key==='ArrowDown'){e.preventDefault();changeRemoteChannel(1)}
-    if(e.key==='ArrowLeft'){e.preventDefault();toggleRemoteList()}
-    if(e.key==='ArrowRight'){e.preventDefault();toggleFavorite()}
-    if(e.key==='Enter'&&document.activeElement===document.body)playRemoteChannel(remoteCurrentIndex);
-    if(/^[0-9]$/.test(e.key)){$('channelNumberInput').value=($('channelNumberInput').value||'')+e.key}
-  }else if(active==='movies'||active==='series'){
-    if(e.key==='ArrowUp')changeItem(-1);
-    if(e.key==='ArrowDown')showView(active);
-    if(e.key==='ArrowRight'&&active==='series')changeItem(1);
-    if(e.key==='ArrowLeft'&&active==='series')changeItem(-1);
+let channels = [];
+let currentChannel = -1;
+
+let tvHls = null;
+let movieHls = null;
+let seriesHls = null;
+
+
+/* LOGIN */
+
+function loadRememberedLogin(){
+
+  const saved = localStorage.getItem("sr_login");
+
+  if(!saved) return;
+
+  try{
+
+    const data = JSON.parse(saved);
+
+    document.getElementById("username").value = data.username || "";
+    document.getElementById("password").value = data.password || "";
+    document.getElementById("remember").checked = true;
+
+  }catch(e){}
+
+}
+
+document.getElementById("loginForm").addEventListener("submit",function(e){
+
+  e.preventDefault();
+
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const remember = document.getElementById("remember").checked;
+
+  if(
+    username === demoAccount.username &&
+    password === demoAccount.password
+  ){
+
+    if(remember){
+
+      localStorage.setItem(
+        "sr_login",
+        JSON.stringify({
+          username:username,
+          password:password
+        })
+      );
+
+    }else{
+
+      localStorage.removeItem("sr_login");
+
+    }
+
+    sessionStorage.setItem("sr_logged_in","yes");
+
+    openApp();
+
+  }else{
+
+    alert("Invalid username or password.\nDemo: admin / 1234");
+
   }
+
 });
-$('loginUsername').value=localStorage.getItem('sr_remember_user')||'';
-if($('rememberLogin')&&localStorage.getItem('sr_remember_user'))$('rememberLogin').checked=true;
+
+
+function openApp(){
+
+  document.getElementById("loginScreen").classList.add("hide");
+  document.getElementById("app").classList.remove("hide");
+
+}
+
+
+function logout(){
+
+  stopAllPlayers();
+
+  sessionStorage.removeItem("sr_logged_in");
+
+  document.getElementById("app").classList.add("hide");
+  document.getElementById("loginScreen").classList.remove("hide");
+
+}
+
+
+function stopAllPlayers(){
+
+  ["tvVideo","movieVideo","seriesVideo"].forEach(function(id){
+
+    const video = document.getElementById(id);
+
+    video.pause();
+
+  });
+
+}
+
+
+/* NAVIGATION */
+
+function showView(name){
+
+  document.querySelectorAll(".view").forEach(function(view){
+
+    view.classList.remove("active");
+
+  });
+
+  document.getElementById(name).classList.add("active");
+
+
+  document.querySelectorAll(".nav button").forEach(function(button){
+
+    button.classList.toggle(
+      "active",
+      button.dataset.view === name
+    );
+
+  });
+
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* CLOCK */
+
+function updateClock(){
+
+  const now = new Date();
+
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* SCROLL UP / DOWN */
+
+function scrollPage(direction){
+
+  window.scrollBy({
+
+    top: direction * window.innerHeight * 0.8,
+    behavior:"smooth"
+
+  });
+
+}
+
+
+/* FULL SCREEN */
+
+function fullscreenPlayer(id){
+
+  const element = document.getElementById(id);
+
+  if(document.fullscreenElement){
+
+    document.exitFullscreen();
+
+  }else if(element.requestFullscreen){
+
+    element.requestFullscreen();
+
+  }
+
+}
+
+
+/* SCROLL TO CONTENT */
+
+function scrollToCards(id){
+
+  document.getElementById(id).scrollIntoView({
+
+    behavior:"smooth",
+    block:"start"
+
+  });
+
+}
+
+
+/* CHANGE RATIO */
+
+function changeAllRatio(ratio){
+
+  document.querySelectorAll("video").forEach(function(video){
+
+    video.style.aspectRatio = ratio;
+
+  });
+
+  toast("Player ratio changed to " + ratio);
+
+}
+
+
+/* M3U IMPORT */
+
+async function importM3U(){
+
+  const input = document.getElementById("m3uUrl");
+  const status = document.getElementById("importStatus");
+
+  const url = input.value.trim();
+
+  if(!url){
+
+    toast("Please enter an M3U URL.");
+
+    return;
+
+  }
+
+  status.textContent = "Loading playlist...";
+
+  try{
+
+    const response = await fetch(url);
+
+    if(!response.ok){
+
+      throw new Error("Playlist could not be loaded.");
+
+    }
+
+    const text = await response.text();
+
+    parseM3U(text);
+
+    status.textContent =
+      "Import successful: " +
+      channels.length +
+      " items loaded.";
+
+    input.value = "";
+
+    renderAll();
+
+    toast("Playlist imported successfully.");
+
+  }catch(error){
+
+    status.textContent =
+      "Import failed. The server may block browser access or the URL is invalid.";
+
+    console.error(error);
+
+  }
+
+}
+
+
+/* PARSE M3U */
+
+function parseM3U(text){
+
+  channels = [];
+
+  const lines =
+    text.split(/\r?\n/);
+
+  let info = null;
+
+
+  for(let i=0;i<lines.length;i++){
+
+    const line = lines[i].trim();
+
+
+    if(line.startsWith("#EXTINF:")){
+
+      const comma =
+        line.lastIndexOf(",");
+
+      const name =
+        comma >= 0
+        ? line.substring(comma + 1).trim()
+        : "Unknown";
+
+      const groupMatch =
+        line.match(/group-title="([^"]*)"/i);
+
+      const logoMatch =
+        line.match(/tvg-logo="([^"]*)"/i);
+
+      info = {
+
+        name:name,
+
+        group:
+          groupMatch
+          ? groupMatch[1]
+          : "",
+
+        logo:
+          logoMatch
+          ? logoMatch[1]
+          : ""
+
+      };
+
+    }else if(
+      info &&
+      line &&
+      !line.startsWith("#")
+    ){
+
+      channels.push({
+
+        id:Date.now() + Math.random(),
+
+        name:info.name,
+
+        group:info.group,
+
+        logo:info.logo,
+
+        url:line
+
+      });
+
+      info = null;
+
+    }
+
+  }
+
+
+  localStorage.setItem(
+    "sr_channels",
+    JSON.stringify(channels)
+  );
+
+}
+
+
+/* RENDER CONTENT */
+
+function renderAll(){
+
+  renderTV();
+
+  renderMovies();
+
+  renderSeries();
+
+}
+
+
+function renderTV(){
+
+  const box =
+    document.getElementById("tvChannels");
+
+  if(!channels.length){
+
+    box.innerHTML =
+      '<div class="empty">No channels loaded. Import an authorized playlist.</div>';
+
+    return;
+
+  }
+
+
+  const liveChannels =
+    channels.filter(function(item){
+
+      const group =
+        item.group.toLowerCase();
+
+      return !(
+        group.includes("movie") ||
+        group.includes("film") ||
+        group.includes("series")
+      );
+
+    });
+
+
+  box.innerHTML =
+    liveChannels.map(function(item,index){
+
+      return `
+        <div
+          class="channel ${index === currentChannel ? 'active':''}"
+          onclick="playTV(${index})">
+
+          <div class="channel-number">
+            ${index + 1}
+          </div>
+
+          <div class="channel-name">
+            <b>${escapeHTML(item.name)}</b>
+            <small>${escapeHTML(item.group)}</small>
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+function renderMovies(){
+
+  const grid =
+    document.getElementById("movieGrid");
+
+  const movies =
+    channels.filter(function(item){
+
+      const group =
+        item.group.toLowerCase();
+
+      return (
+        group.includes("movie") ||
+        group.includes("film")
+      );
+
+    });
+
+
+  if(!movies.length){
+
+    grid.innerHTML =
+      '<div class="empty">No movies found in the playlist.</div>';
+
+    return;
+
+  }
+
+
+  grid.innerHTML =
+    movies.map(function(item,index){
+
+      return `
+        <div class="media-card">
+
+          <div class="poster">
+            🎬
+          </div>
+
+          <div class="card-info">
+
+            <div class="card-title">
+              ${escapeHTML(item.name)}
+            </div>
+
+            <div class="card-sub">
+              ${escapeHTML(item.group)}
+            </div>
+
+            <button
+              class="btn primary"
+              onclick="playMovie(${index})">
+
+              ▶ Play
+
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+function renderSeries(){
+
+  const grid =
+    document.getElementById("seriesGrid");
+
+  const series =
+    channels.filter(function(item){
+
+      return item.group
+        .toLowerCase()
+        .includes("series");
+
+    });
+
+
+  if(!series.length){
+
+    grid.innerHTML =
+      '<div class="empty">No series found in the playlist.</div>';
+
+    return;
+
+  }
+
+
+  grid.innerHTML =
+    series.map(function(item,index){
+
+      return `
+        <div class="media-card">
+
+          <div class="poster">
+            📺
+          </div>
+
+          <div class="card-info">
+
+            <div class="card-title">
+              ${escapeHTML(item.name)}
+            </div>
+
+            <div class="card-sub">
+              ${escapeHTML(item.group)}
+            </div>
+
+            <button
+              class="btn primary"
+              onclick="playSeries(${index})">
+
+              ▶ Play
+
+            </button>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+
+}
+
+
+/* TV PLAYBACK */
+
+function getLiveChannels(){
+
+  return channels.filter(function(item){
+
+    const group =
+      item.group.toLowerCase();
+
+    return !(
+      group.includes("movie") ||
+      group.includes("film") ||
+      group.includes("series")
+    );
+
+  });
+
+}
+
+
+function playTV(index){
+
+  const live =
+    getLiveChannels();
+
+  const item =
+    live[index];
+
+  if(!item) return;
+
+  currentChannel = index;
+
+  document.getElementById("tvTitle").textContent =
+    item.name;
+
+  playStream(
+    "tvVideo",
+    item.url,
+    "tv"
+  );
+
+  renderTV();
+
+}
+
+
+function nextChannel(){
+
+  const live =
+    getLiveChannels();
+
+  if(!live.length) return;
+
+  currentChannel++;
+
+  if(currentChannel >= live.length){
+
+    currentChannel = 0;
+
+  }
+
+  playTV(currentChannel);
+
+}
+
+
+function previousChannel(){
+
+  const live =
+    getLiveChannels();
+
+  if(!live.length) return;
+
+  currentChannel--;
+
+  if(currentChannel < 0){
+
+    currentChannel =
+      live.length - 1;
+
+  }
+
+  playTV(currentChannel);
+
+}
+
+
+/* MOVIE PLAYBACK */
+
+function getMovies(){
+
+  return channels.filter(function(item){
+
+    const group =
+      item.group.toLowerCase();
+
+    return (
+      group.includes("movie") ||
+      group.includes("film")
+    );
+
+  });
+
+}
+
+
+function playMovie(index){
+
+  const item =
+    getMovies()[index];
+
+  if(!item) return;
+
+  document.getElementById("movieTitle").textContent =
+    item.name;
+
+  playStream(
+    "movieVideo",
+    item.url,
+    "movie"
+  );
+
+  document
+    .getElementById("moviePlayerBox")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+
+/* SERIES PLAYBACK */
+
+function getSeries(){
+
+  return channels.filter(function(item){
+
+    return item.group
+      .toLowerCase()
+      .includes("series");
+
+  });
+
+}
+
+
+function playSeries(index){
+
+  const item =
+    getSeries()[index];
+
+  if(!item) return;
+
+  document.getElementById("seriesTitle").textContent =
+    item.name;
+
+  playStream(
+    "seriesVideo",
+    item.url,
+    "series"
+  );
+
+  document
+    .getElementById("seriesPlayerBox")
+    .scrollIntoView({
+      behavior:"smooth"
+    });
+
+}
+
+
+/* HLS PLAYER */
+
+function playStream(videoId,url,type){
+
+  const video =
+    document.getElementById(videoId);
+
+  let oldHls =
+    type === "tv"
+    ? tvHls
+    : type === "movie"
+    ? movieHls
+    : seriesHls;
+
+
+  if(oldHls){
+
+    oldHls.destroy();
+
+  }
+
+
+  video.pause();
+
+  video.removeAttribute("src");
+
+
+  if(
+    url.includes(".m3u8") &&
+    window.Hls &&
+    Hls.isSupported()
+  ){
+
+    const hls =
+      new Hls();
+
+    hls.loadSource(url);
+
+    hls.attachMedia(video);
+
+    hls.on(
+      Hls.Events.MANIFEST_PARSED,
+      function(){
+
+        video.play()
+          .catch(function(){});
+
+      }
+    );
+
+
+    if(type === "tv"){
+
+      tvHls = hls;
+
+    }else if(type === "movie"){
+
+      movieHls = hls;
+
+    }else{
+
+      seriesHls = hls;
+
+    }
+
+
+  }else{
+
+    video.src = url;
+
+    video.play()
+      .catch(function(){});
+
+  }
+
+}
+
+
+/* KEYBOARD CONTROLS */
+
+document.addEventListener(
+  "keydown",
+  function(event){
+
+    const activeView =
+      document.querySelector(".view.active");
+
+    if(
+      !activeView ||
+      activeView.id !== "tv"
+    ) return;
+
+
+    if(
+      event.target.tagName === "INPUT" ||
+      event.target.tagName === "SELECT"
+    ) return;
+
+
+    if(event.key === "ArrowUp"){
+
+      event.preventDefault();
+
+      previousChannel();
+
+    }
+
+
+    if(event.key === "ArrowDown"){
+
+      event.preventDefault();
+
+      nextChannel();
+
+    }
+
+
+    if(event.key === "f"){
+
+      fullscreenPlayer(
+        "tvPlayerBox"
+      );
+
+    }
+
+  }
+);
+
+
+/* TOAST */
+
+function toast(message){
+
+  const old =
+    document.querySelector(".toast");
+
+  if(old) old.remove();
+
+
+  const box =
+    document.createElement("div");
+
+  box.className = "toast";
+
+  box.textContent = message;
+
+  document.body.appendChild(box);
+
+
+  setTimeout(function(){
+
+    box.remove();
+
+  },2500);
+
+}
+
+
+/* SAFE TEXT */
+
+function escapeHTML(value){
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    value || "";
+
+  return div.innerHTML;
+
+}
+
+
+/* LOAD SAVED PLAYLIST */
+
+function loadSavedPlaylist(){
+
+  try{
+
+    const saved =
+      JSON.parse(
+        localStorage.getItem("sr_channels")
+      );
+
+    if(Array.isArray(saved)){
+
+      channels = saved;
+
+      renderAll();
+
+    }
+
+  }catch(e){}
+
+}
+
+
+/* START APP */
+
+loadRememberedLogin();
+
+loadSavedPlaylist();
+
+
+if(
+  sessionStorage.getItem(
+    "sr_logged_in"
+  ) === "yes"
+){
+
+  openApp();
+
+}
+
 </script>
 
 </body>
